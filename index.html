@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Automation Agency</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🤖</text></svg>">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'rotate-slow': 'rotateSlow 20s linear infinite',
+                        'pulse-glow': 'pulseGlow 2s ease-in-out infinite alternate',
+                        'slide-up': 'slideUp 0.8s ease-out',
+                        'fade-in': 'fadeIn 1s ease-out',
+                        'scale-in': 'scaleIn 0.6s ease-out',
+                        'geometric': 'geometric 15s ease-in-out infinite'
+                    },
+                    keyframes: {
+                        float: { '0%, 100%': { transform: 'translateY(0px)' }, '50%': { transform: 'translateY(-20px)' } },
+                        rotateSlow: { '0%': { transform: 'rotate(0deg)' }, '100%': { transform: 'rotate(360deg)' } },
+                        pulseGlow: { '0%': { boxShadow: '0 0 20px rgba(59, 130, 246, 0.4)' }, '100%': { boxShadow: '0 0 40px rgba(59, 130, 246, 0.8)' } },
+                        slideUp: { '0%': { transform: 'translateY(50px)', opacity: '0' }, '100%': { transform: 'translateY(0)', opacity: '1' } },
+                        fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
+                        scaleIn: { '0%': { transform: 'scale(0.9)', opacity: '0' }, '100%': { transform: 'scale(1)', opacity: '1' } },
+                        geometric: { 
+                            '0%, 100%': { transform: 'rotate(0deg) scale(1)' }, 
+                            '25%': { transform: 'rotate(90deg) scale(1.1)' },
+                            '50%': { transform: 'rotate(180deg) scale(0.9)' },
+                            '75%': { transform: 'rotate(270deg) scale(1.1)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-white text-black overflow-x-hidden">
+    <!-- Hero -->
+    <section class="min-h-screen flex items-center px-6 lg:px-12 relative overflow-hidden">
+        <!-- Interactive Geometric Elements -->
+        <div class="absolute top-20 right-20 w-32 h-32 border-2 border-blue-500 rotate-45 animate-geometric opacity-20"></div>
+        <div class="absolute bottom-40 left-20 w-24 h-24 bg-blue-500 rounded-full animate-float opacity-10"></div>
+        <div class="absolute top-1/2 right-1/3 w-16 h-16 border border-gray-400 animate-rotate-slow opacity-15"></div>
+        <div class="absolute bottom-20 right-1/4 w-20 h-20 border-2 border-gray-600 rounded-xl animate-pulse opacity-10"></div>
+        
+        <!-- Main Professional Geometric Display -->
+        <div class="absolute top-1/4 right-1/4 hidden lg:block">
+            <div class="relative w-40 h-40">
+                <div class="absolute inset-0 border-2 border-blue-600 rounded-full animate-rotate-slow opacity-30"></div>
+                <div class="absolute inset-4 border border-gray-400 rotate-45 animate-geometric opacity-40"></div>
+                <div class="absolute inset-8 bg-blue-500 rounded-full animate-pulse-glow opacity-20"></div>
+                <div class="absolute top-1/2 left-1/2 w-8 h-8 bg-gray-800 transform -translate-x-1/2 -translate-y-1/2 rotate-45 animate-float"></div>
+            </div>
+        </div>
+        
+        <div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-20 items-center relative z-10">
+            <div class="order-2 lg:order-1 animate-slide-up">
+                <h1 class="text-5xl lg:text-7xl font-light leading-[0.9] mb-8 animate-slide-up" style="animation-delay: 0.4s;">
+                    <span class="font-semibold text-black">AI-Powered Systems</span><br>
+                    <span class="text-gray-600">That Scale Your Business</span>
+                </h1>
+                <p class="text-xl text-gray-700 mb-12 max-w-xl leading-relaxed animate-slide-up" style="animation-delay: 0.6s;">I help B2B companies, creators, and small teams grow through intelligent automation</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12 animate-fade-in" style="animation-delay: 0.8s;">
+                    <div class="group">
+                        <div class="text-3xl font-bold mb-2 text-blue-600 group-hover:scale-110 transition-transform duration-300">$75K+</div>
+                        <div class="text-xs text-gray-600 uppercase tracking-widest font-medium">Monthly Revenue Built</div>
+                    </div>
+                    <div class="group">
+                        <div class="text-3xl font-bold mb-2 text-gray-800 group-hover:scale-110 transition-transform duration-300">1,500+</div>
+                        <div class="text-xs text-gray-600 uppercase tracking-widest font-medium">Leads Processed Daily</div>
+                    </div>
+                    <div class="group">
+                        <div class="text-3xl font-bold mb-2 text-blue-700 group-hover:scale-110 transition-transform duration-300">97+</div>
+                        <div class="text-xs text-gray-600 uppercase tracking-widest font-medium">Sales From One Content</div>
+                    </div>
+                </div>
+                
+                <a href="https://calendly.com/standartdevelop/30min" class="group inline-flex items-center bg-black text-white px-10 py-5 hover:bg-gray-800 transition-all duration-300 transform hover:scale-105 animate-scale-in" style="animation-delay: 1s;">
+                    <span class="font-medium text-lg">Book Discovery Call</span>
+                    <svg class="ml-3 w-5 h-5 group-hover:translate-x-1 transition-transform" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd"/></svg>
+                </a>
+            </div>
+            
+            <div class="order-1 lg:order-2 flex justify-center animate-scale-in" style="animation-delay: 0.6s;">
+                <div class="relative group">
+                    <div class="absolute -inset-1 bg-blue-500 rounded-2xl blur opacity-20 group-hover:opacity-40 transition duration-500 animate-pulse-glow"></div>
+                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face" alt="AI Automation Specialist" class="relative w-80 h-80 object-cover rounded-2xl border-2 border-gray-200 group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute -bottom-4 -right-4 bg-green-500 text-white px-4 py-2 rounded-full text-sm font-semibold animate-float">Available</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services -->
+    <section class="py-32 px-6 lg:px-12 bg-gray-50">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-20 animate-slide-up">
+                <h2 class="text-5xl lg:text-6xl font-light mb-6">
+                    <span class="font-semibold text-black">Services</span>
+                    <span class="text-gray-600"> You Can Order</span>
+                </h2>
+                <p class="text-xl text-gray-700 max-w-3xl mx-auto">Practical automation solutions that deliver real results</p>
+            </div>
+            
+            <div class="grid lg:grid-cols-2 gap-8">
+                <div class="group bg-white p-8 rounded-2xl border border-gray-200 hover:border-blue-400 hover:shadow-lg transition-all duration-500 hover:transform hover:scale-105 animate-fade-in">
+                    <div class="flex items-center mb-6">
+                        <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mr-4 group-hover:bg-blue-200 transition-colors duration-300">
+                            <span class="text-xl">🎯</span>
+                        </div>
+                        <h3 class="text-2xl font-semibold text-black">Lead Generation Systems</h3>
+                    </div>
+                    <p class="text-gray-700 leading-relaxed">Complete cold outreach automation sending 1000+ targeted emails daily. Includes prospect identification, lead scoring, automated sequences, and qualification workflows that convert.</p>
+                </div>
+                
+                <div class="group bg-white p-8 rounded-2xl border border-gray-200 hover:border-blue-400 hover:shadow-lg transition-all duration-500 hover:transform hover:scale-105 animate-fade-in" style="animation-delay: 0.2s;">
+                    <div class="flex items-center mb-6">
+                        <div class="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center mr-4 group-hover:bg-gray-200 transition-colors duration-300">
+                            <span class="text-xl">⚡</span>
+                        </div>
+                        <h3 class="text-2xl font-semibold text-black">Sales Pipeline Optimization</h3>
+                    </div>
+                    <p class="text-gray-700 leading-relaxed">Sales automation with personalized proposals and conversion optimization at every stage. Includes pipeline management, follow-up sequences, and performance tracking.</p>
+                </div>
+                
+                <div class="group bg-white p-8 rounded-2xl border border-gray-200 hover:border-blue-400 hover:shadow-lg transition-all duration-500 hover:transform hover:scale-105 animate-fade-in" style="animation-delay: 0.4s;">
+                    <div class="flex items-center mb-6">
+                        <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mr-4 group-hover:bg-blue-200 transition-colors duration-300">
+                            <span class="text-xl">📝</span>
+                        </div>
+                        <h3 class="text-2xl font-semibold text-black">Content Production Systems</h3>
+                    </div>
+                    <p class="text-gray-700 leading-relaxed">AI content repurposing that turns one piece into multiple formats across platforms. Maintains your brand voice while optimizing for engagement and conversion.</p>
+                </div>
+                
+                <div class="group bg-white p-8 rounded-2xl border border-gray-200 hover:border-blue-400 hover:shadow-lg transition-all duration-500 hover:transform hover:scale-105 animate-fade-in" style="animation-delay: 0.6s;">
+                    <div class="flex items-center mb-6">
+                        <div class="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center mr-4 group-hover:bg-gray-200 transition-colors duration-300">
+                            <span class="text-xl">🔧</span>
+                        </div>
+                        <h3 class="text-2xl font-semibold text-black">Custom Automation Solutions</h3>
+                    </div>
+                    <p class="text-gray-700 leading-relaxed">Tailored automation systems built for your specific business processes. Custom integrations and workflows designed to solve your unique challenges.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Who I Help -->
+    <section class="py-32 px-6 lg:px-12 bg-white">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-20 animate-slide-up">
+                <h2 class="text-5xl lg:text-6xl font-light mb-6">
+                    <span class="font-semibold text-black">Who</span>
+                    <span class="text-gray-600"> I Help</span>
+                </h2>
+                <p class="text-xl text-gray-700 max-w-3xl mx-auto">Businesses ready to scale through practical automation</p>
+            </div>
+            
+            <div class="grid lg:grid-cols-3 gap-8">
+                <div class="group text-center p-10 rounded-2xl bg-gray-50 hover:bg-white border border-gray-200 hover:border-blue-400 hover:shadow-lg hover:transform hover:scale-105 transition-all duration-500 animate-scale-in">
+                    <div class="w-20 h-20 bg-blue-100 rounded-2xl flex items-center justify-center mx-auto mb-8 group-hover:bg-blue-200 transition-colors duration-300">
+                        <span class="text-3xl">🏢</span>
+                    </div>
+                    <h3 class="text-2xl font-semibold mb-4 text-black">B2B Companies</h3>
+                    <p class="text-gray-700 leading-relaxed">Scale sales operations and streamline lead management for consistent revenue growth</p>
+                </div>
+                
+                <div class="group text-center p-10 rounded-2xl bg-gray-50 hover:bg-white border border-gray-200 hover:border-blue-400 hover:shadow-lg hover:transform hover:scale-105 transition-all duration-500 animate-scale-in" style="animation-delay: 0.2s;">
+                    <div class="w-20 h-20 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-8 group-hover:bg-gray-200 transition-colors duration-300">
+                        <span class="text-3xl">✨</span>
+                    </div>
+                    <h3 class="text-2xl font-semibold mb-4 text-black">Creators & Brands</h3>
+                    <p class="text-gray-700 leading-relaxed">Monetize your audience through automated content systems and optimized sales funnels</p>
+                </div>
+                
+                <div class="group text-center p-10 rounded-2xl bg-gray-50 hover:bg-white border border-gray-200 hover:border-blue-400 hover:shadow-lg hover:transform hover:scale-105 transition-all duration-500 animate-scale-in" style="animation-delay: 0.4s;">
+                    <div class="w-20 h-20 bg-blue-100 rounded-2xl flex items-center justify-center mx-auto mb-8 group-hover:bg-blue-200 transition-colors duration-300">
+                        <span class="text-3xl">🚀</span>
+                    </div>
+                    <h3 class="text-2xl font-semibold mb-4 text-black">Small Teams & Startups</h3>
+                    <p class="text-gray-700 leading-relaxed">Achieve growth without expanding headcount through smart automation</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Process -->
+    <section class="py-32 px-6 lg:px-12 bg-gray-50">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-20 animate-slide-up">
+                <h2 class="text-5xl lg:text-6xl font-light mb-6">
+                    <span class="font-semibold text-black">How</span>
+                    <span class="text-gray-600"> We Work Together</span>
+                </h2>
+                <p class="text-xl text-gray-700 max-w-3xl mx-auto">A straightforward process for implementing automation</p>
+            </div>
+            
+            <div class="grid lg:grid-cols-5 gap-6">
+                <div class="group text-center animate-fade-in">
+                    <div class="w-16 h-16 border-2 border-blue-500 rounded-full flex items-center justify-center font-bold text-xl mx-auto mb-6 bg-white group-hover:bg-blue-50 transition-colors duration-300 shadow-sm">1</div>
+                    <h4 class="font-semibold text-sm uppercase tracking-widest mb-3 text-blue-600">Discovery Call</h4>
+                    <p class="text-sm text-gray-700 leading-relaxed">Analyze your current processes and identify automation opportunities</p>
+                </div>
+                
+                <div class="group text-center animate-fade-in" style="animation-delay: 0.2s;">
+                    <div class="w-16 h-16 border-2 border-gray-400 rounded-full flex items-center justify-center font-bold text-xl mx-auto mb-6 bg-white group-hover:bg-gray-50 transition-colors duration-300 shadow-sm">2</div>
+                    <h4 class="font-semibold text-sm uppercase tracking-widest mb-3 text-gray-600">Strategy</h4>
+                    <p class="text-sm text-gray-700 leading-relaxed">Create custom automation roadmap tailored to your goals and budget</p>
+                </div>
+                
+                <div class="group text-center animate-fade-in" style="animation-delay: 0.4s;">
+                    <div class="w-16 h-16 border-2 border-blue-500 rounded-full flex items-center justify-center font-bold text-xl mx-auto mb-6 bg-white group-hover:bg-blue-50 transition-colors duration-300 shadow-sm">3</div>
+                    <h4 class="font-semibold text-sm uppercase tracking-widest mb-3 text-blue-600">Implementation</h4>
+                    <p class="text-sm text-gray-700 leading-relaxed">Build, test, and deploy your automation systems step by step</p>
+                </div>
+                
+                <div class="group text-center animate-fade-in" style="animation-delay: 0.6s;">
+                    <div class="w-16 h-16 border-2 border-gray-400 rounded-full flex items-center justify-center font-bold text-xl mx-auto mb-6 bg-white group-hover:bg-gray-50 transition-colors duration-300 shadow-sm">4</div>
+                    <h4 class="font-semibold text-sm uppercase tracking-widest mb-3 text-gray-600">Training</h4>
+                    <p class="text-sm text-gray-700 leading-relaxed">Train your team to manage and optimize the systems effectively</p>
+                </div>
+                
+                <div class="group text-center animate-fade-in" style="animation-delay: 0.8s;">
+                    <div class="w-16 h-16 border-2 border-blue-500 rounded-full flex items-center justify-center font-bold text-xl mx-auto mb-6 bg-white group-hover:bg-blue-50 transition-colors duration-300 shadow-sm">5</div>
+                    <h4 class="font-semibold text-sm uppercase tracking-widest mb-3 text-blue-600">Support</h4>
+                    <p class="text-sm text-gray-700 leading-relaxed">Ongoing optimization and maintenance to ensure peak performance</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About -->
+    <section class="py-32 px-6 lg:px-12 bg-white">
+        <div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-20 items-center">
+            <div class="flex justify-center animate-scale-in">
+                <div class="relative group">
+                    <div class="absolute -inset-1 bg-blue-500 rounded-3xl blur opacity-20 group-hover:opacity-30 transition duration-500"></div>
+                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=500&fit=crop&crop=face" alt="AI Automation Specialist" class="relative w-80 h-96 object-cover rounded-3xl border-2 border-gray-200 group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute -top-6 -right-6 bg-blue-500 text-white px-6 py-3 rounded-2xl text-sm font-bold shadow-lg animate-float">AI Expert</div>
+                </div>
+            </div>
+            
+            <div class="animate-slide-up">
+                <h2 class="text-5xl lg:text-6xl font-light mb-8">
+                    <span class="font-semibold text-black">AI Automation</span><br>
+                    <span class="text-gray-600">Specialist</span>
+                </h2>
+                <div class="space-y-6">
+                    <p class="text-gray-700 leading-relaxed text-lg">I build automation systems that solve real business problems. My focus is on practical solutions that integrate smoothly with your existing operations and deliver measurable results.</p>
+                    <p class="text-gray-700 leading-relaxed text-lg">With experience implementing systems that generate substantial revenue and process thousands of leads, I understand what works in real business environments.</p>
+                    <p class="text-gray-700 leading-relaxed text-lg">Whether you need lead generation, sales optimization, or content automation, I create reliable systems that work consistently and scale with your business.</p>
+                </div>
+                
+                <div class="grid grid-cols-3 gap-6 mt-12">
+                    <div class="text-center group">
+                        <div class="text-2xl font-bold text-blue-600 group-hover:scale-110 transition-transform">50+</div>
+                        <div class="text-xs text-gray-600 uppercase tracking-wider">Projects</div>
+                    </div>
+                    <div class="text-center group">
+                        <div class="text-2xl font-bold text-gray-800 group-hover:scale-110 transition-transform">3+</div>
+                        <div class="text-xs text-gray-600 uppercase tracking-wider">Years</div>
+                    </div>
+                    <div class="text-center group">
+                        <div class="text-2xl font-bold text-blue-600 group-hover:scale-110 transition-transform">99%</div>
+                        <div class="text-xs text-gray-600 uppercase tracking-wider">Success Rate</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact -->
+    <section class="py-40 px-6 lg:px-12 text-center bg-gray-50">
+        <div class="max-w-5xl mx-auto animate-slide-up">
+            <h2 class="text-6xl lg:text-7xl font-light mb-8">
+                <span class="font-semibold text-black">Ready</span><br>
+                <span class="text-gray-600">to Automate Your Growth?</span>
+            </h2>
+            <p class="text-2xl text-gray-700 mb-16 max-w-4xl mx-auto leading-relaxed">Schedule a consultation to explore how AI automation can transform your business operations</p>
+            
+            <a href="https://calendly.com/standartdevelop/30min" class="group relative">
+                <div class="bg-black text-white px-12 py-6 rounded-2xl hover:bg-gray-800 transition-all duration-300 transform hover:scale-105 shadow-lg inline-block">
+                    <span class="font-semibold text-xl">Schedule Free Consultation</span>
+                </div>
+            </a>
+        </div>
+    </section>
+</body>
+</html>

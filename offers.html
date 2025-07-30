@@ -1,0 +1,583 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leonid Shvorob - AI Automation Expert</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            line-height: 1.6;
+            color: #374151;
+            background: #ffffff;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Animated Background */
+        .bg-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: grid-move 20s linear infinite;
+            z-index: -1;
+        }
+        
+        @keyframes grid-move {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+        
+        /* Header */
+        .header {
+            padding: 120px 0;
+            text-align: center;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.05) 0%, transparent 50%);
+            z-index: -1;
+        }
+        
+        .header-content {
+            max-width: 800px;
+        }
+        
+        .hero-badge {
+            display: inline-block;
+            padding: 8px 20px;
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 50px;
+            color: #60a5fa;
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 30px;
+            letter-spacing: 0.5px;
+        }
+        
+        .hero-title {
+            font-size: 4rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #1e293b 0%, #475569 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.1;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.5rem;
+            color: #64748b;
+            margin-bottom: 30px;
+            font-weight: 400;
+        }
+        
+        .hero-description {
+            font-size: 1.25rem;
+            color: #475569;
+            margin-bottom: 50px;
+            max-width: 650px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
+            font-weight: 300;
+        }
+        
+        .cta-button {
+            background: #1e293b;
+            color: white;
+            padding: 16px 32px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-block;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .cta-button::before {
+            display: none;
+        }
+        
+        .cta-button:hover {
+            background: #334155;
+            transform: translateY(-1px);
+        }
+        
+        /* Services Section */
+        .services-section {
+            padding: 120px 0;
+            position: relative;
+            background: #ffffff;
+        }
+        
+        .section-title {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 20px;
+            color: #1e293b;
+            font-weight: 700;
+        }
+        
+        .section-subtitle {
+            text-align: center;
+            font-size: 1.1rem;
+            color: #64748b;
+            margin-bottom: 80px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        /* Minimalist Apple-style adjustments */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1px;
+            background: #e2e8f0;
+            border-radius: 16px;
+            overflow: hidden;
+            padding: 1px;
+        }
+        
+        .service-card {
+            background: #ffffff;
+            border: none;
+            padding: 48px 32px;
+            border-radius: 0;
+            transition: all 0.2s ease;
+            position: relative;
+            backdrop-filter: none;
+        }
+        
+        .service-card:hover {
+            background: #f8fafc;
+            transform: none;
+        }
+        
+        .service-card::before {
+            display: none;
+        }
+        
+        .service-icon {
+            font-size: 2rem;
+            margin-bottom: 24px;
+            display: block;
+        }
+        
+        .service-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #1e293b;
+        }
+        
+        .service-description {
+            font-size: 0.95rem;
+            line-height: 1.5;
+            color: #64748b;
+            font-weight: 300;
+        }
+        
+        /* Stats Section */
+        .stats-section {
+            padding: 80px 0;
+            text-align: center;
+            background: #f8fafc;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            margin-top: 50px;
+        }
+        
+        .stat-item {
+            padding: 30px 20px;
+        }
+        
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #3b82f6;
+            margin-bottom: 10px;
+            display: block;
+        }
+        
+        .stat-label {
+            font-size: 1rem;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 500;
+        }
+        
+        /* About Section */
+        .about-section {
+            padding: 120px 0;
+            position: relative;
+            background: #ffffff;
+        }
+        
+        .about-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
+        }
+        
+        .about-text h3 {
+            font-size: 2.2rem;
+            margin-bottom: 30px;
+            color: #1e293b;
+            font-weight: 700;
+        }
+        
+        .about-text p {
+            font-size: 1.1rem;
+            color: #64748b;
+            margin-bottom: 25px;
+            line-height: 1.7;
+        }
+        
+        .about-features {
+            list-style: none;
+            margin-top: 40px;
+        }
+        
+        .about-features li {
+            font-size: 1rem;
+            color: #64748b;
+            margin-bottom: 15px;
+            padding-left: 30px;
+            position: relative;
+        }
+        
+        .about-features li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #3b82f6;
+            font-weight: bold;
+        }
+        
+        .about-visual {
+            position: relative;
+            height: 400px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        
+        .code-snippet {
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.9rem;
+            color: #71717a;
+            line-height: 1.6;
+            text-align: left;
+        }
+        
+        .code-snippet .keyword { color: #3b82f6; }
+        .code-snippet .string { color: #10b981; }
+        .code-snippet .comment { color: #6b7280; }
+        
+        /* Final CTA */
+        .final-cta {
+            padding: 120px 0;
+            text-align: center;
+            position: relative;
+        }
+        
+        .final-cta::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.05) 0%, transparent 50%);
+        }
+        
+        .final-cta h2 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            font-weight: 700;
+            color: #ffffff;
+        }
+        
+        .final-cta p {
+            font-size: 1.2rem;
+            margin-bottom: 40px;
+            color: #94a3b8;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        /* Responsive */
+        @media (max-width: 968px) {
+            .about-content {
+                grid-template-columns: 1fr;
+                gap: 60px;
+            }
+            
+            .about-visual {
+                height: 300px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.8rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.3rem;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .services-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .container {
+                padding: 0 15px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .hero-title {
+                font-size: 2.2rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .cta-button {
+                padding: 14px 30px;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-grid"></div>
+    
+    <!-- Header -->
+    <section class="header">
+        <div class="container">
+            <div class="header-content">
+                <span class="hero-badge">AI AUTOMATION EXPERT</span>
+                <h1 class="hero-title">Leonid Shvorob</h1>
+                <p class="hero-subtitle">Scale Your Business with AI Systems</p>
+                <p class="hero-description">
+                    I help businesses and entrepreneurs scale revenue without scaling headcount. 
+                    Through AI automation systems that handle lead generation, content creation, 
+                    sales processes, and operations - so you can focus on growth.
+                </p>
+                <a href="https://calendly.com/standartdevelop/30min" target="_blank" class="cta-button">
+                    Book a Discovery Call
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services -->
+    <section class="services-section">
+        <div class="container">
+            <h2 class="section-title">AI Systems I Build</h2>
+            <p class="section-subtitle">
+                Automation systems for businesses and entrepreneurs ready to scale efficiently
+            </p>
+            <div class="services-grid">
+                <div class="service-card">
+                    <span class="service-icon">🎯</span>
+                    <h3 class="service-title">Lead Generation Systems</h3>
+                    <p class="service-description">
+                        Automated lead capture, qualification, and nurturing workflows that turn prospects into qualified sales opportunities around the clock.
+                    </p>
+                </div>
+                <div class="service-card">
+                    <span class="service-icon">📈</span>
+                    <h3 class="service-title">Sales Funnel Automation</h3>
+                    <p class="service-description">
+                        End-to-end sales process automation from initial contact to closing, including follow-ups, proposals, and customer onboarding.
+                    </p>
+                </div>
+                <div class="service-card">
+                    <span class="service-icon">⚡</span>
+                    <h3 class="service-title">Content Production Systems</h3>
+                    <p class="service-description">
+                        AI-powered content creation and distribution workflows that maintain your brand voice while scaling output 10x.
+                    </p>
+                </div>
+                <div class="service-card">
+                    <span class="service-icon">🔄</span>
+                    <h3 class="service-title">Project Management Automation</h3>
+                    <p class="service-description">
+                        Streamlined project workflows, automated task assignments, and intelligent progress tracking to keep teams aligned.
+                    </p>
+                </div>
+                <div class="service-card">
+                    <span class="service-icon">💬</span>
+                    <h3 class="service-title">Customer Support Systems</h3>
+                    <p class="service-description">
+                        24/7 AI-powered customer support with intelligent routing, automated responses, and seamless handoffs to human agents.
+                    </p>
+                </div>
+                <div class="service-card">
+                    <span class="service-icon">📊</span>
+                    <h3 class="service-title">Business Intelligence</h3>
+                    <p class="service-description">
+                        Automated reporting and analytics systems that provide real-time insights for data-driven decision making.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats -->
+    <section class="stats-section">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-number">50+</span>
+                    <span class="stat-label">Hours Saved Weekly</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">3x</span>
+                    <span class="stat-label">Revenue Growth</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">90%</span>
+                    <span class="stat-label">Process Automation</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">24/7</span>
+                    <span class="stat-label">System Uptime</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About -->
+    <section class="about-section">
+        <div class="container">
+            <div class="about-content">
+                <div class="about-text">
+                    <h3>Scale Without Limits</h3>
+                    <p>
+                        Whether you're a 7-figure business or a solo entrepreneur, the challenge is the same: 
+                        growth means more complexity, more manual work, and less time for what matters.
+                    </p>
+                    <p>
+                        I build AI systems that handle the repetitive work - from lead qualification to content creation - 
+                        so you can scale revenue without scaling your workload or team size.
+                    </p>
+                    <ul class="about-features">
+                        <li>End-to-end automation systems, not point solutions</li>
+                        <li>Works with existing tools and workflows</li>
+                        <li>Implementation in 2-4 weeks with ongoing optimization</li>
+                        <li>ROI tracking and performance analytics</li>
+                        <li>Training and full system handoff included</li>
+                    </ul>
+                </div>
+                <div class="about-visual">
+                    <div style="text-align: center; padding: 60px 40px;">
+                        <div style="font-size: 6rem; color: #3b82f6; margin-bottom: 30px;">⚡</div>
+                        <div style="font-size: 1.1rem; color: #64748b; line-height: 1.6;">
+                            <strong style="color: #1e293b;">AI-First Approach</strong><br>
+                            Every system built to learn,<br>
+                            adapt, and improve over time
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Final CTA -->
+    <section class="final-cta">
+        <div class="container">
+            <h2>Ready to Scale with AI?</h2>
+            <p>
+                Let's discuss how automation can transform your business operations. 
+                Book a discovery call to explore custom solutions for your growth challenges.
+            </p>
+            <a href="https://calendly.com/standartdevelop/30min" target="_blank" class="cta-button">
+                Book a Discovery Call
+            </a>
+        </div>
+    </section>
+
+    <script>
+        // Minimal scroll animations
+        document.addEventListener('DOMContentLoaded', function() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            // Animate service cards
+            document.querySelectorAll('.service-card, .stat-item').forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                card.style.transition = `opacity 0.6s ease ${index * 0.1}s, transform 0.6s ease ${index * 0.1}s`;
+                observer.observe(card);
+            });
+        });
+    </script>
+</body>
+</html>

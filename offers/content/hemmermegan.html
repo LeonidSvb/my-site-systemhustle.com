@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PCOS Content Automation System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header */
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 80px 0;
+            text-align: center;
+        }
+        
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.5rem;
+            color: #666;
+            margin-bottom: 30px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .time-saved {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-top: 20px;
+        }
+        
+        /* Problem Section */
+        .problem-section {
+            background: white;
+            padding: 80px 0;
+        }
+        
+        .section-title {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 50px;
+            color: #333;
+        }
+        
+        .problem-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+        
+        .problem-card {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            border-left: 5px solid #ff6b6b;
+        }
+        
+        .problem-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+        
+        .problem-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #333;
+        }
+        
+        /* Solution Flow */
+        .solution-section {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            padding: 80px 0;
+            color: white;
+        }
+        
+        .flow-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-top: 50px;
+        }
+        
+        .flow-step {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .step-number {
+            background: white;
+            color: #f5576c;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin: 0 auto 20px;
+        }
+        
+        .step-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        
+        /* Benefits Section */
+        .benefits-section {
+            background: white;
+            padding: 80px 0;
+        }
+        
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 40px;
+            margin-top: 50px;
+        }
+        
+        .benefit-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            transform: translateY(0);
+            transition: transform 0.3s ease;
+        }
+        
+        .benefit-card:hover {
+            transform: translateY(-10px);
+        }
+        
+        .benefit-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+        
+        .benefit-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        
+        /* ROI Section */
+        .roi-section {
+            background: #f8f9fa;
+            padding: 80px 0;
+        }
+        
+        .roi-comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            margin-top: 50px;
+        }
+        
+        .roi-card {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .roi-before {
+            border-top: 5px solid #ff6b6b;
+        }
+        
+        .roi-after {
+            border-top: 5px solid #51cf66;
+        }
+        
+        .roi-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 30px;
+        }
+        
+        .roi-metric {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        
+        .roi-before .roi-metric {
+            color: #ff6b6b;
+        }
+        
+        .roi-after .roi-metric {
+            color: #51cf66;
+        }
+        
+        /* CTA Section */
+        .cta-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 80px 0;
+            text-align: center;
+            color: white;
+        }
+        
+        .cta-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+        
+        .cta-subtitle {
+            font-size: 1.3rem;
+            margin-bottom: 40px;
+            opacity: 0.9;
+        }
+        
+        .cta-button {
+            background: white;
+            color: #667eea;
+            padding: 20px 50px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        
+        .cta-button:hover {
+            transform: scale(1.05);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .roi-comparison {
+                grid-template-columns: 1fr;
+            }
+            
+            .container {
+                padding: 0 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <section class="header">
+        <div class="container">
+            <h1 class="hero-title">PCOS Content Automation System</h1>
+            <p class="hero-subtitle">Never run out of PCOS content ideas again. Our AI system monitors your competitors, analyzes trending topics, and creates personalized scripts for your audience.</p>
+            <div class="time-saved">⏰ Save 15+ Hours Per Week</div>
+        </div>
+    </section>
+
+    <!-- Problem Section -->
+    <section class="problem-section">
+        <div class="container">
+            <h2 class="section-title">Sound Familiar?</h2>
+            <div class="problem-grid">
+                <div class="problem-card">
+                    <div class="problem-icon">😵</div>
+                    <h3 class="problem-title">Constant Content Brainstorming</h3>
+                    <p>Spending hours trying to come up with fresh PCOS content ideas that actually engage your audience.</p>
+                </div>
+                <div class="problem-card">
+                    <div class="problem-icon">🔄</div>
+                    <h3 class="problem-title">Repetitive Research</h3>
+                    <p>Manually checking what other PCOS coaches are posting and trying to find your unique angle.</p>
+                </div>
+                <div class="problem-card">
+                    <div class="problem-icon">⏰</div>
+                    <h3 class="problem-title">Time Management Chaos</h3>
+                    <p>Getting lost in content creation for hours instead of focusing on your clients and growing your practice.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Solution Flow -->
+    <section class="solution-section">
+        <div class="container">
+            <h2 class="section-title">How The System Works</h2>
+            <div class="flow-container">
+                <div class="flow-step">
+                    <div class="step-number">1</div>
+                    <h3 class="step-title">Smart Content Discovery</h3>
+                    <p><strong>Instagram Scraper:</strong> Monitors 20+ top PCOS accounts daily<br>
+                    <strong>Engagement Filter:</strong> Only content with 1000+ likes gets analyzed<br>
+                    <strong>Video Download:</strong> Saves trending reels automatically</p>
+                </div>
+                <div class="flow-step">
+                    <div class="step-number">2</div>
+                    <h3 class="step-title">AI Content Analysis</h3>
+                    <p><strong>Speech-to-Text:</strong> Transcribes all video content<br>
+                    <strong>Topic Extraction:</strong> Identifies PCOS symptoms, solutions, tools<br>
+                    <strong>Trend Detection:</strong> Spots emerging health topics</p>
+                </div>
+                <div class="flow-step">
+                    <div class="step-number">3</div>
+                    <h3 class="step-title">Intelligent Rewriting</h3>
+                    <p><strong>Research Engine:</strong> Finds additional scientific backing<br>
+                    <strong>Voice Matching:</strong> Adapts to your FDN-P expertise<br>
+                    <strong>Originality Check:</strong> Ensures 100% unique angles</p>
+                </div>
+                <div class="flow-step">
+                    <div class="step-number">4</div>
+                    <h3 class="step-title">Content Delivery</h3>
+                    <p><strong>Google Sheets Database:</strong> Organized content calendar<br>
+                    <strong>Script Templates:</strong> Hook + Body + CTA ready to film<br>
+                    <strong>Multi-Platform:</strong> IG Reels, Stories, Posts formats</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- System Artifacts -->
+    <section class="artifacts-section" style="background: white; padding: 80px 0;">
+        <div class="container">
+            <h2 class="section-title">What You'll Actually Receive</h2>
+            <div class="artifacts-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-top: 50px;">
+                <div class="artifact-card" style="background: #f8f9fa; padding: 30px; border-radius: 15px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+                    <div style="font-size: 3rem; margin-bottom: 20px;">📊</div>
+                    <h3 style="font-size: 1.3rem; margin-bottom: 15px; color: #333;">Content Database</h3>
+                    <p>Google Sheets with 50+ content ideas updated weekly, including competitor analysis and engagement metrics</p>
+                </div>
+                <div class="artifact-card" style="background: #f8f9fa; padding: 30px; border-radius: 15px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+                    <div style="font-size: 3rem; margin-bottom: 20px;">📝</div>
+                    <h3 style="font-size: 1.3rem; margin-bottom: 15px; color: #333;">Script Templates</h3>
+                    <p>Ready-to-film scripts with proven hooks like "3 PCOS symptoms doctors miss" and strategic CTAs</p>
+                </div>
+                <div class="artifact-card" style="background: #f8f9fa; padding: 30px; border-radius: 15px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+                    <div style="font-size: 3rem; margin-bottom: 20px;">🔍</div>
+                    <h3 style="font-size: 1.3rem; margin-bottom: 15px; color: #333;">Trend Reports</h3>
+                    <p>Weekly analysis of what's working in PCOS community: trending topics, viral formats, engagement strategies</p>
+                </div>
+                <div class="artifact-card" style="background: #f8f9fa; padding: 30px; border-radius: 15px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+                    <div style="font-size: 3rem; margin-bottom: 20px;">🎯</div>
+                    <h3 style="font-size: 1.3rem; margin-bottom: 15px; color: #333;">Content Calendar</h3>
+                    <p>30-day posting schedule with optimal timing, hashtag suggestions, and cross-platform adaptations</p>
+                </div>
+                <div class="artifact-card" style="background: #f8f9fa; padding: 30px; border-radius: 15px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+                    <div style="font-size: 3rem; margin-bottom: 20px;">⚡</div>
+                    <h3 style="font-size: 1.3rem; margin-bottom: 15px; color: #333;">Automation Dashboard</h3>
+                    <p>24/7 monitoring system that alerts you to new opportunities and generates fresh content automatically</p>
+                </div>
+                <div class="artifact-card" style="background: #f8f9fa; padding: 30px; border-radius: 15px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+                    <div style="font-size: 3rem; margin-bottom: 20px;">📚</div>
+                    <h3 style="font-size: 1.3rem; margin-bottom: 15px; color: #333;">Knowledge Base</h3>
+                    <p>Curated library of PCOS research, success stories, and scientific studies to back your content claims</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Benefits -->
+    <section class="benefits-section">
+        <div class="container">
+            <h2 class="section-title">What You Get</h2>
+            <div class="benefits-grid">
+                <div class="benefit-card">
+                    <div class="benefit-icon">🎯</div>
+                    <h3 class="benefit-title">PCOS-Focused Content</h3>
+                    <p>Every piece of content is specifically tailored to PCOS awareness, functional nutrition, and women's health topics that convert.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">🤖</div>
+                    <h3 class="benefit-title">24/7 Content Research</h3>
+                    <p>While you sleep, our AI is analyzing the latest trends and preparing your next week's content strategy.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">📈</div>
+                    <h3 class="benefit-title">Proven Engagement Formulas</h3>
+                    <p>Content based on what's already working in your niche, increasing your chances of viral reach and client inquiries.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">✍️</div>
+                    <h3 class="benefit-title">Your Authentic Voice</h3>
+                    <p>AI learns your expertise and communication style to create content that sounds genuinely like you, not generic AI.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">📊</div>
+                    <h3 class="benefit-title">Multi-Platform Ready</h3>
+                    <p>Get content optimized for Instagram Reels, Stories, Posts, and easily adaptable for TikTok and YouTube Shorts.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">🚀</div>
+                    <h3 class="benefit-title">Scale Your Influence</h3>
+                    <p>Consistent, high-quality content that positions you as the go-to PCOS expert and grows your waiting list.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ROI Comparison -->
+    <section class="roi-section">
+        <div class="container">
+            <h2 class="section-title">Before vs After</h2>
+            <div class="roi-comparison">
+                <div class="roi-card roi-before">
+                    <h3 class="roi-title">WITHOUT Automation</h3>
+                    <div class="roi-metric">15+</div>
+                    <p>Hours per week on content research</p>
+                    <br>
+                    <div class="roi-metric">3-5</div>
+                    <p>Posts per week (inconsistent)</p>
+                    <br>
+                    <div class="roi-metric">😰</div>
+                    <p>Stress level trying to come up with ideas</p>
+                </div>
+                <div class="roi-card roi-after">
+                    <h3 class="roi-title">WITH Automation</h3>
+                    <div class="roi-metric">2-3</div>
+                    <p>Hours per week on content creation</p>
+                    <br>
+                    <div class="roi-metric">10-15</div>
+                    <p>High-quality posts per week</p>
+                    <br>
+                    <div class="roi-metric">😌</div>
+                    <p>Confidence in your content strategy</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta-section">
+        <div class="container">
+            <h2 class="cta-title">Ready to Transform Your Content Strategy?</h2>
+            <p class="cta-subtitle">Join successful PCOS coaches who've automated their content and 3x their engagement</p>
+            <button class="cta-button" onclick="window.open('https://calendly.com/standartdevelop/30min', '_blank')">
+                Book a Call
+            </button>
+            <p style="margin-top: 20px; opacity: 0.8;">
+                ✅ 30-minute strategy session<br>
+                ✅ Custom content audit<br>
+                ✅ Personalized automation roadmap
+            </p>
+            <p style="margin-top: 30px; font-size: 0.9rem; opacity: 0.7;">
+                <strong>Leonid Shvorob</strong> - Expert in Marketing Automation
+            </p>
+        </div>
+    </section>
+
+    <script>
+        // Add smooth scrolling and animations
+        document.addEventListener('DOMContentLoaded', function() {
+            // Smooth scrolling for internal links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+
+            // Add scroll animations
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            });
+
+            // Observe all cards for animation
+            document.querySelectorAll('.problem-card, .benefit-card, .flow-step, .roi-card').forEach((card) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(30px)';
+                card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(card);
+            });
+        });
+    </script>
+</body>
+</html>

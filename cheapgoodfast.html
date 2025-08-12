@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Arial', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #1c2526, #2a3b3d);
+      color: #fff;
+      overflow: auto;
+    }
+    .container {
+      text-align: center;
+      width: 100%;
+      max-width: 800px;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+    .scale {
+      width: 100%;
+      max-width: 600px;
+      height: 400px;
+      margin: 0 auto;
+      position: relative;
+    }
+    .scale svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+    .toggle {
+      display: inline-block;
+      margin: 10px;
+      cursor: pointer;
+    }
+    .toggle input {
+      display: none;
+    }
+    .toggle label {
+      padding: 12px 24px;
+      background: linear-gradient(45deg, #2a2a2a, #3a3a3a);
+      border: 1px solid #FFD700;
+      border-radius: 25px;
+      color: #fff;
+      font-weight: bold;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    }
+    .toggle input:checked + label {
+      background: linear-gradient(45deg, #4CAF50, #66BB6A);
+      box-shadow: 0 0 15px #4CAF50;
+    }
+    #good-toggle:checked + label {
+      background: linear-gradient(45deg, #FFD700, #FFCA28);
+      box-shadow: 0 0 15px #FFD700;
+    }
+    #description {
+      font-size: 1.5em;
+      margin-top: 20px;
+      text-shadow: 0 0 10px rgba(76, 175, 80, 0.8);
+      transition: color 0.3s ease;
+    }
+    .pan, .beam {
+      transition: all 0.3s ease;
+    }
+    .weight {
+      transition: fill 0.3s ease;
+    }
+    .warning {
+      color: #ff4444;
+      text-shadow: 0 0 10px #ff4444;
+    }
+    .warning-glow {
+      filter: url(#glow);
+      fill: #ff4444;
+      stroke: #ff4444;
+    }
+    .gold-glow {
+      filter: url(#gold-glow);
+    }
+    #clock {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    @media (max-width: 600px) {
+      .scale {
+        height: 300px;
+      }
+      #description {
+        font-size: 1.2em;
+      }
+      .toggle label {
+        padding: 8px 16px;
+        font-size: 0.9em;
+      }
+      #clock {
+        width: 40px;
+        height: 40px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="scale">
+      <svg viewBox="0 0 200 100">
+        <defs>
+          <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="2" result="blur"/>
+            <feMerge>
+              <feMergeNode in="blur"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
+          <filter id="gold-glow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="2" result="blur"/>
+            <feMerge>
+              <feMergeNode in="blur"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
+        </defs>
+        <rect id="beam" class="beam" x="50" y="20" width="100" height="5" fill="#666" rx="2"/>
+        <circle id="fast-pan" class="pan" cx="50" cy="50" r="15" fill="#4CAF50"/>
+        <circle id="cheap-pan" class="pan" cx="100" cy="50" r="15" fill="#666"/>
+        <circle id="good-pan" class="pan" cx="150" cy="50" r="15" fill="#FFD700" filter="url(#gold-glow)"/>
+        <circle id="fast-weight" class="weight" cx="50" cy="50" r="10" fill="#4CAF50"/>
+        <circle id="cheap-weight" class="weight" cx="100" cy="50" r="10" fill="#666"/>
+        <circle id="good-weight" class="weight" cx="150" cy="50" r="10" fill="#FFD700"/>
+        <line x1="100" y1="20" x2="100" y2="10" stroke="#666" stroke-width="2"/>
+        <rect x="90" y="5" width="20" height="5" fill="#666" rx="2"/>
+      </svg>
+      <svg id="clock" width="50" height="50" viewBox="0 0 24 24" style="opacity: 0;">
+        <circle cx="12" cy="12" r="10" fill="none" stroke="#FFD700" stroke-width="2"/>
+        <path d="M12 6v6l4 2" stroke="#FFD700" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div class="toggles">
+      <div class="toggle">
+        <input type="checkbox" id="fast-toggle" checked>
+        <label for="fast-toggle">Fast</label>
+      </div>
+      <div class="toggle">
+        <input type="checkbox" id="cheap-toggle">
+        <label for="cheap-toggle">Cheap</label>
+      </div>
+      <div class="toggle">
+        <input type="checkbox" id="good-toggle" checked>
+        <label for="good-toggle">Good</label>
+      </div>
+    </div>
+    <div id="description">Fast and Good!</div>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script>
+    const toggles = {
+      fast: document.getElementById('fast-toggle'),
+      cheap: document.getElementById('cheap-toggle'),
+      good: document.getElementById('good-toggle')
+    };
+    const pans = {
+      fast: document.getElementById('fast-pan'),
+      cheap: document.getElementById('cheap-pan'),
+      good: document.getElementById('good-pan')
+    };
+    const weights = {
+      fast: document.getElementById('fast-weight'),
+      cheap: document.getElementById('cheap-weight'),
+      good: document.getElementById('good-weight')
+    };
+    const beam = document.getElementById('beam');
+    const clock = document.getElementById('clock');
+    const description = document.getElementById('description');
+
+    function updateState() {
+      const checked = Object.keys(toggles).filter(key => toggles[key].checked);
+      if (checked.length > 2) {
+        const last = checked.pop();
+        toggles[last].checked = false;
+      }
+      const isFastCheap = checked.includes('fast') && checked.includes('cheap') && !toggles.good.checked;
+      const isGoodCheap = checked.includes('good') && checked.includes('cheap') && !toggles.fast.checked;
+      const isFastGood = checked.includes('fast') && checked.includes('good') && !toggles.cheap.checked;
+
+      // Animate pans and weights
+      Object.keys(pans).forEach(key => {
+        const isSelected = toggles[key].checked;
+        const yPos = isSelected ? 60 : 40;
+        const fill = isFastCheap ? '#ff4444' : key === 'good' ? '#FFD700' : isSelected ? '#4CAF50' : '#666';
+        const filter = key === 'good' && isSelected ? 'url(#gold-glow)' : isFastCheap ? 'url(#glow)' : 'none';
+        gsap.to(pans[key], { cy: yPos, fill, filter, duration: 0.3 });
+        gsap.to(weights[key], { cy: yPos, fill, duration: 0.3 });
+      });
+
+      // Animate beam tilt
+      const tilt = isFastCheap ? 10 : isGoodCheap ? 0 : isFastGood ? -5 : checked.includes('fast') ? 5 : checked.includes('cheap') ? 0 : -5;
+      gsap.to(beam, { 
+        rotation: tilt, 
+        transformOrigin: 'center', 
+        fill: isFastCheap ? '#ff4444' : '#666', 
+        filter: isFastCheap ? 'url(#glow)' : 'none', 
+        duration: 0.3 
+      });
+
+      // Show/hide clock
+      gsap.to(clock, { opacity: isGoodCheap ? 1 : 0, duration: 0.3 });
+
+      // Update description
+      const desc = isFastCheap 
+        ? "This will be an MVP."
+        : isGoodCheap 
+          ? "This will take time."
+          : isFastGood 
+            ? "This will cost more."
+            : checked.length === 2 
+              ? `${checked[0].charAt(0).toUpperCase() + checked[0].slice(1)} and ${checked[1].charAt(0).toUpperCase() + checked[1].slice(1)}!`
+              : 'Pick two options!';
+      gsap.to(description, { 
+        opacity: 0, 
+        duration: 0.2, 
+        onComplete: () => {
+          description.textContent = desc;
+          description.classList.toggle('warning', isFastCheap);
+          gsap.to(description, { opacity: 1, duration: 0.2 });
+        }
+      });
+    }
+
+    Object.values(toggles).forEach(toggle => {
+      toggle.addEventListener('change', updateState);
+    });
+
+    // Responsive SVG scaling
+    window.addEventListener('resize', () => {
+      const svg = document.querySelector('.scale svg');
+      const container = document.querySelector('.scale');
+      const aspectRatio = 200 / 100;
+      const width = container.clientWidth;
+      const height = width / aspectRatio;
+      svg.setAttribute('viewBox', `0 0 200 ${100}`);
+      svg.style.height = `${height}px`;
+    });
+
+    updateState();
+  </script>
+</body>
+</html>

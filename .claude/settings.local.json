@@ -1,14 +1,10 @@
 {
   "permissions": {
     "allow": [
-      "Bash(python:*)",
-      "Bash(node:*)",
-      "Bash(npx http-server:*)",
-      "Bash(git add:*)",
-      "Bash(git commit:*)",
-      "Bash(git push:*)",
-      "Bash(find:*)",
-      "Bash(mkdir:*)"
+      "*",
+      "Bash(git checkout:*)",
+      "Bash(git ls-tree:*)",
+      "Bash(rm:*)"
     ],
     "deny": [],
     "ask": []

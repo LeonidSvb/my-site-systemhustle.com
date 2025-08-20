@@ -2,11 +2,35 @@
   "permissions": {
     "allow": [
       "*",
-      "Bash(git checkout:*)",
-      "Bash(git ls-tree:*)",
-      "Bash(rm:*)"
+      "WebFetch(domain:krigertraining.com)",
+      "Bash(python:*)",
+      "Bash(mkdir:*)",
+      "WebFetch(domain:www.instagram.com)",
+      "WebFetch(domain:neuronnix.com)",
+      "WebFetch(domain:instagram.com)",
+      "Bash(dir)",
+      "Bash(rm:*)",
+      "Bash(mv:*)",
+      "Bash(grep:*)",
+      "WebSearch",
+      "Bash(mv:*)",
+      "Bash(curl:*)",
+      "Bash(find:*)",
+      "Bash(rmdir:*)",
+      "Bash(rm:*)",
+      "Bash(py --version)",
+      "Bash(py:*)",
+      "Bash(npm install)",
+      "Bash(dir:*)",
+      "Bash(npx playwright:*)",
+      "Bash(start test-resultshtml-reportindex.html)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
     ],
     "deny": [],
-    "ask": []
+    "ask": [],
+    "additionalDirectories": [
+      "C:\\d C:\\Users\\79818\\Desktop\\Projects"
+    ]
   }
 }

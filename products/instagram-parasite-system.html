@@ -1,0 +1,1119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- SEO Meta Tags -->
+    <title>Instagram Parasite System - Automated Content Discovery & Script Generation</title>
+    <meta name="description" content="Turn your competitors' viral posts into ready-to-use content scripts. Automated system that monitors competitor accounts and creates 5-10 content ideas daily.">
+    <meta name="keywords" content="Instagram content discovery, viral content, Instagram scripts, content creation, competitor analysis, content intelligence">
+    <meta name="author" content="SystemHustle">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph Tags -->
+    <meta property="og:title" content="Instagram Parasite System - Automated Content Discovery">
+    <meta property="og:description" content="Get 5-10 ready-to-publish content ideas every morning. Automated competitor monitoring and AI-powered script generation.">
+    <meta property="og:image" content="/images/leonid-photo.jpg">
+    <meta property="og:url" content="https://systemhustle.com/products/instagram-parasite-system">
+    <meta property="og:type" content="website">
+    
+    <!-- Twitter Card Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Instagram Parasite System - Automated Content Discovery">
+    <meta name="twitter:description" content="Turn competitors' viral posts into your content hits. Save 15+ hours weekly on content research.">
+    <meta name="twitter:image" content="/images/leonid-photo.jpg">
+    
+    <meta name="theme-color" content="#3B82F6">
+    <link rel="canonical" href="https://systemhustle.com/products/instagram-parasite-system">
+    
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🤖</text></svg>">
+    
+    <!-- Unified Assets -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>tailwind.config = { darkMode: 'class' }</script>
+    <link rel="stylesheet" href="../main.css">
+    <script src="../config.js"></script>
+    <script>
+        // Product-specific Tailwind extensions (if needed)
+        if (tailwind && tailwind.config) {
+            tailwind.config.theme = tailwind.config.theme || {};
+            tailwind.config.theme.extend = tailwind.config.theme.extend || {};
+            tailwind.config.theme.extend.animation = {
+                ...tailwind.config.theme.extend.animation,
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'rotate-slow': 'rotateSlow 20s linear infinite',
+                        'pulse-glow': 'pulseGlow 2s ease-in-out infinite alternate',
+                        'slide-up': 'slideUp 0.8s ease-out',
+                        'fade-in': 'fadeIn 1s ease-out',
+                        'scale-in': 'scaleIn 0.6s ease-out',
+                        'geometric': 'geometric 15s ease-in-out infinite',
+                        'slide-in-left': 'slideInLeft 0.8s ease-out',
+                        'slide-in-right': 'slideInRight 0.8s ease-out',
+                        'bounce-in': 'bounceIn 0.6s ease-out',
+                        'fade-in-up': 'fadeInUp 0.8s ease-out',
+                        'reveal': 'reveal 0.8s ease-out forwards',
+                        'typing': 'typing 3.5s steps(40, end), blink-caret .75s step-end infinite'
+                    },
+                    keyframes: {
+                        float: { '0%, 100%': { transform: 'translateY(0px)' }, '50%': { transform: 'translateY(-20px)' } },
+                        rotateSlow: { '0%': { transform: 'rotate(0deg)' }, '100%': { transform: 'rotate(360deg)' } },
+                        pulseGlow: { '0%': { boxShadow: '0 0 20px rgba(59, 130, 246, 0.4)' }, '100%': { boxShadow: '0 0 40px rgba(59, 130, 246, 0.8)' } },
+                        slideUp: { '0%': { transform: 'translateY(50px)', opacity: '0' }, '100%': { transform: 'translateY(0)', opacity: '1' } },
+                        fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
+                        scaleIn: { '0%': { transform: 'scale(0.9)', opacity: '0' }, '100%': { transform: 'scale(1)', opacity: '1' } },
+                        slideInLeft: { '0%': { transform: 'translateX(-50px)', opacity: '0' }, '100%': { transform: 'translateX(0)', opacity: '1' } },
+                        slideInRight: { '0%': { transform: 'translateX(50px)', opacity: '0' }, '100%': { transform: 'translateX(0)', opacity: '1' } },
+                        bounceIn: { '0%': { transform: 'scale(0.3)', opacity: '0' }, '50%': { transform: 'scale(1.05)' }, '70%': { transform: 'scale(0.9)' }, '100%': { transform: 'scale(1)', opacity: '1' } },
+                        fadeInUp: { '0%': { transform: 'translateY(30px)', opacity: '0' }, '100%': { transform: 'translateY(0)', opacity: '1' } },
+                        reveal: { '0%': { opacity: '0', transform: 'translateY(50px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } },
+                        geometric: { 
+                            '0%, 100%': { transform: 'rotate(0deg) scale(1)' }, 
+                            '25%': { transform: 'rotate(90deg) scale(1.1)' },
+                            '50%': { transform: 'rotate(180deg) scale(0.9)' },
+                            '75%': { transform: 'rotate(270deg) scale(1.1)' }
+                        },
+                        typing: { 'from': { width: '0' }, 'to': { width: '100%' } },
+                        'blink-caret': { 'from, to': { 'border-color': 'transparent' }, '50%': { 'border-color': 'rgb(59, 130, 246)' } }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .scroll-reveal {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s ease-out;
+        }
+        .scroll-reveal.revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .shake {
+            animation: shake 0.5s ease-in-out;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+        
+        /* Navigation Styles */
+        .nav-link.active {
+            color: rgb(59, 130, 246);
+            font-weight: 600;
+        }
+        
+        .dark .nav-link.active {
+            color: rgb(96, 165, 250);
+        }
+        
+        /* Hamburger Animation */
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+        
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+        
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -6px);
+        }
+        
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        /* Offset for fixed header */
+        section[id] {
+            scroll-margin-top: 80px;
+        }
+        
+        .typing-text {
+            border-right: 2px solid rgb(59, 130, 246);
+            white-space: nowrap;
+            overflow: hidden;
+            animation: typing 3.5s steps(40, end), blink-caret .75s step-end infinite;
+        }
+        
+        /* ROI Calculator Styles */
+        .calculator-input {
+            background: #f3f4f6;
+            border: 2px solid #d1d5db;
+            transition: all 0.3s ease;
+        }
+        
+        .calculator-input:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 10px rgba(59, 130, 246, 0.2);
+        }
+        
+        .dark .calculator-input {
+            background: #374151;
+            border-color: #6b7280;
+        }
+        
+        /* Step Animation Styles */
+        .step-item {
+            opacity: 0;
+            transform: translateX(50px);
+            transition: all 0.6s ease-out;
+        }
+        
+        .step-item.animate {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        
+        /* Progress bar styles */
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 4px;
+            background: #3b82f6;
+            z-index: 1000;
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white transition-colors duration-300">
+    <!-- Progress Bar -->
+    <div class="progress-bar" id="scrollProgress"></div>
+    
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 right-0 bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm border-b border-gray-200 dark:border-gray-700 z-50">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <a href="../index.html" class="text-2xl font-bold text-gray-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                        🤖 SystemHustle
+                    </a>
+                </div>
+                
+                <!-- Desktop Navigation -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="../index.html#home" class="nav-link text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-300">Home</a>
+                    <a href="#how-it-works" class="nav-link text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-300">How It Works</a>
+                    <a href="#calculator" class="nav-link text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-300">ROI Calculator</a>
+                    <a href="#pricing" class="nav-link text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-300">Pricing</a>
+                    <a href="#faq" class="nav-link text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-300">FAQ</a>
+                    
+                    <button id="themeToggle" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+                        <svg id="themeIcon" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"/>
+                        </svg>
+                    </button>
+                </div>
+                
+                <!-- Mobile menu button -->
+                <div class="md:hidden flex items-center space-x-4">
+                    <button id="mobileHeaderThemeToggle" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+                        <svg id="mobileHeaderThemeIcon" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"/>
+                        </svg>
+                    </button>
+                    <button class="mobile-menu-btn p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+                        <div class="hamburger w-6 h-6 flex flex-col justify-center items-center">
+                            <span class="block w-5 h-0.5 bg-gray-600 dark:bg-gray-300 transform transition duration-300 ease-in-out"></span>
+                            <span class="block w-5 h-0.5 bg-gray-600 dark:bg-gray-300 transform transition duration-300 ease-in-out mt-1"></span>
+                            <span class="block w-5 h-0.5 bg-gray-600 dark:bg-gray-300 transform transition duration-300 ease-in-out mt-1"></span>
+                        </div>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile Navigation -->
+        <div class="mobile-menu hidden md:hidden bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700">
+            <div class="px-4 py-6 space-y-1">
+                <a href="../index.html#home" class="block nav-link text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-300 py-2">Home</a>
+                <a href="#how-it-works" class="block nav-link text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-300 py-2">How It Works</a>
+                <a href="#calculator" class="block nav-link text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-300 py-2">ROI Calculator</a>
+                <a href="#pricing" class="block nav-link text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-300 py-2">Pricing</a>
+                <a href="#faq" class="block nav-link text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-300 py-2">FAQ</a>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Hero Section -->
+    <section class="pt-24 pb-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+        <div class="max-w-6xl mx-auto text-center">
+            <!-- Floating geometric shapes -->
+            <div class="absolute inset-0 overflow-hidden pointer-events-none">
+                <div class="absolute top-20 left-10 w-20 h-20 bg-blue-500/10 rounded-full animate-float"></div>
+                <div class="absolute top-40 right-16 w-16 h-16 bg-purple-500/10 rotate-45 animate-geometric"></div>
+                <div class="absolute bottom-32 left-1/4 w-24 h-24 bg-green-500/10 rounded-full animate-pulse"></div>
+            </div>
+            
+            <div class="relative z-10">
+                <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 animate-fade-in-up">
+                    <span class="typing-text">Get 5-10 Viral Content Ideas</span>
+                    <br>
+                    <span class="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent animate-slide-in-left">Every Morning</span>
+                </h1>
+                
+                <p class="text-xl md:text-2xl text-gray-600 dark:text-gray-300 mb-8 max-w-4xl mx-auto animate-slide-in-right">
+                    We monitor top accounts, extract what works, and create ready scripts for you. Zero research needed.
+                </p>
+                
+                <!-- Key Benefits -->
+                <div class="grid md:grid-cols-3 gap-6 mb-12 max-w-4xl mx-auto">
+                    <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl p-6 border border-gray-200 dark:border-gray-700 animate-bounce-in" style="animation-delay: 0.2s;">
+                        <div class="text-3xl mb-4">⚡</div>
+                        <h3 class="font-bold text-lg mb-2">5-10 Ideas Daily</h3>
+                        <p class="text-gray-600 dark:text-gray-400">Every morning in your inbox</p>
+                    </div>
+                    <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl p-6 border border-gray-200 dark:border-gray-700 animate-bounce-in" style="animation-delay: 0.4s;">
+                        <div class="text-3xl mb-4">⏰</div>
+                        <h3 class="font-bold text-lg mb-2">Save 10+ Hours</h3>
+                        <p class="text-gray-600 dark:text-gray-400">No more research needed</p>
+                    </div>
+                    <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl p-6 border border-gray-200 dark:border-gray-700 animate-bounce-in" style="animation-delay: 0.6s;">
+                        <div class="text-3xl mb-4">🎯</div>
+                        <h3 class="font-bold text-lg mb-2">Always Fresh</h3>
+                        <p class="text-gray-600 dark:text-gray-400">Current trending topics</p>
+                    </div>
+                </div>
+                
+                <div class="space-y-4 sm:space-y-0 sm:space-x-4 sm:flex sm:justify-center animate-scale-in">
+                    <button class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-8 rounded-xl text-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300">
+                        Get Instagram Parasite System
+                    </button>
+                    <button class="w-full sm:w-auto border-2 border-blue-600 text-blue-600 dark:text-blue-400 hover:bg-blue-600 hover:text-white font-bold py-4 px-8 rounded-xl text-lg transition-all duration-300 transform hover:scale-105">
+                        See How It Works
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Problem Section -->
+    <section class="py-20 px-4 sm:px-6 lg:px-8 bg-gray-100 dark:bg-gray-800">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-16 scroll-reveal">
+                <h2 class="text-4xl md:text-5xl font-bold mb-6">
+                    The Content Creator's Daily Nightmare
+                </h2>
+                <p class="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+                    Every day, millions of creators face the same exhausting cycle
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="bg-white dark:bg-gray-900 rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 scroll-reveal">
+                    <div class="text-4xl mb-4">😵</div>
+                    <h3 class="text-xl font-bold mb-4 text-red-600 dark:text-red-400">Hours of Endless Scrolling</h3>
+                    <p class="text-gray-600 dark:text-gray-400">Spending 3-5 hours daily scrolling through competitors' accounts, desperately searching for content ideas</p>
+                </div>
+                
+                <div class="bg-white dark:bg-gray-900 rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 scroll-reveal">
+                    <div class="text-4xl mb-4">🧠</div>
+                    <h3 class="text-xl font-bold mb-4 text-red-600 dark:text-red-400">Creative Block & Burnout</h3>
+                    <p class="text-gray-600 dark:text-gray-400">Running out of trending topics while watching engagement rates plummet</p>
+                </div>
+                
+                <div class="bg-white dark:bg-gray-900 rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 scroll-reveal">
+                    <div class="text-4xl mb-4">📉</div>
+                    <h3 class="text-xl font-bold mb-4 text-red-600 dark:text-red-400">Missing Viral Trends</h3>
+                    <p class="text-gray-600 dark:text-gray-400">Discovering hot trends 3 days too late when everyone else already capitalized</p>
+                </div>
+                
+                <div class="bg-white dark:bg-gray-900 rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 scroll-reveal">
+                    <div class="text-4xl mb-4">✍️</div>
+                    <h3 class="text-xl font-bold mb-4 text-red-600 dark:text-red-400">Script Writing Struggles</h3>
+                    <p class="text-gray-600 dark:text-gray-400">Spending hours writing scripts that don't convert or engage your audience</p>
+                </div>
+                
+                <div class="bg-white dark:bg-gray-900 rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 scroll-reveal">
+                    <div class="text-4xl mb-4">⏰</div>
+                    <h3 class="text-xl font-bold mb-4 text-red-600 dark:text-red-400">Time Management Chaos</h3>
+                    <p class="text-gray-600 dark:text-gray-400">Content research eating into actual creation time, leading to rushed, low-quality posts</p>
+                </div>
+                
+                <div class="bg-white dark:bg-gray-900 rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 scroll-reveal">
+                    <div class="text-4xl mb-4">💸</div>
+                    <h3 class="text-xl font-bold mb-4 text-red-600 dark:text-red-400">Revenue Impact</h3>
+                    <p class="text-gray-600 dark:text-gray-400">Poor content performance directly affecting sponsorship deals and monetization opportunities</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Solution Section -->
+    <section class="py-20 px-4 sm:px-6 lg:px-8 bg-white dark:bg-gray-900">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-16 scroll-reveal">
+                <h2 class="text-4xl md:text-5xl font-bold mb-6">
+                    <span class="bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
+                        How It Works
+                    </span>
+                </h2>
+                <p class="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+                    Set & forget in 10 minutes. Your automated content discovery machine works 24/7
+                </p>
+            </div>
+            
+            <!-- Step-by-step Process -->
+            <div class="space-y-16">
+                <!-- Step 1 -->
+                <div class="flex flex-col lg:flex-row items-center gap-12 step-item">
+                    <div class="lg:w-1/2">
+                        <div class="flex items-center mb-6">
+                            <div class="w-12 h-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-xl mr-4">
+                                1
+                            </div>
+                            <h3 class="text-3xl font-bold">Automated Competitor Monitoring</h3>
+                        </div>
+                        <p class="text-xl text-gray-600 dark:text-gray-300 mb-6">
+                            The system continuously monitors 14 top accounts in your chosen niche, automatically collecting new posts every 24 hours at 6:00 AM.
+                        </p>
+                        <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
+                            <p class="font-semibold text-green-600 dark:text-green-400">Result: Never miss trending topics or successful competitor content</p>
+                        </div>
+                    </div>
+                    <div class="lg:w-1/2">
+                        <div class="bg-gradient-to-br from-blue-100 to-purple-100 dark:from-blue-900/30 dark:to-purple-900/30 rounded-2xl p-8 animate-float">
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-lg">
+                                    <div class="text-sm text-gray-500">@theshayneray</div>
+                                    <div class="text-xs text-green-600">✓ Monitored</div>
+                                </div>
+                                <div class="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-lg">
+                                    <div class="text-sm text-gray-500">@robdial</div>
+                                    <div class="text-xs text-green-600">✓ Monitored</div>
+                                </div>
+                                <div class="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-lg">
+                                    <div class="text-sm text-gray-500">@theleadership</div>
+                                    <div class="text-xs text-green-600">✓ Monitored</div>
+                                </div>
+                                <div class="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-lg">
+                                    <div class="text-sm text-gray-500">@brendonburchard</div>
+                                    <div class="text-xs text-green-600">✓ Monitored</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Step 2 -->
+                <div class="flex flex-col lg:flex-row-reverse items-center gap-12 step-item">
+                    <div class="lg:w-1/2">
+                        <div class="flex items-center mb-6">
+                            <div class="w-12 h-12 bg-gradient-to-r from-green-600 to-blue-600 rounded-full flex items-center justify-center text-white font-bold text-xl mr-4">
+                                2
+                            </div>
+                            <h3 class="text-3xl font-bold">AI Content Analysis</h3>
+                        </div>
+                        <p class="text-xl text-gray-600 dark:text-gray-300 mb-6">
+                            AI analyzes posts and extracts key insights from any niche. Videos are automatically transcribed.
+                        </p>
+                        <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
+                            <p class="font-semibold text-green-600 dark:text-green-400">Result: Automatic extraction of the most valuable information from each post</p>
+                        </div>
+                    </div>
+                    <div class="lg:w-1/2">
+                        <div class="bg-gradient-to-br from-green-100 to-blue-100 dark:from-green-900/30 dark:to-blue-900/30 rounded-2xl p-8">
+                            <div class="space-y-4">
+                                <div class="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-lg">
+                                    <div class="text-sm font-semibold mb-2">Identified Elements:</div>
+                                    <div class="text-xs text-blue-600">Key strategies, actionable tips, trending concepts</div>
+                                </div>
+                                <div class="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-lg">
+                                    <div class="text-sm font-semibold mb-2">Key Insights:</div>
+                                    <div class="text-xs text-gray-600">Valuable content elements adapted for your niche</div>
+                                </div>
+                                <div class="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-lg">
+                                    <div class="text-sm font-semibold mb-2">Engagement:</div>
+                                    <div class="text-xs text-green-600">15.2K likes, 847 comments</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Step 3 -->
+                <div class="flex flex-col lg:flex-row items-center gap-12 step-item">
+                    <div class="lg:w-1/2">
+                        <div class="flex items-center mb-6">
+                            <div class="w-12 h-12 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full flex items-center justify-center text-white font-bold text-xl mr-4">
+                                3
+                            </div>
+                            <h3 class="text-3xl font-bold">Create Ready Scripts</h3>
+                        </div>
+                        <p class="text-xl text-gray-600 dark:text-gray-300 mb-6">
+                            AI searches for more info, then creates custom scripts for your audience.
+                        </p>
+                        <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
+                            <p class="font-semibold text-green-600 dark:text-green-400">Result: Ready-to-publish content that only needs to be copied and used</p>
+                        </div>
+                    </div>
+                    <div class="lg:w-1/2">
+                        <div class="bg-gradient-to-br from-purple-100 to-pink-100 dark:from-purple-900/30 dark:to-pink-900/30 rounded-2xl p-8">
+                            <div class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg">
+                                <div class="text-sm font-semibold mb-4 text-purple-600">Generated Script:</div>
+                                <div class="text-sm text-gray-700 dark:text-gray-300 space-y-2">
+                                    <p>"Hey—there's a completely new AI text to speech generator that's just as good as ElevenLabs, but FREE."</p>
+                                    <p>"It allows you to choose from over 400 voices, supports 60 languages..."</p>
+                                    <p className="text-blue-600 font-semibold">"Comment 'SPEECH' and I'll share the link with you."</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Step 4 -->
+                <div class="flex flex-col lg:flex-row-reverse items-center gap-12 step-item">
+                    <div class="lg:w-1/2">
+                        <div class="flex items-center mb-6">
+                            <div class="w-12 h-12 bg-gradient-to-r from-orange-600 to-red-600 rounded-full flex items-center justify-center text-white font-bold text-xl mr-4">
+                                4
+                            </div>
+                            <h3 class="text-3xl font-bold">Automated Storage & Organization</h3>
+                        </div>
+                        <p class="text-xl text-gray-600 dark:text-gray-300 mb-6">
+                            All finished scripts are automatically saved to your personal Google Sheets alongside original posts for easy reference, search, and filtering.
+                        </p>
+                        <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
+                            <p class="font-semibold text-green-600 dark:text-green-400">Result: Organized content library accessible anytime, anywhere</p>
+                        </div>
+                    </div>
+                    <div class="lg:w-1/2">
+                        <div class="bg-gradient-to-br from-orange-100 to-red-100 dark:from-orange-900/30 dark:to-red-900/30 rounded-2xl p-8">
+                            <div class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg">
+                                <div class="text-sm font-semibold mb-4 text-orange-600">Google Sheets Database:</div>
+                                <div class="grid grid-cols-3 gap-2 text-xs">
+                                    <div class="bg-gray-100 dark:bg-gray-700 p-2 rounded">Date</div>
+                                    <div class="bg-gray-100 dark:bg-gray-700 p-2 rounded">Original Post</div>
+                                    <div class="bg-gray-100 dark:bg-gray-700 p-2 rounded">Your Script</div>
+                                    <div class="p-1 text-gray-600">2024-01-15</div>
+                                    <div class="p-1 text-gray-600">AI Tool Review</div>
+                                    <div class="p-1 text-blue-600">Ready Script</div>
+                                    <div class="p-1 text-gray-600">2024-01-14</div>
+                                    <div class="p-1 text-gray-600">Content Strategy</div>
+                                    <div class="p-1 text-blue-600">Ready Script</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- ROI Calculator Section -->
+    <section class="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:from-gray-800 dark:via-gray-900 dark:to-gray-800">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-16 scroll-reveal">
+                <h2 class="text-4xl md:text-5xl font-bold mb-6">
+                    Calculate Your Time & Revenue Savings
+                </h2>
+                <p class="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+                    See exactly how much time and money the Instagram Parasite System will save you
+                </p>
+            </div>
+            
+            <div class="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl p-8 lg:p-12">
+                <div class="grid lg:grid-cols-2 gap-12">
+                    <!-- Calculator Inputs -->
+                    <div class="space-y-8">
+                        <h3 class="text-2xl font-bold mb-8">Your Current Situation</h3>
+                        
+                        <!-- Research Hours -->
+                        <div>
+                            <label class="block text-lg font-semibold mb-4">
+                                Hours per week on content research: <span id="researchHoursValue" class="text-blue-600 font-bold">5</span>
+                            </label>
+                            <input type="range" id="researchHours" min="2" max="10" value="5" 
+                                   class="w-full h-3 rounded-lg appearance-none calculator-input cursor-pointer">
+                            <div class="flex justify-between text-sm text-gray-500 mt-2">
+                                <span>2 hours</span>
+                                <span>10 hours</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Hourly Rate -->
+                        <div>
+                            <label class="block text-lg font-semibold mb-4">
+                                Your hourly rate: $<span id="hourlyRateValue" class="text-blue-600 font-bold">25</span>
+                            </label>
+                            <input type="range" id="hourlyRate" min="15" max="75" value="25" 
+                                   class="w-full h-3 rounded-lg appearance-none calculator-input cursor-pointer">
+                            <div class="flex justify-between text-sm text-gray-500 mt-2">
+                                <span>$15/hour</span>
+                                <span>$75/hour</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Posts Per Week -->
+                        <div>
+                            <label class="block text-lg font-semibold mb-4">
+                                Posts per week: <span id="postsPerWeekValue" class="text-blue-600 font-bold">3</span>
+                            </label>
+                            <input type="range" id="postsPerWeek" min="1" max="7" value="3" 
+                                   class="w-full h-3 rounded-lg appearance-none calculator-input cursor-pointer">
+                            <div class="flex justify-between text-sm text-gray-500 mt-2">
+                                <span>1 post</span>
+                                <span>7 posts</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Current Engagement -->
+                        <div>
+                            <label class="block text-lg font-semibold mb-4">
+                                Average likes per post: <span id="currentEngagementValue" class="text-blue-600 font-bold">100</span>
+                            </label>
+                            <input type="range" id="currentEngagement" min="20" max="2000" value="100" 
+                                   class="w-full h-3 rounded-lg appearance-none calculator-input cursor-pointer">
+                            <div class="flex justify-between text-sm text-gray-500 mt-2">
+                                <span>20 likes</span>
+                                <span>2K likes</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Results -->
+                    <div class="space-y-6">
+                        <h3 class="text-2xl font-bold mb-8">Your Savings & Growth</h3>
+                        
+                        <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-blue-200 dark:border-blue-700">
+                            <div class="text-center">
+                                <div class="text-4xl font-bold text-green-600 mb-2">
+                                    $<span id="weeklySavings">150</span>
+                                </div>
+                                <div class="text-lg text-gray-600 dark:text-gray-300">Weekly Time Savings</div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-blue-200 dark:border-blue-700">
+                            <div class="text-center">
+                                <div class="text-4xl font-bold text-blue-600 mb-2">
+                                    $<span id="monthlySavings">650</span>
+                                </div>
+                                <div class="text-lg text-gray-600 dark:text-gray-300">Monthly Savings</div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-blue-200 dark:border-blue-700">
+                            <div class="text-center">
+                                <div class="text-4xl font-bold text-blue-600 mb-2">
+                                    +<span id="additionalReach">52,000</span>
+                                </div>
+                                <div class="text-lg text-gray-600 dark:text-gray-300">Additional Annual Reach</div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-blue-50 dark:bg-blue-900/20 rounded-2xl p-6 border border-blue-300 dark:border-blue-600">
+                            <div class="text-center">
+                                <div class="text-4xl font-bold text-blue-600 mb-2">
+                                    <span id="roiPercentage">892</span>%
+                                </div>
+                                <div class="text-lg text-gray-600 dark:text-gray-300">Annual ROI</div>
+                                <div class="text-sm text-gray-500 mt-2">
+                                    Payback time: <span id="paybackMonths" class="font-semibold">2</span> months
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-8 text-center">
+                            <a href="https://wa.me/628175755953" target="_blank" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-8 rounded-xl text-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 inline-block">
+                                Start Saving Now
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Technical Specs Section -->
+    <section class="py-20 px-4 sm:px-6 lg:px-8 bg-white dark:bg-gray-900">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-16 scroll-reveal">
+                <h2 class="text-4xl md:text-5xl font-bold mb-6">
+                    What's Under the Hood
+                </h2>
+                <p class="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+                    Enterprise-grade technology stack working 24/7 for your content success
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/30 dark:to-blue-800/30 rounded-2xl p-8 text-center scroll-reveal hover:scale-105 transition-transform duration-300">
+                    <div class="text-4xl mb-4">🎯</div>
+                    <h3 class="text-xl font-bold mb-4">Smart Monitoring</h3>
+                    <p class="text-gray-600 dark:text-gray-400">14 top accounts in your niche tracked continuously</p>
+                </div>
+                
+                <div class="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/30 dark:to-green-800/30 rounded-2xl p-8 text-center scroll-reveal hover:scale-105 transition-transform duration-300">
+                    <div class="text-4xl mb-4">🤖</div>
+                    <h3 class="text-xl font-bold mb-4">AI Engine</h3>
+                    <p class="text-gray-600 dark:text-gray-400">GPT-5 + Whisper transcription + Perplexity research</p>
+                </div>
+                
+                <div class="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/30 dark:to-purple-800/30 rounded-2xl p-8 text-center scroll-reveal hover:scale-105 transition-transform duration-300">
+                    <div class="text-4xl mb-4">📊</div>
+                    <h3 class="text-xl font-bold mb-4">Data Storage</h3>
+                    <p class="text-gray-600 dark:text-gray-400">Your private Google Sheets database</p>
+                </div>
+                
+                <div class="bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-900/30 dark:to-orange-800/30 rounded-2xl p-8 text-center scroll-reveal hover:scale-105 transition-transform duration-300">
+                    <div class="text-4xl mb-4">⚡</div>
+                    <h3 class="text-xl font-bold mb-4">Auto Updates</h3>
+                    <p class="text-gray-600 dark:text-gray-400">Fresh content delivered every morning at 6 AM</p>
+                </div>
+            </div>
+            
+            <div class="mt-16 bg-gray-50 dark:bg-gray-800 rounded-2xl p-8">
+                <h3 class="text-2xl font-bold mb-6 text-center">Complete Technology Stack</h3>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 text-center">
+                    <div class="bg-white dark:bg-gray-900 rounded-lg p-4 shadow-lg">
+                        <div class="font-semibold text-blue-600">Apify</div>
+                        <div class="text-sm text-gray-500">Instagram post collection</div>
+                    </div>
+                    <div class="bg-white dark:bg-gray-900 rounded-lg p-4 shadow-lg">
+                        <div class="font-semibold text-green-600">OpenAI GPT-5</div>
+                        <div class="text-sm text-gray-500">Content analysis & script creation</div>
+                    </div>
+                    <div class="bg-white dark:bg-gray-900 rounded-lg p-4 shadow-lg">
+                        <div class="font-semibold text-purple-600">OpenAI Whisper</div>
+                        <div class="text-sm text-gray-500">Video transcription</div>
+                    </div>
+                    <div class="bg-white dark:bg-gray-900 rounded-lg p-4 shadow-lg">
+                        <div class="font-semibold text-orange-600">Perplexity AI</div>
+                        <div class="text-sm text-gray-500">Additional research</div>
+                    </div>
+                    <div class="bg-white dark:bg-gray-900 rounded-lg p-4 shadow-lg">
+                        <div class="font-semibold text-red-600">Google Sheets</div>
+                        <div class="text-sm text-gray-500">Data storage & organization</div>
+                    </div>
+                    <div class="bg-white dark:bg-gray-900 rounded-lg p-4 shadow-lg">
+                        <div class="font-semibold text-indigo-600">n8n Processing</div>
+                        <div class="text-sm text-gray-500">Process orchestration</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Pricing Section -->
+    <section class="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-800 dark:to-gray-900">
+        <div class="max-w-4xl mx-auto text-center">
+            <div class="mb-16 scroll-reveal">
+                <h2 class="text-4xl md:text-5xl font-bold mb-6">
+                    Simple Pricing
+                </h2>
+                <p class="text-xl text-gray-600 dark:text-gray-300">
+                    One price, all features included
+                </p>
+            </div>
+            
+            <div class="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl p-8 lg:p-12 scroll-reveal">
+                <div class="grid lg:grid-cols-2 gap-12 items-center">
+                    <div>
+                        <h3 class="text-3xl font-bold mb-8">Complete Setup Package</h3>
+                        
+                        <div class="space-y-6 text-left">
+                            <div class="text-center py-8">
+                                <div class="text-6xl font-bold text-blue-600 mb-4">$497</div>
+                                <div class="text-xl text-gray-600 dark:text-gray-300 mb-4">Setup + First Month</div>
+                                <div class="text-lg text-gray-500">Then $65/month</div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-8 p-6 bg-blue-50 dark:bg-blue-900/20 rounded-2xl border border-blue-200 dark:border-blue-700">
+                            <h4 class="font-bold text-lg mb-4 text-blue-800 dark:text-blue-300">What's Included:</h4>
+                            <ul class="space-y-2 text-left text-blue-700 dark:text-blue-300">
+                                <li class="flex items-center"><span class="text-blue-500 mr-2">✓</span> Complete system setup</li>
+                                <li class="flex items-center"><span class="text-blue-500 mr-2">✓</span> All service connections</li>
+                                <li class="flex items-center"><span class="text-blue-500 mr-2">✓</span> Personalized Google Sheets</li>
+                                <li class="flex items-center"><span class="text-blue-500 mr-2">✓</span> 30 days technical support</li>
+                                <li class="flex items-center"><span class="text-blue-500 mr-2">✓</span> Video training materials</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <div class="bg-blue-50 dark:bg-blue-900/20 rounded-2xl p-8 mb-8">
+                            <h4 class="text-2xl font-bold mb-6">Money-Back Guarantee</h4>
+                            <div class="space-y-4">
+                                <div class="flex items-center text-blue-600 dark:text-blue-400">
+                                    <span class="text-2xl mr-3">✅</span>
+                                    <span>30-day full refund guarantee</span>
+                                </div>
+                                <div class="flex items-center text-blue-600 dark:text-blue-400">
+                                    <span class="text-2xl mr-3">✅</span>
+                                    <span>Complete setup included</span>
+                                </div>
+                                <div class="flex items-center text-blue-600 dark:text-blue-400">
+                                    <span class="text-2xl mr-3">✅</span>
+                                    <span>Cancel anytime, no contracts</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <button class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-6 px-8 rounded-2xl text-xl shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300">
+                            Get Instagram Parasite System
+                        </button>
+                        
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-4">
+                            Complete setup and configuration included. All features activated.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- FAQ Section -->
+    <section class="py-20 px-4 sm:px-6 lg:px-8 bg-white dark:bg-gray-900">
+        <div class="max-w-4xl mx-auto">
+            <div class="text-center mb-16 scroll-reveal">
+                <h2 class="text-4xl md:text-5xl font-bold mb-6">
+                    Frequently Asked Questions
+                </h2>
+                <p class="text-xl text-gray-600 dark:text-gray-300">
+                    Everything you need to know about the Instagram Parasite System
+                </p>
+            </div>
+            
+            <div class="space-y-4">
+                <div class="faq-item bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 scroll-reveal">
+                    <button class="faq-question w-full text-left p-6 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-white">Will Instagram ban my account?</h3>
+                        <svg class="faq-arrow w-6 h-6 text-gray-500 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </button>
+                    <div class="faq-answer hidden p-6 pt-0 text-gray-600 dark:text-gray-400">
+                        No. The system uses web scraping technology that doesn't access or interact with your Instagram account. Your personal Instagram cannot be blocked or affected by this system.
+                    </div>
+                </div>
+                
+                <div class="faq-item bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 scroll-reveal">
+                    <button class="faq-question w-full text-left p-6 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-white">Is the content really unique?</h3>
+                        <svg class="faq-arrow w-6 h-6 text-gray-500 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </button>
+                    <div class="faq-answer hidden p-6 pt-0 text-gray-600 dark:text-gray-400">
+                        Yes. AI completely rewrites content to match your style while maintaining the core value. Results are unique content based on successful strategies from your niche, not copies.
+                    </div>
+                </div>
+                
+                <div class="faq-item bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 scroll-reveal">
+                    <button class="faq-question w-full text-left p-6 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-white">What if I don't like the results during the demo?</h3>
+                        <svg class="faq-arrow w-6 h-6 text-gray-500 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </button>
+                    <div class="faq-answer hidden p-6 pt-0 text-gray-600 dark:text-gray-400">
+                        If you're not satisfied with the quality or quantity of content ideas during the 3-day demo, we'll refund your entire investment, no questions asked.
+                    </div>
+                </div>
+                
+                <div class="faq-item bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 scroll-reveal">
+                    <button class="faq-question w-full text-left p-6 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-white">How technical is the setup?</h3>
+                        <svg class="faq-arrow w-6 h-6 text-gray-500 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </button>
+                    <div class="faq-answer hidden p-6 pt-0 text-gray-600 dark:text-gray-400">
+                        Zero coding required. We handle all technical setup, configuration, and testing. You only need to provide Google account access for the results spreadsheet.
+                    </div>
+                </div>
+                
+                <div class="faq-item bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 scroll-reveal">
+                    <button class="faq-question w-full text-left p-6 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-white">What if the system finds little suitable content?</h3>
+                        <svg class="faq-arrow w-6 h-6 text-gray-500 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </button>
+                    <div class="faq-answer hidden p-6 pt-0 text-gray-600 dark:text-gray-400">
+                        The system monitors 14 diverse accounts in your niche and typically finds 5-10 suitable ideas daily. If volume is low, we can add more relevant accounts to monitor in your specific field.
+                    </div>
+                </div>
+                
+                <div class="faq-item bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 scroll-reveal">
+                    <button class="faq-question w-full text-left p-6 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-white">Can I change the monitored account list?</h3>
+                        <svg class="faq-arrow w-6 h-6 text-gray-500 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </button>
+                    <div class="faq-answer hidden p-6 pt-0 text-gray-600 dark:text-gray-400">
+                        Yes, the list can be easily modified anytime. We help you select new accounts that align with your specific niche and content strategy goals.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Final CTA Section -->
+    <section class="py-20 px-4 sm:px-6 lg:px-8 bg-blue-600 text-white">
+        <div class="max-w-4xl mx-auto text-center">
+            <div class="scroll-reveal">
+                <h2 class="text-4xl md:text-6xl font-bold mb-6">
+                    Ready to 10X Your Content Game?
+                </h2>
+                <p class="text-xl md:text-2xl mb-12 opacity-90">
+                    Join creators who've automated their way to viral success. Setup takes 2-3 days, results last forever.
+                </p>
+                
+                <div class="space-y-6 sm:space-y-0 sm:space-x-6 sm:flex sm:justify-center">
+                    <a href="https://wa.me/628175755953" target="_blank" class="w-full sm:w-auto bg-white text-blue-600 hover:bg-gray-100 font-bold py-6 px-12 rounded-2xl text-xl shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-300 inline-block">
+                        💬 WhatsApp for System
+                    </a>
+                    <a href="https://calendly.com/systemhustle" target="_blank" class="w-full sm:w-auto border-2 border-white text-white hover:bg-white hover:text-blue-600 font-bold py-6 px-12 rounded-2xl text-xl transition-all duration-300 transform hover:scale-105 inline-block">
+                        📅 Schedule Consultation
+                    </a>
+                </div>
+                
+                <p class="text-sm opacity-75 mt-8">
+                    WhatsApp for quick chat • Calendly to book a call • 3-day demo
+                </p>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="bg-gray-900 dark:bg-black text-white py-12 px-6 lg:px-12">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="text-center md:text-left mb-6 md:mb-0">
+                    <div class="flex items-center justify-center md:justify-start mb-2">
+                        <span class="text-xl font-bold">SystemHustle</span>
+                        <svg class="ml-2 w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                        </svg>
+                    </div>
+                    <p class="text-gray-400 text-sm">&copy; 2025 SystemHustle</p>
+                </div>
+                
+                <div class="flex flex-wrap justify-center md:justify-end items-center space-x-6">
+                    <a href="../index.html#home" class="text-gray-400 hover:text-white text-sm transition-colors duration-300">Home</a>
+                    <a href="../index.html#services" class="text-gray-400 hover:text-white text-sm transition-colors duration-300">Services</a>
+                    <a href="../index.html#about" class="text-gray-400 hover:text-white text-sm transition-colors duration-300">About</a>
+                    <a href="../index.html#contact" class="text-gray-400 hover:text-white text-sm transition-colors duration-300">Contact</a>
+                    <a href="mailto:leo@systemhustle.com" class="text-gray-400 hover:text-white text-sm transition-colors duration-300">Email</a>
+                    <a href="https://wa.me/628175755953" target="_blank" class="text-gray-400 hover:text-green-400 text-sm transition-colors duration-300">WhatsApp</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Back to Top Button -->
+    <button id="backToTop" class="fixed bottom-8 right-8 bg-blue-600 hover:bg-blue-700 text-white w-12 h-12 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 opacity-0 invisible z-50">
+        <svg class="w-6 h-6 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"/>
+        </svg>
+    </button>
+    
+    <!-- JavaScript -->
+    <script src="../assets/main.js"></script>
+    <script>
+        // Instagram Content ROI Calculator
+        class InstagramROICalculator {
+            constructor() {
+                // Check if calculator elements exist
+                this.researchHoursSlider = document.getElementById('researchHours');
+                this.hourlyRateSlider = document.getElementById('hourlyRate');
+                this.postsPerWeekSlider = document.getElementById('postsPerWeek');
+                this.currentEngagementSlider = document.getElementById('currentEngagement');
+                
+                if (!this.researchHoursSlider || !this.hourlyRateSlider || !this.postsPerWeekSlider || !this.currentEngagementSlider) {
+                    console.log('ROI Calculator elements not found');
+                    return;
+                }
+                
+                this.researchHoursValue = document.getElementById('researchHoursValue');
+                this.hourlyRateValue = document.getElementById('hourlyRateValue');
+                this.postsPerWeekValue = document.getElementById('postsPerWeekValue');
+                this.currentEngagementValue = document.getElementById('currentEngagementValue');
+                
+                this.weeklySavings = document.getElementById('weeklySavings');
+                this.monthlySavings = document.getElementById('monthlySavings');
+                this.additionalReach = document.getElementById('additionalReach');
+                this.roiPercentage = document.getElementById('roiPercentage');
+                this.paybackMonths = document.getElementById('paybackMonths');
+                
+                this.initEventListeners();
+                this.updateValues(); // Set initial values
+                this.calculateROI();
+            }
+            
+            initEventListeners() {
+                this.researchHoursSlider.addEventListener('input', this.updateValues.bind(this));
+                this.hourlyRateSlider.addEventListener('input', this.updateValues.bind(this));
+                this.postsPerWeekSlider.addEventListener('input', this.updateValues.bind(this));
+                this.currentEngagementSlider.addEventListener('input', this.updateValues.bind(this));
+            }
+            
+            updateValues() {
+                if (this.researchHoursValue) this.researchHoursValue.textContent = this.researchHoursSlider.value;
+                if (this.hourlyRateValue) this.hourlyRateValue.textContent = this.hourlyRateSlider.value;
+                if (this.postsPerWeekValue) this.postsPerWeekValue.textContent = this.postsPerWeekSlider.value;
+                if (this.currentEngagementValue) this.currentEngagementValue.textContent = this.formatNumber(this.currentEngagementSlider.value);
+                
+                this.calculateROI();
+            }
+            
+            calculateROI() {
+                const hoursPerWeek = parseInt(this.researchHoursSlider.value);
+                const hourlyRate = parseInt(this.hourlyRateSlider.value);
+                const postsPerWeek = parseInt(this.postsPerWeekSlider.value);
+                const currentEngagement = parseInt(this.currentEngagementSlider.value);
+                
+                // Current weekly time cost
+                const currentWeeklyCost = hoursPerWeek * hourlyRate;
+                
+                // With system: only 30 minutes per week for content selection
+                const systemWeeklyHours = 0.5; // 30 minutes
+                const systemWeeklyCost = (systemWeeklyHours * hourlyRate) + 15; // $65/month = ~$15/week
+                
+                // Calculate savings
+                const weeklySavingsAmount = Math.max(0, currentWeeklyCost - systemWeeklyCost);
+                const monthlySavingsAmount = weeklySavingsAmount * 4.33;
+                const annualSavings = monthlySavingsAmount * 12;
+                
+                // Content quality improvement
+                const engagementImprovement = currentEngagement * 0.25; // 25% improvement
+                const additionalReachAmount = engagementImprovement * postsPerWeek * 52;
+                
+                // System costs
+                const setupCost = 497;
+                const annualOperatingCost = 65 * 12; // $780
+                const totalAnnualCost = setupCost + annualOperatingCost; // $1277
+                
+                // ROI calculation
+                const totalAnnualValue = annualSavings;
+                const netProfit = totalAnnualValue - totalAnnualCost;
+                const roi = totalAnnualCost > 0 ? (netProfit / totalAnnualCost) * 100 : 0;
+                
+                // Payback calculation in months
+                const monthlyProfit = (totalAnnualValue - annualOperatingCost) / 12;
+                const paybackMonths = monthlyProfit > 0 ? Math.ceil(setupCost / monthlyProfit) : 999;
+                
+                // Update display with animations
+                this.animateValue(this.weeklySavings, Math.round(weeklySavingsAmount));
+                this.animateValue(this.monthlySavings, Math.round(monthlySavingsAmount));
+                this.animateValue(this.additionalReach, Math.round(additionalReachAmount));
+                this.animateValue(this.roiPercentage, Math.round(Math.max(0, roi)));
+                if (this.paybackMonths) this.paybackMonths.textContent = Math.min(paybackMonths, 99);
+            }
+            
+            animateValue(element, targetValue) {
+                if (!element) return;
+                
+                const currentValue = parseInt(element.textContent.replace(/,/g, '')) || 0;
+                const increment = (targetValue - currentValue) / 20;
+                let currentStep = 0;
+                
+                const timer = setInterval(() => {
+                    currentStep++;
+                    const newValue = Math.round(currentValue + (increment * currentStep));
+                    
+                    if (currentStep >= 20) {
+                        element.textContent = this.formatNumber(targetValue);
+                        clearInterval(timer);
+                    } else {
+                        element.textContent = this.formatNumber(newValue);
+                    }
+                }, 30);
+            }
+            
+            formatNumber(num) {
+                return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            }
+        }
+        
+        // FAQ Accordion functionality
+        class FAQAccordion {
+            constructor() {
+                this.faqItems = document.querySelectorAll('.faq-item');
+                this.initEventListeners();
+            }
+            
+            initEventListeners() {
+                this.faqItems.forEach(item => {
+                    const question = item.querySelector('.faq-question');
+                    question.addEventListener('click', () => this.toggleFAQ(item));
+                });
+            }
+            
+            toggleFAQ(clickedItem) {
+                const answer = clickedItem.querySelector('.faq-answer');
+                const arrow = clickedItem.querySelector('.faq-arrow');
+                const isOpen = !answer.classList.contains('hidden');
+                
+                // Close all other FAQs
+                this.faqItems.forEach(item => {
+                    if (item !== clickedItem) {
+                        const otherAnswer = item.querySelector('.faq-answer');
+                        const otherArrow = item.querySelector('.faq-arrow');
+                        otherAnswer.classList.add('hidden');
+                        otherArrow.classList.remove('rotate-180');
+                    }
+                });
+                
+                // Toggle clicked FAQ
+                if (isOpen) {
+                    answer.classList.add('hidden');
+                    arrow.classList.remove('rotate-180');
+                } else {
+                    answer.classList.remove('hidden');
+                    arrow.classList.add('rotate-180');
+                }
+            }
+        }
+        
+        // Initialize everything
+        document.addEventListener('DOMContentLoaded', function() {
+            new InstagramROICalculator();
+            new FAQAccordion();
+            
+            // Animate steps on scroll
+            const stepItems = document.querySelectorAll('.step-item');
+            const stepObserver = new IntersectionObserver((entries) => {
+                entries.forEach((entry, index) => {
+                    if (entry.isIntersecting) {
+                        setTimeout(() => {
+                            entry.target.classList.add('animate');
+                        }, index * 200);
+                        stepObserver.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.2 });
+            
+            stepItems.forEach(item => {
+                stepObserver.observe(item);
+            });
+            
+            // Typing animation
+            setTimeout(() => {
+                const typingText = document.querySelector('.typing-text');
+                if (typingText) {
+                    typingText.style.animation = 'none';
+                    typingText.style.borderRight = 'none';
+                    typingText.style.whiteSpace = 'normal';
+                    typingText.style.overflow = 'visible';
+                }
+            }, 4000);
+        });
+    </script>
+    
+    <!-- Main JavaScript -->
+    <script src="../main.js"></script>
+</body>
+</html>

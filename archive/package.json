@@ -1,0 +1,25 @@
+{
+  "name": "systemhustle.com",
+  "version": "1.0.0",
+  "description": "**AI Automation Specialist Website** - Helping businesses scale through intelligent automation systems and practical solutions.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/leonidsvb/systemhustle.com.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/leonidsvb/systemhustle.com/issues"
+  },
+  "homepage": "https://github.com/leonidsvb/systemhustle.com#readme",
+  "dependencies": {
+    "@playwright/test": "^1.54.2",
+    "playwright": "^1.54.2"
+  }
+}

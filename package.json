@@ -1,25 +1,42 @@
 {
-  "name": "systemhustle.com",
-  "version": "1.0.0",
-  "description": "**AI Automation Specialist Website** - Helping businesses scale through intelligent automation systems and practical solutions.",
-  "main": "index.js",
+  "name": "systemhustle-website",
+  "version": "2.0.0",
+  "description": "AI Automation Specialist Website - Professional business site with automated testing",
+  "main": "index.html",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "py -m http.server 4000",
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "test:debug": "playwright test --debug",
+    "test:report": "playwright show-report test-results/html-report",
+    "test:install": "playwright install",
+    "test:quick": "playwright test --project=chromium",
+    "test:mobile": "playwright test --project='Mobile Chrome'",
+    "test:visual": "playwright test --grep='Visual Tests'",
+    "server": "py -m http.server 4000",
+    "dev": "py -m http.server 4000",
+    "build": "echo 'Static site - no build required'",
+    "lint": "echo 'Add linting later if needed'",
+    "deploy": "echo 'Deployment via GitHub Pages'"
   },
+  "devDependencies": {
+    "@playwright/test": "^1.40.0"
+  },
+  "keywords": [
+    "ai-automation",
+    "business-website",
+    "playwright",
+    "testing",
+    "static-site"
+  ],
+  "author": "Leonid Shvorob",
+  "license": "MIT",
+  "homepage": "https://systemhustle.com",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/leonidsvb/systemhustle.com.git"
+    "url": "https://github.com/yourusername/systemhustle.com.git"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
-  "bugs": {
-    "url": "https://github.com/leonidsvb/systemhustle.com/issues"
-  },
-  "homepage": "https://github.com/leonidsvb/systemhustle.com#readme",
-  "dependencies": {
-    "@playwright/test": "^1.54.2",
-    "playwright": "^1.54.2"
+  "engines": {
+    "node": ">=16.0.0"
   }
 }

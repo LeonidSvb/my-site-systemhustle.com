@@ -176,13 +176,14 @@ function generateUniversalHeader() {
         </div>
         
         <!-- Mobile Menu -->
-        <div class="mobile-menu md:hidden bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 hidden">
-            <div class="px-4 py-3 text-center">
+        <div class="mobile-menu hidden md:hidden bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700">
+            <div class="px-6 py-4 space-y-2">
                 ${navItems.map(item => 
-                    `<a href="${item.href}" class="nav-link">${item.name}</a>`
+                    `<a href="${item.href}" class="block py-3 text-lg text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white border-b border-gray-200 dark:border-gray-700">${item.name}</a>`
                 ).join('')}
-                <br>
-                <a href="${SITE_CONFIG.calendly}" class="cta-primary mt-3 inline-block" data-cta="calendly">Book Call</a>
+                <div class="pt-4">
+                    <a href="${SITE_CONFIG.calendly}" class="block w-full text-center bg-gray-900 dark:bg-white text-white dark:text-gray-900 px-6 py-4 rounded-lg text-lg font-semibold">Book Call</a>
+                </div>
             </div>
         </div>
     </nav>`;

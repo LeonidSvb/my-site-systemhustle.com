@@ -1,0 +1,56 @@
+<nav class="fixed top-0 left-0 right-0 bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm border-b border-gray-200 dark:border-gray-700 z-50">
+    <div class="max-w-7xl mx-auto px-6 lg:px-12">
+        <div class="flex justify-between items-center py-4">
+            <div class="flex items-center">
+                <span class="text-2xl font-bold text-gray-900 dark:text-white">SystemHustle</span>
+            </div>
+            
+            <!-- Desktop Menu -->
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="/index.html" class="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-300">Home</a>
+                <a href="/about-me.html" class="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-300">About Me</a>
+                <a href="/products/index.html" class="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-300">Products</a>
+                <a href="/blog/index.html" class="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-300">Blog</a>
+                <a href="/index.html#contact" class="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-300">Contact</a>
+                <a href="https://calendly.com/standartdevelop/30min" class="bg-gray-900 dark:bg-white text-white dark:text-gray-900 px-6 py-2 rounded-lg hover:bg-gray-700 dark:hover:bg-gray-100 transition-all duration-300">Book Call</a>
+            </div>
+            
+            <!-- Mobile Menu Button -->
+            <div class="md:hidden">
+                <button class="mobile-menu-btn p-2 text-gray-600 dark:text-gray-300">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Mobile Menu -->
+    <div class="mobile-menu hidden md:hidden bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700">
+        <div class="px-6 py-4 space-y-2">
+            <a href="/index.html" class="block py-3 text-lg text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white border-b border-gray-200 dark:border-gray-700">Home</a>
+            <a href="/about-me.html" class="block py-3 text-lg text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white border-b border-gray-200 dark:border-gray-700">About Me</a>
+            <a href="/products/index.html" class="block py-3 text-lg text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white border-b border-gray-200 dark:border-gray-700">Products</a>
+            <a href="/blog/index.html" class="block py-3 text-lg text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white border-b border-gray-200 dark:border-gray-700">Blog</a>
+            <a href="/index.html#contact" class="block py-3 text-lg text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white border-b border-gray-200 dark:border-gray-700">Contact</a>
+            <div class="pt-4">
+                <a href="https://calendly.com/standartdevelop/30min" class="block w-full text-center bg-gray-900 dark:bg-white text-white dark:text-gray-900 px-6 py-4 rounded-lg text-lg font-semibold">Book Call</a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<script>
+// Simple mobile menu toggle
+document.addEventListener('DOMContentLoaded', function() {
+    const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+    const mobileMenu = document.querySelector('.mobile-menu');
+    
+    if (mobileMenuBtn && mobileMenu) {
+        mobileMenuBtn.addEventListener('click', function() {
+            mobileMenu.classList.toggle('hidden');
+        });
+    }
+});
+</script>

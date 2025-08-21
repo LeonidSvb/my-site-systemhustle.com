@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('SystemHustle.com loaded - v2.0');
     
     // Initialize all components
-    initializeGlobalComponents(); // Replace all nav and footer
+    initializeGlobalComponents(); // Re-enabled
     initializeBranding();
     initializeThemeToggle();
     initializeMobileMenu();

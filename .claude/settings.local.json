@@ -29,7 +29,11 @@
       "Bash(git push:*)",
       "Bash(cp:*)",
       "Bash(start test-results\\html-report\\index.html)",
-      "Bash(start https://systemhustle.com)"
+      "Bash(start https://systemhustle.com)",
+      "Bash(git checkout:*)",
+      "WebFetch(domain:localhost)",
+      "WebFetch(domain:docs.anthropic.com)",
+      "WebFetch(domain:www.anthropic.com)"
     ],
     "deny": [],
     "ask": [],

@@ -34,7 +34,7 @@
     <script src="../config.js"></script>
     <script>
         // Add blog-page class immediately
-        document.body.classList.add('blog-page');
+        document.documentElement.classList.add('blog-page');
         
         // Debug logging
         console.log('Blog page script executed');
@@ -201,7 +201,7 @@
         }
     </style>
 </head>
-<body>
+<body class="blog-page">
     <!-- Navigation -->
     <nav class="blog-nav">
         <div class="container">

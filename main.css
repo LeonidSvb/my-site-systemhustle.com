@@ -34,6 +34,98 @@ body.dark {
 }
 
 /* =============================================================================
+   UNIFIED CTA SYSTEM - Stupid Simple!
+   ============================================================================= */
+
+/* Primary CTA - Discovery Call */
+.cta-primary {
+    display: inline-flex !important;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, #1f2937, #374151) !important;
+    color: white !important;
+    padding: 14px 28px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    border: none;
+    outline: none;
+}
+
+.cta-primary:hover {
+    background: linear-gradient(135deg, #374151, #4b5563);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+}
+
+/* Secondary CTA - WhatsApp */
+.cta-secondary {
+    display: inline-flex !important;
+    align-items: center;
+    gap: 8px;
+    background: transparent !important;
+    color: #374151 !important;
+    padding: 14px 28px;
+    border-radius: 8px;
+    border: 2px solid #d1d5db !important;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 16px;
+    transition: all 0.3s ease;
+}
+
+.cta-secondary:hover {
+    background: #f9fafb;
+    border-color: #9ca3af;
+    transform: translateY(-1px);
+}
+
+/* Mobile CTA - Always Visible */
+.cta-mobile {
+    display: inline-flex !important;
+    align-items: center;
+    gap: 6px;
+    background: #3b82f6 !important;
+    color: white !important;
+    padding: 10px 16px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+.cta-mobile:hover {
+    background: #2563eb;
+    transform: scale(1.05);
+}
+
+/* Dark mode adjustments */
+.dark .cta-secondary {
+    color: #d1d5db;
+    border-color: #4b5563;
+}
+
+.dark .cta-secondary:hover {
+    background: #374151;
+    border-color: #6b7280;
+}
+
+/* Calendly widget styling */
+.calendly-inline-widget {
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+    overflow: hidden;
+    margin: 32px 0;
+}
+
+/* =============================================================================
    TAILWIND ANIMATIONS (from index.html config)
    ============================================================================= */
 @keyframes float {
@@ -283,6 +375,11 @@ nav {
     background: rgba(255, 255, 255, 0.98);
     border-top: 1px solid #e5e7eb;
     transition: all 0.3s ease;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 40;
 }
 
 .dark .mobile-menu {
@@ -291,7 +388,7 @@ nav {
 }
 
 .mobile-menu.hidden {
-    display: none;
+    display: none !important;
 }
 
 .mobile-menu .nav-link {
@@ -893,11 +990,11 @@ footer {
     }
     
     .mobile-menu-btn {
-        display: flex;
+        display: flex !important;
     }
     
-    .mobile-menu {
-        display: block;
+    .mobile-menu:not(.hidden) {
+        display: block !important;
     }
     
     .nav-container {
@@ -930,6 +1027,12 @@ footer {
         width: 100%;
         max-width: 280px;
         justify-content: center;
+    }
+    
+    .cta-mobile {
+        display: inline-flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
     }
     
     .footer-links {

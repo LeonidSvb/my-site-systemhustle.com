@@ -5,14 +5,49 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('SystemHustle.com loaded - v2.0');
     
     // Initialize all components
+    initializeGlobalComponents(); // Replace all nav and footer
     initializeBranding();
     initializeThemeToggle();
     initializeMobileMenu();
     initializeScrollFeatures();
     initializeAnimations();
     initializeContactButtons();
+    initializeUnifiedCTA(); // New unified CTA system
     initializePageSpecificFeatures();
 });
+
+// =============================================================================
+// GLOBAL COMPONENTS - Universal Header & Footer
+// =============================================================================
+function initializeGlobalComponents() {
+    if (typeof SITE_CONFIG === 'undefined') return;
+    
+    // CRITICAL: Remove ALL existing nav/footer first, then add new ones
+    cleanAndReplaceNavigation();
+    cleanAndReplaceFooter();
+    
+    console.log('Global components initialized - universal nav & footer');
+}
+
+function cleanAndReplaceNavigation() {
+    // STEP 1: Remove ALL existing nav elements
+    const navElements = document.querySelectorAll('nav');
+    navElements.forEach(nav => nav.remove());
+    
+    // STEP 2: Add single universal nav to body start
+    const headerHtml = generateUniversalHeader();
+    document.body.insertAdjacentHTML('afterbegin', headerHtml);
+}
+
+function cleanAndReplaceFooter() {
+    // STEP 1: Remove ALL existing footer elements
+    const footerElements = document.querySelectorAll('footer');
+    footerElements.forEach(footer => footer.remove());
+    
+    // STEP 2: Add single universal footer to body end
+    const footerHtml = generateUniversalFooter();
+    document.body.insertAdjacentHTML('beforeend', footerHtml);
+}
 
 // =============================================================================
 // BRANDING SYSTEM - Centralized Brand Management
@@ -319,6 +354,139 @@ function updateContactButtons() {
     document.querySelectorAll('[data-cta="email"], .email-btn, [href*="mailto"]').forEach(button => {
         button.href = SITE_CONFIG.emailUrl;
     });
+}
+
+// =============================================================================
+// UNIFIED CTA SYSTEM - Stupid Simple Architecture!
+// =============================================================================
+function initializeUnifiedCTA() {
+    if (typeof SITE_CONFIG === 'undefined') return;
+    
+    // 1. Add mobile CTA to all navigation bars
+    addMobileCTAToNavs();
+    
+    // 2. Update all CTA buttons with proper classes and URLs
+    updateCTAButtons();
+    
+    // 3. Initialize Calendly widget if present
+    initializeCalendlyWidget();
+    
+    // 4. Page-specific CTAs now handled directly in HTML (no more data-cta-context)
+    
+    console.log('Unified CTA system initialized');
+}
+
+function addMobileCTAToNavs() {
+    // Skip - mobile CTA is already included in generateUniversalHeader()
+    console.log('Mobile CTA: Already included in universal header');
+}
+
+function updateCTAButtons() {
+    // Update all CTA buttons based on data-cta attributes
+    document.querySelectorAll('[data-cta]').forEach(button => {
+        const ctaType = button.getAttribute('data-cta');
+        const cta = SITE_CONFIG.ctas[ctaType];
+        
+        if (cta) {
+            button.href = getCTAUrl(ctaType);
+            if (!button.classList.contains(cta.classes)) {
+                button.className = cta.classes;
+            }
+        }
+    });
+}
+
+function initializeCalendlyWidget() {
+    // Load Calendly widget script if needed
+    const widgets = document.querySelectorAll('.calendly-inline-widget');
+    if (widgets.length > 0 && !window.Calendly) {
+        const script = document.createElement('script');
+        script.src = 'https://assets.calendly.com/assets/external/widget.js';
+        script.async = true;
+        document.head.appendChild(script);
+    }
+}
+
+// REMOVED: addPageSpecificCTAs() - no longer needed, CTAs are directly in HTML
+
+function getPageType() {
+    // Determine current page type for CTA context
+    const path = window.location.pathname;
+    
+    if (path === '/' || path === '/index.html') return 'index';
+    if (path.includes('/about-me')) return 'about';
+    if (path.includes('/products')) return 'products';
+    if (path.includes('/blog/posts/')) return 'blog';
+    if (path.includes('/blog')) return 'blog-index';
+    if (path.includes('/legal/')) return 'legal';
+    
+    return 'index'; // default
+}
+
+// generateUniversalFooter is now called from initializeGlobalComponents()
+
+function generateUniversalFooter() {
+    const footerNav = SITE_CONFIG.navigation.footer;
+    const legalNav = SITE_CONFIG.navigation.legal;
+    
+    return `
+    <footer class="bg-gray-900 dark:bg-black text-white py-16 px-6 lg:px-12">
+        <div class="max-w-7xl mx-auto">
+            <!-- Main Footer Content -->
+            <div class="grid md:grid-cols-3 gap-8 mb-12">
+                <!-- Brand Section -->
+                <div class="text-center md:text-left">
+                    <div class="flex items-center justify-center md:justify-start mb-4">
+                        <span data-brand="logo" class="text-2xl font-bold">${SITE_CONFIG.branding.logo.text}</span>
+                        <div data-brand="symbol" class="ml-2">
+                            ${SITE_CONFIG.branding.logo.symbol}
+                        </div>
+                    </div>
+                    <p class="text-gray-400 mb-4">
+                        ${SITE_CONFIG.tagline} helping businesses scale through intelligent automation systems.
+                    </p>
+                    <p class="text-gray-500 text-sm">
+                        Based in ${SITE_CONFIG.location}
+                    </p>
+                </div>
+                
+                <!-- Navigation Links -->
+                <div class="text-center">
+                    <h4 class="text-lg font-semibold mb-4">Navigation</h4>
+                    <nav class="space-y-2">
+                        ${footerNav.map(item => 
+                            `<a href="${item.href}" class="block text-gray-400 hover:text-white transition-colors duration-300">${item.name}</a>`
+                        ).join('')}
+                    </nav>
+                </div>
+                
+                <!-- Contact & Legal -->
+                <div class="text-center md:text-right">
+                    <h4 class="text-lg font-semibold mb-4">Contact</h4>
+                    <div class="space-y-2 mb-6">
+                        <a href="${SITE_CONFIG.emailUrl}" class="block text-gray-400 hover:text-blue-400 transition-colors duration-300">
+                            ${SITE_CONFIG.email}
+                        </a>
+                        <a href="${SITE_CONFIG.whatsappUrl}" class="block text-gray-400 hover:text-green-400 transition-colors duration-300">
+                            WhatsApp Chat
+                        </a>
+                    </div>
+                    <div class="space-y-1">
+                        ${legalNav.map(item => 
+                            `<a href="${item.href}" class="block text-gray-500 hover:text-gray-300 text-sm transition-colors duration-300">${item.name}</a>`
+                        ).join('')}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Copyright -->
+            <div class="border-t border-gray-800 pt-8 text-center">
+                <p class="text-gray-500 text-sm">
+                    &copy; 2024 ${SITE_CONFIG.branding.logo.text}. All rights reserved.
+                </p>
+            </div>
+        </div>
+    </footer>`;
 }
 
 // =============================================================================

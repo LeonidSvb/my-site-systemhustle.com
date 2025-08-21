@@ -21,11 +21,9 @@ const SITE_CONFIG = {
     branding: {
         logo: {
             text: 'SystemHustle',
-            icon: 'S', // Single letter for compact display
+            icon: '', // Remove extra S letter
             favicon: '/images/favicon.svg',
-            symbol: `<svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
-            </svg>`
+            symbol: '' // Remove symbol from logo
         },
         colors: {
             primary: '#3B82F6',
@@ -53,32 +51,51 @@ const SITE_CONFIG = {
         products: true
     },
     
-    // Navigation Structure
+    // Navigation Structure - Global components everywhere
     navigation: {
         main: [
-            { name: 'Home', href: '/', active: 'index' },
-            { name: 'Services', href: '/#services', active: 'index' },
-            { name: 'Reality', href: '/#reality', active: 'index' },
-            { name: 'About Me', href: '/about-me', active: 'about' },
-            { name: 'Process', href: '/#process', active: 'index' },
-            { name: 'Blog', href: '/blog', active: 'blog' },
-            { name: 'Contact', href: '/#contact', active: 'index' }
+            { name: 'Home', href: '/index.html', active: 'index' },
+            { name: 'About Me', href: '/about-me.html', active: 'about' },
+            { name: 'Products', href: '/products/index.html', active: 'products' },
+            { name: 'Blog', href: '/blog/index.html', active: 'blog' },
+            { name: 'Contact', href: '/index.html#contact', active: 'contact' }
+        ],
+        footer: [
+            { name: 'Home', href: '/index.html' },
+            { name: 'About Me', href: '/about-me.html' },
+            { name: 'Products', href: '/products/index.html' },
+            { name: 'Blog', href: '/blog/index.html' },
+            { name: 'Contact', href: '/index.html#contact' }
+        ],
+        legal: [
+            { name: 'Privacy Policy', href: '/legal/privacy.html' },
+            { name: 'Terms of Service', href: '/legal/terms.html' }
         ]
     },
     
-    // Call-to-Action Buttons
+    // Call-to-Action Buttons - Unified System (clean without emojis)
     ctas: {
         primary: {
             text: 'Book Discovery Call',
-            url: 'calendly', // References SITE_CONFIG.calendly
-            classes: 'bg-gray-900 dark:bg-white text-white dark:text-gray-900 px-6 py-2 rounded-lg hover:bg-gray-700 dark:hover:bg-gray-100 transition-all duration-300'
+            url: 'calendly',
+            classes: 'cta-primary',
+            icon: ''
         },
         secondary: {
             text: 'WhatsApp',
-            url: 'whatsappUrl', // References SITE_CONFIG.whatsappUrl
-            classes: 'border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 px-6 py-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-all duration-300'
+            url: 'whatsappUrl', 
+            classes: 'cta-secondary',
+            icon: ''
+        },
+        mobile: {
+            text: 'Call',
+            url: 'calendly',
+            classes: 'cta-mobile',
+            icon: ''
         }
     },
+    
+    // CTA contexts removed - CTAs are now directly in HTML for better performance
     
     // Theme Configuration
     theme: {
@@ -100,6 +117,76 @@ function getNavigationForPage(currentPage) {
         ...item,
         isActive: item.active === currentPage
     }));
+}
+
+// REMOVED: generateCTA() - CTAs are now directly in HTML
+
+// Helper to generate mobile CTA (always visible)
+function generateMobileCTA() {
+    const cta = SITE_CONFIG.ctas.mobile;
+    const url = getCTAUrl('mobile');
+    
+    return `<a href="${url}" class="${cta.classes}" data-cta="mobile">
+        ${cta.icon} ${cta.text}
+    </a>`;
+}
+
+// Generate universal navigation header - same everywhere!
+function generateUniversalHeader() {
+    const navItems = SITE_CONFIG.navigation.main;
+    
+    return `
+    <nav class="fixed top-0 left-0 right-0 bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm border-b border-gray-200 dark:border-gray-700 z-50">
+        <div class="max-w-7xl mx-auto px-6 lg:px-12">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center">
+                    <span data-brand="logo" class="text-2xl font-bold text-gray-900 dark:text-white">${SITE_CONFIG.branding.logo.text}</span>
+                </div>
+                
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex items-center space-x-8">
+                    ${navItems.map(item => 
+                        `<a href="${item.href}" class="nav-link text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-300">${item.name}</a>`
+                    ).join('')}
+                    <button id="themeToggle" class="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 transition-colors duration-300 mr-4">
+                        <svg class="w-5 h-5 text-gray-600 dark:text-gray-300" id="themeIcon" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"/>
+                        </svg>
+                    </button>
+                    <a href="${SITE_CONFIG.calendly}" class="cta-primary" data-cta="primary">Book Discovery Call</a>
+                </div>
+                
+                <!-- Mobile Controls -->
+                <div class="md:hidden flex items-center space-x-2">
+                    <a href="${SITE_CONFIG.calendly}" class="cta-mobile" data-cta="mobile">Call</a>
+                    <button id="mobileHeaderThemeToggle" class="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 transition-colors duration-300">
+                        <svg class="w-5 h-5 text-gray-600 dark:text-gray-300" id="mobileHeaderThemeIcon" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M17.293 13.293A8 8 0 716.707 2.707a8.001 8.001 0 1010.586 10.586z"/>
+                        </svg>
+                    </button>
+                    <button class="mobile-menu-btn p-2">
+                        <div class="hamburger">
+                            <span class="line"></span>
+                            <span class="line"></span>
+                            <span class="line"></span>
+                        </div>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div class="mobile-menu md:hidden bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 hidden">
+            <div class="px-6 py-4 space-y-4">
+                ${navItems.map(item => 
+                    `<a href="${item.href}" class="block nav-link text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-300 py-2">${item.name}</a>`
+                ).join('')}
+                <div class="pt-4 border-t border-gray-200 dark:border-gray-700">
+                    <a href="${SITE_CONFIG.calendly}" class="block w-full text-center cta-primary" data-cta="calendly">Book Call</a>
+                </div>
+            </div>
+        </div>
+    </nav>`;
 }
 
 // Export for module use (if needed in future)

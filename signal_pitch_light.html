@@ -385,7 +385,9 @@
 <button class="niche-btn" onclick="toggleNichePanel()">⊞ Niche</button>
 <div class="niche-panel" id="nichePanel">
   <div class="niche-panel-title">Select niche</div>
-  <div class="niche-opt active" onclick="applyNiche('exec-tech',this)">Executive search — tech</div>
+  <div class="niche-opt active" onclick="applyNiche('generic',this)">Generic / Other</div>
+  <div class="niche-sep"></div>
+  <div class="niche-opt" onclick="applyNiche('exec-tech',this)">Executive search — tech</div>
   <div class="niche-opt" onclick="applyNiche('exec-nontech',this)">Executive search — non-tech</div>
   <div class="niche-sep"></div>
   <div class="niche-opt" onclick="applyNiche('it-software',this)">IT &amp; Software recruiting</div>
@@ -876,6 +878,20 @@
 
   // ── niche data ──────────────────────────────────────────
   const NICHES = {
+    'generic': {
+      defaultFee: 20000,
+      nonObvious: 'M&A activity, leadership transitions and niche trade press signals — nearly impossible to track manually at the speed required to act first.',
+      cols: ['Leadership', 'Funding / M&A', 'Role 60d+', 'Market signal'],
+      pills: ['New CEO / leadership change','Executive team reshuffle','New funding round','Same role open 3+ months','Multiple open roles at once','M&A activity in niche','Key hire departure','Niche trade press signal'],
+      hotLabel: '2+ signals combined = act now',
+      companies: [
+        { name: 'Acme Corp',       s:[1,1,1,0], heat:'Hot' },
+        { name: 'Apex Partners',   s:[0,1,1,1], heat:'Hot' },
+        { name: 'Meridian Group',  s:[1,0,0,0], heat:'Watch' },
+        { name: 'Vance Capital',   s:[0,0,1,0], heat:'Monitor' }
+      ],
+      curveLabel: 'Early Adopters'
+    },
     'exec-tech': {
       defaultFee: 35000,
       nonObvious: 'Leadership moves tracked on AngelList, Carta cap tables and CrunchBase — visible weeks before any LinkedIn post.',
@@ -888,7 +904,7 @@
         { name: 'Orbit Systems',   s:[1,0,0,0], heat:'Watch' },
         { name: 'Vanta Corp',      s:[0,0,1,0], heat:'Monitor' }
       ],
-      curveLabel: 'Early Adopters — tech exec search'
+      curveLabel: 'Early Adopters'
     },
     'exec-nontech': {
       defaultFee: 40000,
@@ -902,7 +918,7 @@
         { name: 'Blackwell Advisory',    s:[1,0,0,0], heat:'Watch' },
         { name: 'Crestwood Holdings',    s:[0,0,1,0], heat:'Monitor' }
       ],
-      curveLabel: 'Early Adopters — exec search'
+      curveLabel: 'Early Adopters'
     },
     'it-software': {
       defaultFee: 25000,
@@ -916,7 +932,7 @@
         { name: 'Novu Systems',   s:[1,0,0,0], heat:'Watch' },
         { name: 'Relay.io',       s:[0,0,1,0], heat:'Monitor' }
       ],
-      curveLabel: 'Early Adopters — IT recruiting'
+      curveLabel: 'Early Adopters'
     },
     'sales-gtm': {
       defaultFee: 22000,
@@ -930,7 +946,7 @@
         { name: 'Momentum GTM',    s:[1,0,0,0], heat:'Watch' },
         { name: 'Strata Sales Co', s:[0,0,1,0], heat:'Monitor' }
       ],
-      curveLabel: 'Early Adopters — sales recruiting'
+      curveLabel: 'Early Adopters'
     },
     'finance': {
       defaultFee: 28000,
@@ -944,7 +960,7 @@
         { name: 'Orion Accounting',       s:[1,0,0,0], heat:'Watch' },
         { name: 'Summit CFO Partners',    s:[0,0,1,0], heat:'Monitor' }
       ],
-      curveLabel: 'Early Adopters — finance recruiting'
+      curveLabel: 'Early Adopters'
     },
     'manufacturing': {
       defaultFee: 12000,
@@ -958,7 +974,7 @@
         { name: 'Regency Steel',          s:[1,0,0,0], heat:'Watch' },
         { name: 'Crane & Assoc.',         s:[0,0,1,0], heat:'Monitor' }
       ],
-      curveLabel: 'Early Adopters — manufacturing staffing'
+      curveLabel: 'Early Adopters'
     },
     'healthcare': {
       defaultFee: 15000,
@@ -972,7 +988,7 @@
         { name: 'Clearfield Clinic',     s:[1,0,0,0], heat:'Watch' },
         { name: 'Apex Care Network',     s:[0,0,1,0], heat:'Monitor' }
       ],
-      curveLabel: 'Early Adopters — healthcare staffing'
+      curveLabel: 'Early Adopters'
     },
     'va-staffing': {
       defaultFee: 5000,
@@ -986,7 +1002,7 @@
         { name: 'Solo Founders Club',   s:[1,0,0,0], heat:'Watch' },
         { name: 'Remote Scale Co',      s:[0,0,1,0], heat:'Monitor' }
       ],
-      curveLabel: 'Early Adopters — VA staffing'
+      curveLabel: 'Early Adopters'
     }
   };
 
@@ -1051,7 +1067,7 @@
   });
 
   // init default niche
-  applyNiche('exec-tech', document.querySelector('.niche-opt'));
+  applyNiche('generic', document.querySelector('.niche-opt'));
 
   function revealChart(el) {
     const svg = el.nextElementSibling;

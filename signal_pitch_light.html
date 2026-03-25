@@ -332,6 +332,43 @@
     font-size: 10px; margin: 0 2px;
   }
 
+  /* ── niche picker ── */
+  .niche-btn {
+    position: fixed; top: 12px; right: 16px; z-index: 100;
+    font-size: 11px; font-family: var(--sans);
+    color: var(--subtle); background: var(--bg);
+    border: 1px solid var(--border-s); border-radius: 6px;
+    padding: 5px 11px; cursor: pointer;
+    transition: color .15s, background .15s;
+  }
+  .niche-btn:hover { color: var(--muted); background: var(--bg2); }
+
+  .niche-panel {
+    position: fixed; top: 40px; right: 16px; z-index: 100;
+    background: white; border: 1px solid var(--border-s);
+    border-radius: 10px; padding: 10px 0;
+    box-shadow: 0 4px 20px rgba(0,0,0,.08);
+    display: none; min-width: 220px;
+  }
+  .niche-panel.open { display: block; }
+  .niche-panel-title {
+    font-size: 9px; font-weight: 500; letter-spacing: .1em;
+    text-transform: uppercase; color: var(--subtle);
+    padding: 4px 14px 8px; border-bottom: 1px solid var(--border);
+    margin-bottom: 4px;
+  }
+  .niche-opt {
+    font-size: 12px; color: var(--muted);
+    padding: 7px 14px; cursor: pointer;
+    transition: background .1s, color .1s;
+  }
+  .niche-opt:hover { background: var(--bg2); color: var(--text); }
+  .niche-opt.active { color: var(--accent); font-weight: 500; }
+  .niche-sep {
+    height: 1px; background: var(--border);
+    margin: 4px 0;
+  }
+
   @media (max-width: 700px) {
     .slide { padding: 28px 24px 24px; }
     .nav { padding: 12px 24px; }
@@ -344,6 +381,21 @@
 </style>
 </head>
 <body>
+
+<button class="niche-btn" onclick="toggleNichePanel()">⊞ Niche</button>
+<div class="niche-panel" id="nichePanel">
+  <div class="niche-panel-title">Select niche</div>
+  <div class="niche-opt active" onclick="applyNiche('exec-tech',this)">Executive search — tech</div>
+  <div class="niche-opt" onclick="applyNiche('exec-nontech',this)">Executive search — non-tech</div>
+  <div class="niche-sep"></div>
+  <div class="niche-opt" onclick="applyNiche('it-software',this)">IT &amp; Software recruiting</div>
+  <div class="niche-opt" onclick="applyNiche('sales-gtm',this)">Sales &amp; GTM recruiting</div>
+  <div class="niche-opt" onclick="applyNiche('finance',this)">Finance &amp; Accounting recruiting</div>
+  <div class="niche-sep"></div>
+  <div class="niche-opt" onclick="applyNiche('manufacturing',this)">Manufacturing &amp; Industrial staffing</div>
+  <div class="niche-opt" onclick="applyNiche('healthcare',this)">Healthcare staffing</div>
+  <div class="niche-opt" onclick="applyNiche('va-staffing',this)">VA &amp; Virtual assistant staffing</div>
+</div>
 
 <div class="deck">
   <div class="progress"><div class="progress-fill" id="pbar" style="width:14.3%"></div></div>
@@ -417,23 +469,35 @@
       <div class="calc">
         <div class="calc-row">
           <span class="calc-label">Hours per week on BD</span>
-          <span class="calc-val">~15 hrs</span>
+          <span class="calc-val">
+            <input id="inp-hours" type="number" min="1" max="80" value="15"
+              style="width:60px;font-size:14px;font-weight:500;font-family:var(--sans);color:var(--text);background:var(--bg2);border:1px solid var(--border-s);border-radius:5px;padding:3px 8px;text-align:right;outline:none"
+              oninput="calcUpdate()"> hrs/week
+          </span>
         </div>
         <div class="calc-row">
           <span class="calc-label">Your effective hourly rate</span>
-          <span class="calc-val">$150 – $300 / hr</span>
+          <span class="calc-val">
+            $<input id="inp-rate" type="number" min="50" max="2000" value="200"
+              style="width:70px;font-size:14px;font-weight:500;font-family:var(--sans);color:var(--text);background:var(--bg2);border:1px solid var(--border-s);border-radius:5px;padding:3px 8px;text-align:right;outline:none"
+              oninput="calcUpdate()"> / hr
+          </span>
         </div>
         <div class="calc-row">
           <span class="calc-label">Cost of that time per month</span>
-          <span class="calc-val" style="color:var(--danger)">$9,000 – $18,000</span>
+          <span class="calc-val" style="color:var(--danger)" id="out-monthly">$12,000</span>
         </div>
         <div class="calc-row">
-          <span class="calc-label">Missed signals per week</span>
-          <span class="calc-val" style="color:var(--danger)">3–5 live opportunities</span>
+          <span class="calc-label">Typical placement fee</span>
+          <span class="calc-val">
+            $<input id="inp-fee" type="number" min="1000" max="200000" value="20000"
+              style="width:90px;font-size:14px;font-weight:500;font-family:var(--sans);color:var(--text);background:var(--bg2);border:1px solid var(--border-s);border-radius:5px;padding:3px 8px;text-align:right;outline:none"
+              oninput="calcUpdate()">
+          </span>
         </div>
         <div class="calc-row">
-          <span class="calc-label" style="font-weight:500;color:var(--text)">Opportunity cost per missed placement</span>
-          <span class="calc-big">$15k – $30k</span>
+          <span class="calc-label" style="font-weight:500;color:var(--text)">Opportunity cost — 3 missed signals/week</span>
+          <span class="calc-big" id="out-opp">$60,000</span>
         </div>
       </div>
       <div onclick="revealChart(this)" style="font-size:10px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--subtle);margin-bottom:-10px;cursor:pointer;display:flex;align-items:center;gap:8px;user-select:none">
@@ -443,18 +507,18 @@
       <div style="display:flex;align-items:stretch;gap:10px;max-width:560px;flex-wrap:wrap;opacity:0;transition:opacity 0.4s ease">
         <div style="flex:1;min-width:180px;background:var(--danger-bg);border:1px solid rgba(192,57,43,.18);border-radius:10px;padding:10px 14px">
           <div style="font-size:10px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--danger);margin-bottom:4px">Annual cost of BD time</div>
-          <div style="font-family:var(--serif);font-size:clamp(20px,2.6vw,28px);color:var(--danger);line-height:1">$108k – $216k</div>
+          <div id="out-annual" style="font-family:var(--serif);font-size:clamp(20px,2.6vw,28px);color:var(--danger);line-height:1">$144,000</div>
           <div style="font-size:11px;color:var(--muted);margin-top:3px">every year, just in your own time</div>
         </div>
         <div style="flex:1;min-width:180px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:10px 14px">
-          <div style="font-size:10px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--subtle);margin-bottom:8px">Your 40h week — where it goes</div>
+          <div style="font-size:10px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--subtle);margin-bottom:8px">Your week — where it goes</div>
           <div style="height:18px;border-radius:4px;overflow:hidden;display:flex;margin-bottom:6px">
-            <div style="width:37.5%;background:#c0392b;opacity:.75"></div>
-            <div style="width:62.5%;background:#2a6b3c;opacity:.5"></div>
+            <div id="bar-bd" style="background:#c0392b;opacity:.75;transition:width .3s ease"></div>
+            <div id="bar-pl" style="background:#2a6b3c;opacity:.5;transition:width .3s ease"></div>
           </div>
           <div style="display:flex;gap:12px;font-size:11px;color:var(--muted)">
-            <span style="display:flex;align-items:center;gap:4px"><span style="width:9px;height:9px;border-radius:2px;background:#c0392b;opacity:.75;display:inline-block"></span>BD — 15h</span>
-            <span style="display:flex;align-items:center;gap:4px"><span style="width:9px;height:9px;border-radius:2px;background:#2a6b3c;opacity:.5;display:inline-block"></span>Placements — 25h</span>
+            <span style="display:flex;align-items:center;gap:4px"><span style="width:9px;height:9px;border-radius:2px;background:#c0392b;opacity:.75;display:inline-block"></span>BD — <span id="lbl-bd">15h</span></span>
+            <span style="display:flex;align-items:center;gap:4px"><span style="width:9px;height:9px;border-radius:2px;background:#2a6b3c;opacity:.5;display:inline-block"></span>Other — <span id="lbl-pl">25h</span></span>
           </div>
         </div>
       </div>
@@ -472,7 +536,7 @@
         </div>
         <div class="card">
           <div class="card-h">Non-obvious signals <span class="badge b-info">where the edge is</span></div>
-          <div class="card-b">M&A activity in your niche. Niche trade publications. Leadership moves on obscure portals. Nearly impossible to track manually at speed.</div>
+          <div class="card-b" id="niche-nonoby">M&A activity in your niche. Niche trade publications. Leadership moves on obscure portals. Nearly impossible to track manually at speed.</div>
         </div>
       </div>
       <div class="grid3">
@@ -520,7 +584,7 @@
       <div class="slide-tag tag-mech">The mechanism</div>
       <h1 class="slide-title">Signal stacking — I catch <em>buying intent</em> before anyone else does</h1>
       <div class="slide-sub">I monitor every layer of your niche — obvious and non-obvious. One signal is noise. A combination is a hot lead.</div>
-      <div class="pills">
+      <div class="pills" id="niche-pills">
         <span class="pill">New CEO / leadership change</span>
         <span class="pill">Executive team reshuffle</span>
         <span class="pill">New funding round</span>
@@ -557,7 +621,7 @@
       </div>
       <div style="opacity:0;transition:opacity 0.4s ease">
         <div style="background:white;border:1px solid var(--border-s);border-radius:10px;overflow:hidden;font-size:12px">
-          <div style="display:grid;grid-template-columns:130px repeat(4,1fr) 72px;background:var(--bg2);padding:7px 14px;border-bottom:1px solid var(--border)">
+          <div id="niche-table-head" style="display:grid;grid-template-columns:130px repeat(4,1fr) 72px;background:var(--bg2);padding:7px 14px;border-bottom:1px solid var(--border)">
             <div style="font-weight:500;color:var(--muted)">Company</div>
             <div style="color:var(--subtle);text-align:center;font-size:10px">Leadership</div>
             <div style="color:var(--subtle);text-align:center;font-size:10px">Funding</div>
@@ -565,38 +629,7 @@
             <div style="color:var(--subtle);text-align:center;font-size:10px">M&amp;A</div>
             <div style="color:var(--subtle);text-align:center;font-size:10px">Heat</div>
           </div>
-          <div style="display:grid;grid-template-columns:130px repeat(4,1fr) 72px;padding:8px 14px;border-bottom:1px solid var(--border);align-items:center">
-            <div style="font-weight:500;color:var(--text)">TechCo Ltd</div>
-            <div style="text-align:center;color:var(--accent);font-size:14px">✓</div>
-            <div style="text-align:center;color:var(--accent);font-size:14px">✓</div>
-            <div style="text-align:center;color:var(--accent);font-size:14px">✓</div>
-            <div style="text-align:center;color:var(--subtle)">—</div>
-            <div style="text-align:center"><span class="badge b-danger">Hot</span></div>
-          </div>
-          <div style="display:grid;grid-template-columns:130px repeat(4,1fr) 72px;padding:8px 14px;border-bottom:1px solid var(--border);align-items:center">
-            <div style="font-weight:500;color:var(--text)">Apex Partners</div>
-            <div style="text-align:center;color:var(--subtle)">—</div>
-            <div style="text-align:center;color:var(--accent);font-size:14px">✓</div>
-            <div style="text-align:center;color:var(--accent);font-size:14px">✓</div>
-            <div style="text-align:center;color:var(--accent);font-size:14px">✓</div>
-            <div style="text-align:center"><span class="badge b-danger">Hot</span></div>
-          </div>
-          <div style="display:grid;grid-template-columns:130px repeat(4,1fr) 72px;padding:8px 14px;border-bottom:1px solid var(--border);align-items:center">
-            <div style="font-weight:500;color:var(--text)">Meridian Group</div>
-            <div style="text-align:center;color:var(--accent);font-size:14px">✓</div>
-            <div style="text-align:center;color:var(--subtle)">—</div>
-            <div style="text-align:center;color:var(--subtle)">—</div>
-            <div style="text-align:center;color:var(--subtle)">—</div>
-            <div style="text-align:center"><span class="badge b-warn">Watch</span></div>
-          </div>
-          <div style="display:grid;grid-template-columns:130px repeat(4,1fr) 72px;padding:8px 14px;align-items:center">
-            <div style="font-weight:500;color:var(--text)">Vance Capital</div>
-            <div style="text-align:center;color:var(--subtle)">—</div>
-            <div style="text-align:center;color:var(--subtle)">—</div>
-            <div style="text-align:center;color:var(--accent);font-size:14px">✓</div>
-            <div style="text-align:center;color:var(--subtle)">—</div>
-            <div style="text-align:center"><span class="badge b-info">Monitor</span></div>
-          </div>
+          <div id="niche-table-rows"></div>
         </div>
       </div>
     </div>
@@ -682,7 +715,7 @@
           <line x1="315" y1="91" x2="315" y2="96" stroke="#ddd" stroke-width="1"/>
           <line x1="415" y1="91" x2="415" y2="96" stroke="#ddd" stroke-width="1"/>
           <text x="52"  y="106" text-anchor="middle" font-size="8" fill="#a8a8a2">Innovators</text>
-          <text x="148" y="106" text-anchor="middle" font-size="8" fill="#2a6b3c" font-weight="500">Early Adopters</text>
+          <text id="niche-curve-lbl" x="148" y="106" text-anchor="middle" font-size="8" fill="#2a6b3c" font-weight="500">Early Adopters</text>
           <text x="255" y="106" text-anchor="middle" font-size="8" fill="#a8a8a2">Early Majority</text>
           <text x="365" y="106" text-anchor="middle" font-size="8" fill="#a8a8a2">Late Majority</text>
           <text x="463" y="106" text-anchor="middle" font-size="8" fill="#a8a8a2">Laggards</text>
@@ -810,6 +843,215 @@
   }
 
   setTimeout(() => { document.getElementById('hint').style.opacity = '0'; }, 3500);
+
+  function fmt(n) {
+    if (n >= 1000000) return '$' + (n/1000000).toFixed(1).replace(/\.0$/,'') + 'M';
+    if (n >= 1000)    return '$' + Math.round(n/1000) + 'k';
+    return '$' + n.toLocaleString();
+  }
+
+  function calcUpdate() {
+    const hours = parseFloat(document.getElementById('inp-hours').value) || 0;
+    const rate  = parseFloat(document.getElementById('inp-rate').value)  || 0;
+    const fee   = parseFloat(document.getElementById('inp-fee').value)   || 0;
+    const totalWeek = 40;
+
+    const monthly = hours * 4 * rate;
+    const annual  = monthly * 12;
+    const opp     = fee * 3;
+
+    document.getElementById('out-monthly').textContent = fmt(monthly);
+    document.getElementById('out-annual').textContent  = fmt(annual);
+    document.getElementById('out-opp').textContent     = fmt(opp);
+
+    const bdPct  = Math.min(Math.round(hours / totalWeek * 100), 95);
+    const plPct  = 100 - bdPct;
+    document.getElementById('bar-bd').style.width = bdPct + '%';
+    document.getElementById('bar-pl').style.width = plPct + '%';
+    document.getElementById('lbl-bd').textContent = hours + 'h';
+    document.getElementById('lbl-pl').textContent = Math.max(totalWeek - hours, 0) + 'h';
+  }
+
+  calcUpdate();
+
+  // ── niche data ──────────────────────────────────────────
+  const NICHES = {
+    'exec-tech': {
+      defaultFee: 35000,
+      nonObvious: 'Leadership moves tracked on AngelList, Carta cap tables and CrunchBase — visible weeks before any LinkedIn post.',
+      cols: ['Leadership', 'Funding', 'Role 90d+', 'M&A'],
+      pills: ['New CTO / VP Eng hired','Series B/C funding closed','Tech layoffs (backfill need)','Key architect departed','IPO / pre-IPO board prep','Board-level restructure','M&A target in your niche','Same VP role open 90d+'],
+      hotLabel: '3+ signals = priority outreach',
+      companies: [
+        { name: 'Stackform Inc',   s:[1,1,1,0], heat:'Hot' },
+        { name: 'Nexlayer AI',     s:[0,1,1,1], heat:'Hot' },
+        { name: 'Orbit Systems',   s:[1,0,0,0], heat:'Watch' },
+        { name: 'Vanta Corp',      s:[0,0,1,0], heat:'Monitor' }
+      ],
+      curveLabel: 'Early Adopters — tech exec search'
+    },
+    'exec-nontech': {
+      defaultFee: 40000,
+      nonObvious: 'Leadership transitions buried in trade association announcements and industry press — weeks before LinkedIn picks them up.',
+      cols: ['Board change', 'PE / M&A', 'Role 90d+', 'Revenue signal'],
+      pills: ['New board appointment','CEO / COO departure','Private equity acquisition','Same C-level open 90d+','Regulatory pressure forcing change','Revenue decline reported','Key senior departure','Division restructure announced'],
+      hotLabel: '3+ signals = priority outreach',
+      companies: [
+        { name: 'Hargrove & Partners',   s:[1,1,1,0], heat:'Hot' },
+        { name: 'Meridian Capital Grp',  s:[0,1,1,1], heat:'Hot' },
+        { name: 'Blackwell Advisory',    s:[1,0,0,0], heat:'Watch' },
+        { name: 'Crestwood Holdings',    s:[0,0,1,0], heat:'Monitor' }
+      ],
+      curveLabel: 'Early Adopters — exec search'
+    },
+    'it-software': {
+      defaultFee: 25000,
+      nonObvious: 'Engineering moves tracked on GitHub activity, niche Slack communities and Stack Overflow Jobs — long before LinkedIn.',
+      cols: ['Leadership', 'Funding', 'Role 60d+', 'Tech signal'],
+      pills: ['Series A/B startup hiring senior eng 60d+','Tech stack migration announced','CTO / VP Eng change','Eng team doubled in 6 months','Failed launch — backfill need','Open-source project traction spike','DevOps / platform role open 90d+','Competitor poached key engineers'],
+      hotLabel: '2+ signals = act now',
+      companies: [
+        { name: 'Stackform Inc',  s:[1,1,1,0], heat:'Hot' },
+        { name: 'Buildkite Co',   s:[0,1,1,1], heat:'Hot' },
+        { name: 'Novu Systems',   s:[1,0,0,0], heat:'Watch' },
+        { name: 'Relay.io',       s:[0,0,1,0], heat:'Monitor' }
+      ],
+      curveLabel: 'Early Adopters — IT recruiting'
+    },
+    'sales-gtm': {
+      defaultFee: 22000,
+      nonObvious: 'Revenue targets in earnings calls, SDR attrition on Glassdoor, and territory expansions buried in press releases.',
+      cols: ['Leadership', 'Funding', 'Role 60d+', 'Revenue signal'],
+      pills: ['New VP Sales hired (team build-out)','Series B+ funding (growth push)','CRO departure / replacement','Territory expansion announced','Missed revenue targets','SDR / AE turnover spike','Product launch needing sales push','Sales enablement tool adopted'],
+      hotLabel: '2+ signals = act now',
+      companies: [
+        { name: 'Accel Revenue',   s:[1,1,1,0], heat:'Hot' },
+        { name: 'GrowthLoop Inc',  s:[0,1,1,1], heat:'Hot' },
+        { name: 'Momentum GTM',    s:[1,0,0,0], heat:'Watch' },
+        { name: 'Strata Sales Co', s:[0,0,1,0], heat:'Monitor' }
+      ],
+      curveLabel: 'Early Adopters — sales recruiting'
+    },
+    'finance': {
+      defaultFee: 28000,
+      nonObvious: 'CFO transitions, audit firm changes and SEC filing anomalies visible weeks before any job post goes live.',
+      cols: ['Leadership', 'PE / M&A', 'Role 90d+', 'Regulatory'],
+      pills: ['CFO / Controller departure','Audit firm change','IPO / SPAC prep underway','PE-backed portfolio company','Revenue restatement filed','Rapid headcount growth','ERP system migration','Same finance role open 90d+'],
+      hotLabel: '2+ signals = act now',
+      companies: [
+        { name: 'Meridian Finance Co',    s:[1,1,1,0], heat:'Hot' },
+        { name: 'Vance Capital Group',    s:[0,1,1,1], heat:'Hot' },
+        { name: 'Orion Accounting',       s:[1,0,0,0], heat:'Watch' },
+        { name: 'Summit CFO Partners',    s:[0,0,1,0], heat:'Monitor' }
+      ],
+      curveLabel: 'Early Adopters — finance recruiting'
+    },
+    'manufacturing': {
+      defaultFee: 12000,
+      nonObvious: 'Plant expansions, capacity changes and supplier contracts buried in regional trade press and local business journals.',
+      cols: ['Leadership', 'Expansion', 'Role 60d+', 'Contract win'],
+      pills: ['Plant expansion announced','New production line investment','Key plant manager departed','Government contract awarded','Seasonal ramp-up window','Supply chain reshoring news','Safety incident — compliance hire','Same supervisor role open 60d+'],
+      hotLabel: '2+ signals = act now',
+      companies: [
+        { name: 'Atlas Industrial',       s:[1,1,1,0], heat:'Hot' },
+        { name: 'Midwest Fabrication Co', s:[0,1,1,1], heat:'Hot' },
+        { name: 'Regency Steel',          s:[1,0,0,0], heat:'Watch' },
+        { name: 'Crane & Assoc.',         s:[0,0,1,0], heat:'Monitor' }
+      ],
+      curveLabel: 'Early Adopters — manufacturing staffing'
+    },
+    'healthcare': {
+      defaultFee: 15000,
+      nonObvious: 'Hospital mergers, rural clinic openings and CMS regulatory changes buried in Modern Healthcare and local health journals.',
+      cols: ['Leadership', 'M&A / Expansion', 'Role 60d+', 'Regulatory'],
+      pills: ['Hospital merger / acquisition','New clinic or facility opening','Travel nurse contract ending','CMS regulatory change','Key department head departure','State license expansion','Patient volume spike reported','Same clinical role open 60d+'],
+      hotLabel: '2+ signals = act now',
+      companies: [
+        { name: 'Summit Health Group',   s:[1,1,1,0], heat:'Hot' },
+        { name: 'Riverside Med Center',  s:[0,1,1,1], heat:'Hot' },
+        { name: 'Clearfield Clinic',     s:[1,0,0,0], heat:'Watch' },
+        { name: 'Apex Care Network',     s:[0,0,1,0], heat:'Monitor' }
+      ],
+      curveLabel: 'Early Adopters — healthcare staffing'
+    },
+    'va-staffing': {
+      defaultFee: 5000,
+      nonObvious: 'Founders complaining about ops load on LinkedIn and Twitter, bootstrapped companies hitting $1M ARR, agencies posting about team overwhelm.',
+      cols: ['Founder signal', 'Growth signal', 'Role 45d+', 'Team expansion'],
+      pills: ['Founder posts about ops overload','Bootstrapped company hits milestone','Agency scaling rapidly','New product launch needs support','Key VA / EA departure','First full-time hire announced','Remote-first company expanding','Same ops role open 45d+'],
+      hotLabel: '2+ signals = act now',
+      companies: [
+        { name: 'GrowthOps Agency',     s:[1,1,1,0], heat:'Hot' },
+        { name: 'Nomad Ventures',       s:[0,1,1,1], heat:'Hot' },
+        { name: 'Solo Founders Club',   s:[1,0,0,0], heat:'Watch' },
+        { name: 'Remote Scale Co',      s:[0,0,1,0], heat:'Monitor' }
+      ],
+      curveLabel: 'Early Adopters — VA staffing'
+    }
+  };
+
+  const heatClass = { Hot:'b-danger', Watch:'b-warn', Monitor:'b-info' };
+
+  function applyNiche(key, el) {
+    const d = NICHES[key];
+    if (!d) return;
+
+    // update non-obvious text
+    document.getElementById('niche-nonoby').textContent = d.nonObvious;
+
+    // update pills (8 regular + 1 hot)
+    const pillsEl = document.getElementById('niche-pills');
+    pillsEl.innerHTML = d.pills.map(p => `<span class="pill">${p}</span>`).join('') +
+      `<span class="pill-hot">${d.hotLabel}</span>`;
+
+    // update table header cols
+    const head = document.getElementById('niche-table-head');
+    const headCols = head.querySelectorAll('div');
+    d.cols.forEach((c, i) => { headCols[i + 1].textContent = c; });
+
+    // update table rows
+    const rowsEl = document.getElementById('niche-table-rows');
+    rowsEl.innerHTML = d.companies.map((co, idx) => {
+      const isLast = idx === d.companies.length - 1;
+      const border = isLast ? '' : 'border-bottom:1px solid var(--border);';
+      const cells = co.s.map(v => v
+        ? `<div style="text-align:center;color:var(--accent);font-size:14px">✓</div>`
+        : `<div style="text-align:center;color:var(--subtle)">—</div>`
+      ).join('');
+      return `<div style="display:grid;grid-template-columns:130px repeat(4,1fr) 72px;padding:8px 14px;${border}align-items:center">
+        <div style="font-weight:500;color:var(--text)">${co.name}</div>
+        ${cells}
+        <div style="text-align:center"><span class="badge ${heatClass[co.heat]}">${co.heat}</span></div>
+      </div>`;
+    }).join('');
+
+    // update s-curve label
+    document.getElementById('niche-curve-lbl').textContent = d.curveLabel;
+
+    // update calculator default fee
+    const feeInput = document.getElementById('inp-fee');
+    if (feeInput) { feeInput.value = d.defaultFee; calcUpdate(); }
+
+    // update active state in panel
+    document.querySelectorAll('.niche-opt').forEach(o => o.classList.remove('active'));
+    if (el) el.classList.add('active');
+
+    // close panel
+    document.getElementById('nichePanel').classList.remove('open');
+  }
+
+  function toggleNichePanel() {
+    document.getElementById('nichePanel').classList.toggle('open');
+  }
+
+  document.addEventListener('click', e => {
+    if (!e.target.closest('.niche-panel') && !e.target.closest('.niche-btn')) {
+      document.getElementById('nichePanel').classList.remove('open');
+    }
+  });
+
+  // init default niche
+  applyNiche('exec-tech', document.querySelector('.niche-opt'));
 
   function revealChart(el) {
     const svg = el.nextElementSibling;

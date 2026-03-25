@@ -89,6 +89,30 @@ body { padding: 0 24px 80px; }
   font-size: 13px; color: var(--muted); line-height: 1.6;
 }
 
+/* ── tools table ── */
+.tools-section { margin-top: 48px; }
+.tools-table { width: 100%; border-collapse: collapse; background: white; border-radius: 10px; overflow: hidden; border: 1px solid var(--border); }
+.tools-table thead { background: var(--bg2); }
+.tools-table th { font-size: 10px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--subtle); padding: 10px 14px; text-align: left; border-bottom: 1px solid var(--border-s); }
+.tools-table td { font-size: 13px; color: var(--muted); padding: 10px 14px; border-bottom: 1px solid var(--border); vertical-align: top; line-height: 1.45; }
+.tools-table tr:last-child td { border-bottom: none; }
+.tools-table tr:hover td { background: var(--bg); }
+.td-tool { color: var(--text); font-weight: 500; white-space: nowrap; }
+.td-phase { font-size: 11px; }
+.td-cost { white-space: nowrap; font-variant-numeric: tabular-nums; }
+.td-free { color: var(--accent); font-weight: 500; }
+
+/* ── first steps ── */
+.firststeps-section { margin-top: 40px; }
+.firststeps-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 16px; }
+.fs-card {
+  background: white; border: 1px solid var(--border-s);
+  border-radius: 10px; padding: 18px 18px 16px;
+}
+.fs-num { font-size: 28px; font-family: var(--serif); color: var(--bg3); line-height: 1; margin-bottom: 10px; }
+.fs-title { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 6px; }
+.fs-body { font-size: 12px; color: var(--muted); line-height: 1.6; }
+
 /* ── copy examples ── */
 .examples-section { margin-top: 48px; }
 .examples-intro { font-size: 14px; color: var(--muted); margin-bottom: 24px; line-height: 1.65; max-width: 580px; }
@@ -306,9 +330,10 @@ body { padding: 0 24px 80px; }
   .pipeline-section { break-inside: avoid; }
 }
 @media (max-width: 640px) {
-  .compare-row, .example-variants { grid-template-columns: 1fr; }
+  .compare-row, .example-variants, .firststeps-grid { grid-template-columns: 1fr; }
   .footer-cta, .approach-row { flex-direction: column; }
   .header { padding: 36px 24px 32px; }
+  .tools-table .td-phase { display: none; }
 }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
@@ -366,12 +391,24 @@ mermaid.initialize({
       </div>
       <div class="toc-item">
         <span class="toc-num">04</span>
-        <span class="toc-label">Copy templates</span>
+        <span class="toc-label">Full tool stack</span>
         <span class="toc-line"></span>
-        <span class="toc-desc">3 real examples — one per signal type</span>
+        <span class="toc-desc">every tool, what it does, what it costs</span>
       </div>
       <div class="toc-item">
         <span class="toc-num">05</span>
+        <span class="toc-label">Where to start this week</span>
+        <span class="toc-line"></span>
+        <span class="toc-desc">3 first steps in the right order</span>
+      </div>
+      <div class="toc-item">
+        <span class="toc-num">06</span>
+        <span class="toc-label">Copy templates</span>
+        <span class="toc-line"></span>
+        <span class="toc-desc">Direct + Connector — 3 signal types</span>
+      </div>
+      <div class="toc-item">
+        <span class="toc-num">07</span>
         <span class="toc-label">Done for you</span>
         <span class="toc-line"></span>
         <span class="toc-desc">if you'd rather not run this yourself</span>
@@ -731,6 +768,93 @@ flowchart TD
       </div>
     </div>
 
+  </div>
+
+  <!-- TOOLS TABLE -->
+  <div class="tools-section">
+    <div class="section-title">The full tool stack</div>
+    <table class="tools-table">
+      <thead>
+        <tr>
+          <th>Tool</th>
+          <th>Phase</th>
+          <th>What it does</th>
+          <th>Cost</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="td-tool">LinkedIn Sales Navigator</td>
+          <td class="td-phase">Signal detection · Enrichment</td>
+          <td>Track executive moves, monitor hiring activity, find decision makers</td>
+          <td class="td-cost">~$100/mo</td>
+        </tr>
+        <tr>
+          <td class="td-tool">Crunchbase</td>
+          <td class="td-phase">Signal detection</td>
+          <td>Funding rounds — the highest-intent signal for recruiting BD</td>
+          <td class="td-cost">Free / $29+/mo</td>
+        </tr>
+        <tr>
+          <td class="td-tool">Google Alerts</td>
+          <td class="td-phase">Signal detection</td>
+          <td>M&A activity, leadership changes, trade press coverage — set and forget</td>
+          <td class="td-cost td-free">Free</td>
+        </tr>
+        <tr>
+          <td class="td-tool">Apollo.io</td>
+          <td class="td-phase">Lead enrichment</td>
+          <td>Pull verified emails and LinkedIn profiles for decision makers at scale</td>
+          <td class="td-cost">$50–150/mo</td>
+        </tr>
+        <tr>
+          <td class="td-tool">Millionverifier</td>
+          <td class="td-phase">Email verification</td>
+          <td>Verify emails before upload — keeps bounce rate under 3% and protects sender rep</td>
+          <td class="td-cost">~$20–40/mo</td>
+        </tr>
+        <tr>
+          <td class="td-tool">PlusVibe</td>
+          <td class="td-phase">Warmup · Sending</td>
+          <td>Handles both account warmup and outreach sending — one tool for the full send layer</td>
+          <td class="td-cost">$30–80/mo</td>
+        </tr>
+        <tr>
+          <td class="td-tool">Instantly / Smartlead</td>
+          <td class="td-phase">Sending (alternative)</td>
+          <td>Sequencing and sending at scale — use alongside or instead of PlusVibe depending on volume</td>
+          <td class="td-cost">$37–100/mo</td>
+        </tr>
+        <tr>
+          <td class="td-tool">Google Postmaster</td>
+          <td class="td-phase">Deliverability monitoring</td>
+          <td>Track domain reputation for Google Workspace sends — catch issues before permanent damage</td>
+          <td class="td-cost td-free">Free</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- FIRST STEPS -->
+  <div class="firststeps-section">
+    <div class="section-title">Where to start this week</div>
+    <div class="firststeps-grid">
+      <div class="fs-card">
+        <div class="fs-num">01</div>
+        <div class="fs-title">Buy your sending domain today</div>
+        <div class="fs-body">Not next week — today. Warmup takes 3–4 weeks minimum. Every day you wait is a day you can't send. Pick a domain close to your main one and start warmup immediately.</div>
+      </div>
+      <div class="fs-card">
+        <div class="fs-num">02</div>
+        <div class="fs-title">Set up one signal source</div>
+        <div class="fs-body">Pick the highest-signal source for your niche — usually Crunchbase for funding or LinkedIn Jobs for active hiring. Get alerts running before you do anything else. Signals without infrastructure are still useful for timing.</div>
+      </div>
+      <div class="fs-card">
+        <div class="fs-num">03</div>
+        <div class="fs-title">Write copy for one signal type</div>
+        <div class="fs-body">Don't write generic sequences. Pick one trigger — funding round, leadership change, or 5+ open roles — and write a 3-step sequence specifically for that signal. Test it before scaling.</div>
+      </div>
+    </div>
   </div>
 
   <!-- COPY EXAMPLES -->

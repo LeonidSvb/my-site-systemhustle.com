@@ -173,7 +173,7 @@
 
   <div class="header">
     <div class="brand">System Hustle</div>
-    <h1 class="client-name">Hey Rob,<br>here's what we discussed.</h1>
+    <h1 class="client-name" id="el-greeting"></h1>
     <div class="sub">As agreed on our call — here's a quick summary before you get started.</div>
   </div>
 
@@ -181,31 +181,24 @@
 
   <div>
     <div class="section-label">What's included</div>
-    <ul class="scope-list">
-      <li><strong>Weekly signal report</strong> — scored and prioritized leads in your niche with timing context</li>
-      <li><strong>Warm introductions</strong> — I reach out on your behalf and set the frame before you call</li>
-      <li><strong>Ongoing monitoring</strong> — leadership changes, licensing signals, trade press, contract awards</li>
-      <li><strong>Monthly check-in</strong> — we review what converted, adjust targeting as needed</li>
-    </ul>
+    <ul class="scope-list" id="el-scope"></ul>
   </div>
 
   <div class="meta-row">
     <div class="meta-cell">
       <div class="meta-label">Investment</div>
-      <div class="meta-value">$2,500</div>
+      <div class="meta-value" id="el-price"></div>
       <div class="meta-sub">per month</div>
     </div>
     <div class="meta-cell">
       <div class="meta-label">Start date</div>
-      <div class="meta-value">This week</div>
+      <div class="meta-value" id="el-start">This week</div>
       <div class="meta-sub">first leads within 5 days</div>
     </div>
   </div>
 
   <div class="pay-block">
-    <a class="pay-btn" href="YOUR_PAYMENT_LINK_HERE" target="_blank">
-      Get started — $2,500
-    </a>
+    <a class="pay-btn" id="el-paybtn" href="#" target="_blank"></a>
     <div class="pay-note">Secure payment via Stripe. Once confirmed, I'll reach out within 24h to kick things off.</div>
   </div>
 
@@ -217,5 +210,34 @@
   </div>
 
 </div>
+
+<script>
+  const p = new URLSearchParams(window.location.search);
+
+  const name  = p.get('name')  || 'there';
+  const price = p.get('price') || '2500';
+  const pay   = p.get('pay')   || '#';
+  const start = p.get('start') || 'This week';
+
+  // scope: pipe-separated string, e.g. scope=Weekly+signal+report|Warm+intros|Monitoring
+  const scopeRaw = p.get('scope') || 'Weekly signal report — scored leads in your market|Warm introductions — I set the frame before you call|Ongoing monitoring — leadership changes, licensing, trade press|Monthly check-in — review, adjust, iterate';
+  const scopeItems = scopeRaw.split('|');
+
+  document.getElementById('el-greeting').innerHTML = 'Hey ' + name + ',<br>here\'s what we discussed.';
+  document.getElementById('el-price').textContent = '$' + price;
+  document.getElementById('el-start').textContent = start;
+  document.getElementById('el-paybtn').textContent = 'Get started — $' + price;
+  document.getElementById('el-paybtn').href = pay;
+
+  const scopeEl = document.getElementById('el-scope');
+  scopeItems.forEach(item => {
+    const parts = item.split(' — ');
+    const li = document.createElement('li');
+    li.innerHTML = parts.length > 1
+      ? '<strong>' + parts[0] + '</strong> — ' + parts.slice(1).join(' — ')
+      : item;
+    scopeEl.appendChild(li);
+  });
+</script>
 </body>
 </html>

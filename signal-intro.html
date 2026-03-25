@@ -282,6 +282,18 @@
     font-size: 11px; color: var(--subtle);
     letter-spacing: .05em;
   }
+
+  [data-reveal] {
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.35s ease, transform 0.35s ease;
+    pointer-events: none;
+  }
+  [data-reveal].shown {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
 </style>
 </head>
 <body>
@@ -295,8 +307,8 @@
     <div class="slide active" id="s0">
       <div class="slide-tag">Before our call</div>
       <h1 class="slide-title">I'm Leonid.<br>I help recruiting agencies<br>build a <span class="green">predictable pipeline</span> —<br>without ad spend.</h1>
-      <p class="lead">I run <strong>System Hustle</strong> — a signal-based BD service for recruiting and staffing agencies. Instead of cold outreach and job board monitoring, I identify companies with active hiring pain before they go public — and introduce your firm at exactly the right moment.</p>
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px">
+      <p class="lead" data-reveal>I run <strong>System Hustle</strong> — a signal-based BD service for recruiting and staffing agencies. Instead of cold outreach and job board monitoring, I identify companies with active hiring pain before they go public — and introduce your firm at exactly the right moment.</p>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px" data-reveal>
         <div class="card">
           <div style="font-family:var(--serif);font-size:36px;color:var(--accent);line-height:1">22</div>
           <div style="font-size:12px;color:var(--muted);line-height:1.4">placements in 55 days<br><span style="color:var(--subtle)">Elate Staffing Solutions</span></div>
@@ -316,15 +328,15 @@
     <div class="slide" id="s1-prob">
       <div class="slide-tag">Before our call</div>
       <h1 class="slide-title">Your best clients came from referrals.<br>Your <em>growth</em> depends on something <span class="red">you can't control.</span></h1>
-      <p class="lead">Most recruiting agencies I talk to have the same setup: a solid reputation, good relationships — and a pipeline that's completely unpredictable. Some months are great. Others, the phone doesn't ring.</p>
-      <div class="two-col">
+      <p class="lead" data-reveal>Most recruiting agencies I talk to have the same setup: a solid reputation, good relationships — and a pipeline that's completely unpredictable. Some months are great. Others, the phone doesn't ring.</p>
+      <div class="two-col" data-reveal>
         <div class="card">
           <div class="card-h">Referrals <span class="badge b-warn">uncontrollable</span></div>
           <div class="card-b">You can't predict when they come in, you can't scale them, and you can't build a growth plan around them.</div>
         </div>
         <div class="card">
           <div class="card-h">DIY outreach <span class="badge b-warn">arriving late</span></div>
-          <div class="card-b">Cold calls and job board monitoring feel productive — until you find out three other agencies already called the same facility this week.</div>
+          <div class="card-b">Cold calls and job board monitoring feel productive — until you find out three other agencies already called the same company this week.</div>
         </div>
       </div>
     </div>
@@ -333,12 +345,12 @@
     <div class="slide" id="s1">
       <div class="slide-tag">The real problem</div>
       <h1 class="slide-title">It's not effort.<br>It's <em>timing.</em> You're arriving <span class="red">too late.</span></h1>
-      <p class="lead">By the time a facility shows up on a job board or submits a request — they've already talked to your competitors. You're not losing because you're worse. <strong>You're losing because you're fifth.</strong></p>
-      <div class="timeline">
+      <p class="lead" data-reveal>By the time a company posts a job or submits a request — they've already talked to your competitors. You're not losing because you're worse. <strong>You're losing because you're fifth.</strong></p>
+      <div class="timeline" data-reveal>
         <div class="tl-block">
           <div class="tl-label">Week 1–2</div>
           <div class="tl-title">Pain starts</div>
-          <div class="tl-sub">Facility realizes they have a coverage gap. No one knows yet.</div>
+          <div class="tl-sub">Company realizes they have a hiring gap. No one knows yet.</div>
         </div>
         <div class="tl-block hot">
           <div class="tl-label">Week 2–4 — the window</div>
@@ -361,12 +373,12 @@
     <!-- 3: The Cost -->
     <div class="slide" id="s2">
       <div class="slide-tag">What this costs</div>
-      <h1 class="slide-title">Every week there are facilities in your market <span class="red">in pain right now.</span><br>You don't know who they are.</h1>
-      <p class="lead">They haven't posted a job. They haven't called an agency. They're in the window — <strong>2 to 4 weeks before they go public.</strong> That's when the deal is won. Not after the job post goes live.</p>
-      <div class="big-stat">
+      <h1 class="slide-title">Every week there are companies in your market <span class="red">in pain right now.</span><br>You don't know who they are.</h1>
+      <p class="lead" data-reveal>They haven't posted a job. They haven't called an agency. They're in the window — <strong>2 to 4 weeks before they go public.</strong> That's when the deal is won. Not after the job post goes live.</p>
+      <div class="big-stat" data-reveal>
         <div class="stat">
           <div class="stat-num">4–6</div>
-          <div class="stat-label">agencies already contacted before a facility posts publicly</div>
+          <div class="stat-label">agencies already contacted before a company posts publicly</div>
         </div>
         <div class="stat">
           <div class="stat-num" style="color:var(--amber)">2–4</div>
@@ -383,47 +395,45 @@
     <div class="slide" id="s3">
       <div class="slide-tag">What I do</div>
       <h1 class="slide-title">I monitor the layer <em>before</em> the job post.<br>Then I bring you in <span class="green">first.</span></h1>
-      <p class="lead">Not job boards. Not LinkedIn. The signals that show a facility is about to need coverage — weeks before they call anyone.</p>
-      <div class="signal-row">
-        <div class="signal-item">
-          <div class="signal-dot"></div>
-          <div class="signal-text"><strong>Leadership changes</strong> — new medical director, administrator turnover, department head departure. Coverage gaps follow within weeks.</div>
-        </div>
-        <div class="signal-item">
-          <div class="signal-dot"></div>
-          <div class="signal-text"><strong>Regulatory and licensing signals</strong> — filings, expansions, compliance changes that precede staffing needs by 3–6 weeks.</div>
-        </div>
-        <div class="signal-item">
-          <div class="signal-dot"></div>
-          <div class="signal-text"><strong>Trade press and contract signals</strong> — growth announcements, M&A activity, government contracts awarded. All visible before anyone posts a job.</div>
-        </div>
+      <p class="lead" data-reveal>Not job boards. Not LinkedIn. The signals that show a company is about to need a hire — weeks before they call anyone.</p>
+      <div class="signal-item" data-reveal>
+        <div class="signal-dot"></div>
+        <div class="signal-text"><strong>Leadership changes</strong> — new executives, department head departure, management restructure. Hiring needs follow within weeks.</div>
       </div>
-      <p class="lead" style="font-size:14px">I score these signals, stack them by urgency, and introduce you to the right facility at the right moment — <strong>as a referral, not a cold call.</strong></p>
+      <div class="signal-item" data-reveal>
+        <div class="signal-dot"></div>
+        <div class="signal-text"><strong>Regulatory and licensing signals</strong> — filings, expansions, compliance changes that precede staffing needs by 3–6 weeks.</div>
+      </div>
+      <div class="signal-item" data-reveal>
+        <div class="signal-dot"></div>
+        <div class="signal-text"><strong>Growth and contract signals</strong> — funding rounds, new contracts, M&A activity. All visible before anyone posts a job.</div>
+      </div>
+      <p class="lead" style="font-size:14px" data-reveal>I score these, stack them by urgency, and introduce you at the right moment — <strong>as a referral, not a cold call.</strong></p>
     </div>
 
     <!-- 5: What's coming -->
     <div class="slide" id="s4">
       <div class="slide-tag">Our call</div>
-      <h1 class="slide-title">On our call, I'll show you<br>exactly <span class="green">what's live<br>in your market</span> right now.</h1>
+      <h1 class="slide-title">Here's what<br>we'll cover<br>on our call.</h1>
       <div class="agenda">
-        <div class="agenda-item">
+        <div class="agenda-item" data-reveal>
           <div class="agenda-num">01</div>
           <div class="agenda-text"><strong>Your current BD setup</strong> — how you're finding new clients today and where the gaps are</div>
         </div>
-        <div class="agenda-item">
+        <div class="agenda-item" data-reveal>
           <div class="agenda-num">02</div>
-          <div class="agenda-text"><strong>What signals look like in your market</strong> — I'll walk you through what's active in your niche right now and how I score it</div>
+          <div class="agenda-text"><strong>What signals look like in your market</strong> — what I'm monitoring, how I score it, what the window actually looks like</div>
         </div>
-        <div class="agenda-item">
+        <div class="agenda-item" data-reveal>
           <div class="agenda-num">03</div>
-          <div class="agenda-text"><strong>What this looks like in practice</strong> — how I introduce you, what the facility already knows before your call</div>
+          <div class="agenda-text"><strong>What this looks like in practice</strong> — how I introduce you, what the company already knows before your call</div>
         </div>
-        <div class="agenda-item">
+        <div class="agenda-item" data-reveal>
           <div class="agenda-num">04</div>
           <div class="agenda-text"><strong>Whether it's a fit</strong> — no pressure, we'll know in 40 minutes if this makes sense for you</div>
         </div>
       </div>
-      <p class="lead" style="font-size:14px; margin-top:4px">See you on the call. <strong style="color:var(--text)">— Leonid</strong></p>
+      <p class="lead" style="font-size:14px; margin-top:4px" data-reveal>See you on the call. <strong style="color:var(--text)">— Leonid</strong></p>
     </div>
 
   </div>
@@ -443,25 +453,55 @@
   const navCount = document.getElementById('nav-count');
   let cur = 0;
 
-  function go(dir) {
-    const next = cur + dir;
-    if (next < 0 || next >= slides.length) return;
-    slides[cur].classList.remove('active');
-    slides[cur].classList.add('out');
-    setTimeout(() => slides[cur].classList.remove('out'), 400);
-    cur = next;
-    slides[cur].classList.add('active');
-    pbar.style.width = ((cur + 1) / slides.length * 100) + '%';
-    btnPrev.disabled = cur === 0;
-    btnNext.disabled = cur === slides.length - 1;
-    navCount.textContent = (cur + 1) + ' / ' + slides.length;
+  function reveal(slideEl) {
+    const hidden = slideEl.querySelectorAll('[data-reveal]:not(.shown)');
+    if (hidden.length > 0) {
+      hidden[0].classList.add('shown');
+      return true; // revealed something, stay on slide
+    }
+    return false; // nothing left to reveal
+  }
 
+  function hideReveals(slideEl) {
+    slideEl.querySelectorAll('[data-reveal].shown').forEach(el => el.classList.remove('shown'));
+  }
+
+  function updateNav() {
+    btnPrev.disabled = cur === 0;
+    btnNext.disabled = cur === slides.length - 1 &&
+      slides[cur].querySelectorAll('[data-reveal]:not(.shown)').length === 0;
+    navCount.textContent = (cur + 1) + ' / ' + slides.length;
+    pbar.style.width = ((cur + 1) / slides.length * 100) + '%';
+  }
+
+  function go(dir) {
+    if (dir === 1) {
+      if (reveal(slides[cur])) { updateNav(); return; }
+      const next = cur + 1;
+      if (next >= slides.length) return;
+      slides[cur].classList.remove('active');
+      slides[cur].classList.add('out');
+      setTimeout(() => slides[cur].classList.remove('out'), 400);
+      cur = next;
+      slides[cur].classList.add('active');
+    } else {
+      if (cur === 0) return;
+      hideReveals(slides[cur]);
+      slides[cur].classList.remove('active');
+      slides[cur].classList.add('out');
+      setTimeout(() => slides[cur].classList.remove('out'), 400);
+      cur -= 1;
+      slides[cur].classList.add('active');
+    }
+    updateNav();
   }
 
   document.addEventListener('keydown', e => {
     if (e.key === 'ArrowRight' || e.key === 'ArrowDown') go(1);
     if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') go(-1);
   });
+
+  updateNav();
 </script>
 </body>
 </html>

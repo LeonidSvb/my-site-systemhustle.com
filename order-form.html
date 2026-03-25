@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>System Hustle — Getting Started</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:      #fafaf8;
+    --bg2:     #f2f1ed;
+    --border:  rgba(0,0,0,0.08);
+    --border-s:rgba(0,0,0,0.14);
+    --text:    #1a1a18;
+    --muted:   #6b6b66;
+    --subtle:  #a8a8a2;
+    --accent:  #2a6b3c;
+    --serif:   'DM Serif Display', Georgia, serif;
+    --sans:    'DM Sans', system-ui, sans-serif;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    padding: 64px 24px 80px;
+  }
+
+  .wrap {
+    width: 100%;
+    max-width: 560px;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+  }
+
+  /* header */
+  .header {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .brand {
+    font-size: 11px; font-weight: 500;
+    letter-spacing: .12em; text-transform: uppercase;
+    color: var(--subtle);
+  }
+  .client-name {
+    font-family: var(--serif);
+    font-size: 32px;
+    line-height: 1.2;
+    color: var(--text);
+  }
+  .sub {
+    font-size: 14px;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+
+  /* divider */
+  .div { height: 1px; background: var(--border); }
+
+  /* scope block */
+  .section-label {
+    font-size: 10px; font-weight: 500;
+    letter-spacing: .1em; text-transform: uppercase;
+    color: var(--subtle);
+    margin-bottom: 14px;
+  }
+
+  .scope-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    list-style: none;
+  }
+  .scope-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--muted);
+  }
+  .scope-list li::before {
+    content: '';
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    flex-shrink: 0;
+    margin-top: 7px;
+  }
+  .scope-list li strong { color: var(--text); font-weight: 500; }
+
+  /* meta row */
+  .meta-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .meta-cell {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .meta-label {
+    font-size: 10px; font-weight: 500;
+    letter-spacing: .08em; text-transform: uppercase;
+    color: var(--subtle);
+  }
+  .meta-value {
+    font-size: 20px;
+    font-family: var(--serif);
+    color: var(--text);
+    line-height: 1.2;
+  }
+  .meta-sub {
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  /* pay button */
+  .pay-block {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .pay-btn {
+    display: block;
+    width: 100%;
+    padding: 16px;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 500;
+    font-family: var(--sans);
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    transition: opacity .15s;
+  }
+  .pay-btn:hover { opacity: .88; }
+  .pay-note {
+    font-size: 12px;
+    color: var(--subtle);
+    text-align: center;
+    line-height: 1.5;
+  }
+
+  /* footer */
+  .footer {
+    font-size: 12px;
+    color: var(--subtle);
+    line-height: 1.6;
+  }
+  .footer a { color: var(--muted); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="header">
+    <div class="brand">System Hustle</div>
+    <h1 class="client-name">Hey Rob,<br>here's what we discussed.</h1>
+    <div class="sub">As agreed on our call — here's a quick summary before you get started.</div>
+  </div>
+
+  <div class="div"></div>
+
+  <div>
+    <div class="section-label">What's included</div>
+    <ul class="scope-list">
+      <li><strong>Weekly signal report</strong> — scored and prioritized leads in your niche with timing context</li>
+      <li><strong>Warm introductions</strong> — I reach out on your behalf and set the frame before you call</li>
+      <li><strong>Ongoing monitoring</strong> — leadership changes, licensing signals, trade press, contract awards</li>
+      <li><strong>Monthly check-in</strong> — we review what converted, adjust targeting as needed</li>
+    </ul>
+  </div>
+
+  <div class="meta-row">
+    <div class="meta-cell">
+      <div class="meta-label">Investment</div>
+      <div class="meta-value">$2,500</div>
+      <div class="meta-sub">per month</div>
+    </div>
+    <div class="meta-cell">
+      <div class="meta-label">Start date</div>
+      <div class="meta-value">This week</div>
+      <div class="meta-sub">first leads within 5 days</div>
+    </div>
+  </div>
+
+  <div class="pay-block">
+    <a class="pay-btn" href="YOUR_PAYMENT_LINK_HERE" target="_blank">
+      Get started — $2,500
+    </a>
+    <div class="pay-note">Secure payment via Stripe. Once confirmed, I'll reach out within 24h to kick things off.</div>
+  </div>
+
+  <div class="div"></div>
+
+  <div class="footer">
+    Questions? Reply to my email or reach me at <a href="mailto:leo@systemhustle.com">leo@systemhustle.com</a><br>
+    — Leonid, System Hustle
+  </div>
+
+</div>
+</body>
+</html>

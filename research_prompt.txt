@@ -1,0 +1,190 @@
+You are helping me prepare for a sales call with a recruiting agency / recruiter.
+I am a BD connector who does signal-based outreach on their behalf — I monitor
+market signals, identify companies with active hiring pain, and introduce
+recruiters as warm referrals at exactly the right moment.
+
+My pitch has the following key elements:
+1. Their BD time costs them $X/month (we calculate on the call)
+2. They're missing live hiring signals in their niche right now
+3. I refer them as a warm recommendation — not a cold vendor
+4. Early adopter window is open but closing
+
+---
+
+RECRUITER/AGENCY TO RESEARCH:
+Name / Agency: [INSERT]
+Website: [INSERT]
+LinkedIn: [INSERT]
+
+---
+
+## HOW TO SEARCH WITH EXA AI
+
+Use the Exa AI API for all research. Base URL: https://api.exa.ai/search
+API key: stored in env as EXA_API_KEY (or ask user if not set)
+
+### Key parameters:
+```json
+{
+  "query": "...",
+  "type": "neural",         // use "neural" for semantic/company research
+  "type": "keyword",        // use "keyword" for exact job title / company name lookup
+  "numResults": 5,
+  "startPublishedDate": "2025-09-01T00:00:00Z",  // for fresh signals: ~6 months back
+  "contents": {
+    "text": true            // always request full text, not just URL
+  }
+}
+```
+
+### Search strategy — run these IN PARALLEL (4 searches simultaneously):
+
+**Search 1 — About the recruiter (neural):**
+"[Agency name] recruiting firm [their niche] specialization clients"
+type: neural, numResults: 5
+
+**Search 2 — Live signals in their niche (neural):**
+"[niche keyword] staffing shortage hiring pain [geography if known] 2025 2026"
+type: neural, numResults: 7, startPublishedDate: 2025-09-01
+
+**Search 3 — Job postings as signal source (keyword):**
+"[niche specialty] open position hiring site:linkedin.com OR site:indeed.com"
+type: keyword, numResults: 5, startPublishedDate: 2025-10-01
+
+**Search 4 — Trade news / industry signals (neural):**
+"[niche] agency executive departure funding acquisition 2025 2026"
+type: neural, numResults: 5, startPublishedDate: 2025-06-01
+
+### Critical sourcing notes:
+- Job board postings (Indeed, LinkedIn, ZipRecruiter) often HIDE the facility/company name
+  behind "confidential employer" — use them for signal type and specialty, not company name
+- Careers pages can be stale (posted 6+ months ago) — always check publish date
+- Trade press (Becker's, Modern Healthcare, Staffing Industry Analysts) = most reliable
+- LinkedIn company pages: follower growth % is a real growth signal
+- If you can't find 3 real verified examples — say so explicitly. Do NOT fabricate.
+
+### How to use Exa results:
+1. Read the full `text` field, not just the snippet
+2. Look for: company name + signal type + recency (date published)
+3. Cross-reference: if a company appears in 2+ separate searches = stronger signal
+4. If facility name is hidden in a job posting — note "facility name not disclosed,
+   signal verified via [source]" rather than guessing the name
+
+---
+
+WHAT I NEED YOU TO FIND:
+
+1. SPECIALIZATION & NICHE
+- What exact niche do they serve? (e.g. locum tenens physician staffing,
+  manufacturing staffing, SaaS sales roles, etc.)
+- Seniority level they place? (C-suite, mid-level, hourly workers?)
+- Geography focus?
+- Any visible positioning or differentiation on their site?
+
+2. ESTIMATED PLACEMENT FEE
+- Any pricing signals on their site or LinkedIn?
+- Based on their niche and seniority — what's the realistic range?
+  (Standard is 15-25% of annual salary — estimate if not visible)
+  (Locum tenens: fee is typically per-hour or flat $20-40k per permanent placement)
+- What's the likely average annual salary or contract value of roles they place?
+- Therefore: estimated fee per placement = ?
+
+3. LIVE SIGNALS IN THEIR NICHE RIGHT NOW
+Search for companies in their specific niche that are showing
+hiring pain signals. Find at least 3 real examples:
+
+For each company find:
+[ ] Company name + what they do (if not confidential)
+[ ] Signal type (choose all that apply):
+    - Job posted 60+ days with no fill
+    - Multiple open roles simultaneously
+    - New CEO / leadership change (last 6 months)
+    - New funding round (Crunchbase / LinkedIn)
+    - Executive departure
+    - M&A activity
+    - Coverage in niche trade press suggesting growth/change
+    - Government contract awarded (especially VA/DoD/correctional for healthcare)
+[ ] Source URL where you found this
+[ ] Date published / signal recency
+[ ] Why this is relevant to THIS recruiter specifically
+
+4. THEIR CURRENT BD APPROACH (signals of how they get clients now)
+- Do they post content on LinkedIn? What kind?
+- Any case studies or client logos on their site?
+- Are they active in any communities or associations?
+- Any signs they do outbound? (job boards they post on, etc.)
+- Guess: are they referral-dependent or do they do outbound?
+
+5. PAIN HYPOTHESIS
+Based on everything above, write 2-3 sentences:
+"This recruiter likely struggles with X because Y.
+The strongest signal I can open with is Z."
+
+---
+
+OUTPUT FORMAT:
+
+Return everything as a clean brief I can scan in 2 minutes before the call.
+Use this structure:
+
+## Recruiter snapshot
+[3 lines max — who they are, what they place, where]
+
+## Estimated placement fee
+[Single number or tight range + your reasoning in one line]
+
+## 3 live signals in their niche right now
+[Company / Signal type / Why it matters / Source / Date]
+[Company / Signal type / Why it matters / Source / Date]
+[Company / Signal type / Why it matters / Source / Date]
+
+## Their BD approach (my guess)
+[2-3 lines]
+
+## Opening hook for this specific call
+[One sentence I can literally say in the first 30 seconds
+that references something real about their niche right now]
+
+## What to personalize on slide 2 (money calculator)
+Hourly rate estimate: $___
+Likely hours/week on BD: ___
+Cost per month estimate: $___
+Fee per placement estimate: $___
+-> Monthly opportunity cost if missing 2 signals/week: $___
+
+---
+
+## DECK INJECTION BLOCK
+(Use this to populate the niche selector in signal_pitch_light.html)
+Map findings to this JS structure — paste directly into the NICHES object:
+
+```js
+'[niche-key]': {
+  defaultFee: [fee in dollars, e.g. 28000],
+  nonObvious: [
+    'Signal 1 — one line, what to watch',
+    'Signal 2 — one line, what to watch',
+    'Signal 3 — one line, what to watch',
+  ],
+  cols: ['Facility / Company', 'Signal', 'Recency', 'Priority'],
+  pills: ['Signal Type 1', 'Signal Type 2', 'Signal Type 3', 'Signal Type 4'],
+  hotLabel: 'HOT — [niche-specific urgency label, e.g. "3 locums open 60+ days"]',
+  companies: [
+    ['Company A', 'Signal description', '3 weeks ago', 'HIGH'],
+    ['Company B', 'Signal description', '5 weeks ago', 'MED'],
+    ['Company C', 'Signal description', '2 months ago', 'MED'],
+  ],
+  curveLabel: 'Early Adopters',
+}
+```
+
+Notes on DECK INJECTION:
+- niche-key: short slug, e.g. 'healthcare-staffing', 'exec-tech', 'legal'
+- defaultFee: use your estimated placement fee (integer, no $ sign)
+- nonObvious: 3 signal types that are NOT job boards — these are the "non-obvious layer"
+  that makes the pitch credible (e.g. "locum agency license filings", "DEA registrations",
+  "VA contract awards", "credentialing delays in CAQH")
+- pills: 4 short labels shown as tags on slide 4 (what signals you monitor)
+- hotLabel: appears as a red badge on the highest-priority row — make it specific
+- companies: use real names if found, "Undisclosed Facility" if hidden, never fabricate
+- curveLabel: always just 'Early Adopters' (do not add niche suffix)

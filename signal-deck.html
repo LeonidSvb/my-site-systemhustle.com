@@ -424,6 +424,31 @@
 </head>
 <body>
 
+<div id="gate" style="position:fixed;inset:0;z-index:9999;background:#fafaf8;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;font-family:'DM Sans',system-ui,sans-serif">
+  <div style="font-size:13px;color:#6b6b66;letter-spacing:.05em">Enter password to continue</div>
+  <input id="gate-input" type="password" placeholder="••••••••"
+    style="border:1px solid rgba(0,0,0,.14);border-radius:8px;padding:10px 16px;font-size:15px;outline:none;width:220px;text-align:center;background:#fff"
+    onkeydown="if(event.key==='Enter')checkGate()">
+  <button onclick="checkGate()"
+    style="background:#2a6b3c;color:#fff;border:none;border-radius:8px;padding:9px 28px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit">
+    Open
+  </button>
+  <div id="gate-err" style="font-size:12px;color:#c0392b;display:none">Incorrect password</div>
+</div>
+
+<script>
+  document.getElementById('gate-input').focus();
+  function checkGate() {
+    if (document.getElementById('gate-input').value === '01071999') {
+      document.getElementById('gate').style.display = 'none';
+    } else {
+      document.getElementById('gate-err').style.display = 'block';
+      document.getElementById('gate-input').value = '';
+      document.getElementById('gate-input').focus();
+    }
+  }
+</script>
+
 <button class="niche-btn" onclick="toggleNichePanel()">⊞ Niche</button>
 <div class="niche-panel" id="nichePanel">
   <div class="niche-panel-title">Select niche</div>

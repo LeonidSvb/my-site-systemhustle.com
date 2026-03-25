@@ -252,3 +252,27 @@
 **Он отвлёкся или потерял нить** → *"Let me cut to the thing that's most relevant to you specifically."* Перепрыгни на слайд 4.
 
 **Звонок явно идёт к закрытию раньше** → не дожидайся слайда 7. Остановись на слайде 4–5 и переходи к next steps.
+
+---
+
+## DECK INJECTION — вставь в Custom panel перед звонком
+
+```json
+{
+  "prospectName": "Rob Berton / Locum Tenens USA",
+  "defaultFee": 28000,
+  "nonObvious": "DEA registration applications, FSMB physician license portability filings, and rural hospital financial distress reports — visible weeks before any locum agency gets a call.",
+  "cols": ["Facility", "Specialty", "Signal", "Priority"],
+  "pills": ["Pain Mgmt 60d+ unfilled", "EM coverage gap", "Rural hospital distress", "2026 Match fill rate drop"],
+  "hotLabel": "HOT — Pain Mgmt + EM both active in OR",
+  "companies": [
+    ["Undisclosed OR Pain Clinic", "Pain Management", "Active on LocumTenens.com 60+ days, new listings daily", "HIGH"],
+    ["Rural NE Oregon Hospital", "Emergency Medicine", "Coverage gap confirmed, Barton Associates competing same slot", "HIGH"],
+    ["Undisclosed OR Family Practice", "Family Medicine", "2026 Match lowest fill rate nationally: 83.6%, 899 positions unfilled", "MED"]
+  ],
+  "curveLabel": "Early Adopters"
+}
+```
+
+**Источники:** LocumTenens.com (Pain Mgmt Oregon, live), BartonAssociates.com (OR EM), Medicus HCS / 2026 Match data (Family Medicine fill rate)
+**Примечание:** Названия Oregon-клиник скрыты на job boards — сигналы реальные, объекты confidential. Это нормально — говори *"I'm seeing active pain management openings in your market sitting unfilled 60+ days"*, не называй конкретных имён.

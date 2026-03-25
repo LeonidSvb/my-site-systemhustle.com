@@ -212,32 +212,78 @@
 </div>
 
 <script>
+  const PAYPAL = 'https://paypal.me/LeonidShvorob';
+
+  const TIERS = {
+    pilot: {
+      label: 'Starter Pilot',
+      price: '800',
+      priceLabel: 'one-time payment',
+      start: 'Within 48 hours',
+      startSub: 'kickoff call to finalize targeting',
+      scope: [
+        ['Signal-based targeting setup', 'ICP refinement for your niche in days 1–5'],
+        ['2–3 qualified introductions', 'companies with active hiring pain, pre-qualified before your time'],
+        ['Full transparency', 'shared tracker with signals, outreach status, and outcomes'],
+        ['Pilot debrief', 'review results together by day 30'],
+      ],
+      note: 'One-time offer for new clients only. If you move to the full package, $800 is credited toward month one.',
+      btn: 'Start pilot — $800',
+      guarantee: 'Minimum 2 qualified intros guaranteed. If we don\'t hit 2 by Day 30, we keep working at no cost.',
+    },
+    full: {
+      label: '3-Month Package',
+      price: '3,000',
+      priceLabel: 'per month — $9,000 total',
+      start: 'This week',
+      startSub: 'first intros within 8–21 days',
+      scope: [
+        ['Signal-based targeting', 'ongoing monitoring of hiring triggers in your niche'],
+        ['8–10 qualified introductions', 'over 90 days — pre-qualified, decision-maker engaged'],
+        ['Warm introductions', 'I reach out first and set the frame before you call'],
+        ['Bi-weekly updates', 'progress reports every 2 weeks, shared tracker throughout'],
+        ['Monthly check-in', 'review what converted, adjust targeting as needed'],
+      ],
+      note: 'Payment in 3 monthly installments of $3,000. No penalty to terminate with 30 days notice.',
+      btn: 'Get started — $3,000 first month',
+      guarantee: 'Minimum 8 qualified intros over 90 days. If we fall short, we keep working at no cost.',
+    }
+  };
+
   const p = new URLSearchParams(window.location.search);
-
-  const name  = p.get('name')  || 'there';
-  const price = p.get('price') || '2500';
-  const pay   = p.get('pay')   || '#';
-  const start = p.get('start') || 'This week';
-
-  // scope: pipe-separated string, e.g. scope=Weekly+signal+report|Warm+intros|Monitoring
-  const scopeRaw = p.get('scope') || 'Weekly signal report — scored leads in your market|Warm introductions — I set the frame before you call|Ongoing monitoring — leadership changes, licensing, trade press|Monthly check-in — review, adjust, iterate';
-  const scopeItems = scopeRaw.split('|');
+  const name = p.get('name') || 'there';
+  const tierKey = p.get('tier') === 'full' ? 'full' : 'pilot';
+  const tier = TIERS[tierKey];
 
   document.getElementById('el-greeting').innerHTML = 'Hey ' + name + ',<br>here\'s what we discussed.';
-  document.getElementById('el-price').textContent = '$' + price;
-  document.getElementById('el-start').textContent = start;
-  document.getElementById('el-paybtn').textContent = 'Get started — $' + price;
-  document.getElementById('el-paybtn').href = pay;
+  document.getElementById('el-price').textContent = '$' + tier.price;
+  document.getElementById('el-start').textContent = tier.start;
+  document.getElementById('el-start').nextElementSibling.textContent = tier.startSub;
+  document.getElementById('el-paybtn').textContent = tier.btn;
+  document.getElementById('el-paybtn').href = PAYPAL;
 
+  // inject tier label
+  const brand = document.querySelector('.brand');
+  brand.textContent = 'System Hustle — ' + tier.label;
+
+  // price sub
+  document.querySelector('.meta-cell .meta-sub').textContent = tier.priceLabel;
+
+  // scope
   const scopeEl = document.getElementById('el-scope');
-  scopeItems.forEach(item => {
-    const parts = item.split(' — ');
+  tier.scope.forEach(([title, desc]) => {
     const li = document.createElement('li');
-    li.innerHTML = parts.length > 1
-      ? '<strong>' + parts[0] + '</strong> — ' + parts.slice(1).join(' — ')
-      : item;
+    li.innerHTML = '<strong>' + title + '</strong> — ' + desc;
     scopeEl.appendChild(li);
   });
+
+  // guarantee + note
+  const footer = document.querySelector('.footer');
+  footer.innerHTML =
+    '<div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px 16px;font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:16px">' +
+    tier.guarantee + '</div>' +
+    '<div style="font-size:12px;color:var(--subtle);margin-bottom:12px;line-height:1.5">' + tier.note + '</div>' +
+    'Questions? <a href="mailto:leo@systemhustle.com" style="color:var(--muted)">leo@systemhustle.com</a> — Leonid, System Hustle';
 </script>
 </body>
 </html>

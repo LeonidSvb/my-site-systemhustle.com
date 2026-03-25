@@ -440,8 +440,8 @@
 
   <div class="nav">
     <button class="nav-btn" id="btn-prev" onclick="go(-1)" disabled>← Back</button>
-    <span class="nav-count" id="nav-count">1 / 5</span>
-    <button class="nav-btn" id="btn-next" onclick="go(1)">Next →</button>
+    <span class="nav-count" id="nav-count">1 / 6</span>
+    <button class="nav-btn" id="btn-next" onclick="go(1)">click or → to continue</button>
   </div>
 </div>
 
@@ -499,6 +499,12 @@
   document.addEventListener('keydown', e => {
     if (e.key === 'ArrowRight' || e.key === 'ArrowDown') go(1);
     if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') go(-1);
+  });
+
+  // click anywhere on slide to reveal next block
+  document.getElementById('slides').addEventListener('click', e => {
+    if (e.target.closest('.nav')) return;
+    go(1);
   });
 
   updateNav();

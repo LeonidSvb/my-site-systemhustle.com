@@ -258,9 +258,19 @@
   };
 
   const p = new URLSearchParams(window.location.search);
-  const name = p.get('name') || 'there';
+  const name   = p.get('name')   || 'there';
+  const intros = p.get('intros') || null;
   const tierKey = p.get('tier') === 'full' ? 'full' : 'pilot';
   const tier = TIERS[tierKey];
+
+  if (intros) {
+    tier.scope = tier.scope.map(([title, desc]) =>
+      /qualified introductions/i.test(title)
+        ? [title.replace(/[\d–-]+/, intros), desc.replace(/[\d–-]+ qualified/, intros + ' qualified')]
+        : [title, desc]
+    );
+    tier.guarantee = tier.guarantee.replace(/Minimum [\d–-]+ qualified/, 'Minimum ' + intros + ' qualified');
+  }
 
   document.getElementById('el-greeting').innerHTML = 'Hey ' + name + ',';
   document.getElementById('el-goal').textContent = tier.goal;

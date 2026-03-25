@@ -123,6 +123,11 @@
     </div>
   </div>
 
+  <div class="field">
+    <label>Guaranteed intros</label>
+    <input type="text" id="inp-intros" placeholder="e.g. 2–3 or 8–10" oninput="generate()">
+  </div>
+
   <div class="div"></div>
 
   <div class="output-box" id="output">
@@ -194,9 +199,11 @@ Let me know once done and I'll book the kickoff call within 48h.
   function generate() {
     const name = document.getElementById('inp-name').value.trim();
     const tier = document.querySelector('input[name=tier]:checked').value;
+    const intros = document.getElementById('inp-intros').value.trim();
     if (!name) { document.getElementById('output').classList.remove('visible'); return; }
 
-    const url = BASE + '?name=' + encodeURIComponent(name) + '&tier=' + tier;
+    let url = BASE + '?name=' + encodeURIComponent(name) + '&tier=' + tier;
+    if (intros) url += '&intros=' + encodeURIComponent(intros);
     document.getElementById('url-display').textContent = url;
     document.getElementById('email-preview').textContent = EMAIL[tier](name, url);
     document.getElementById('output').classList.add('visible');

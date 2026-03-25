@@ -369,6 +369,48 @@
     margin: 4px 0;
   }
 
+  .custom-panel {
+    position: fixed; top: 40px; right: 16px; z-index: 101;
+    background: white; border: 1px solid var(--border-s);
+    border-radius: 10px; padding: 14px;
+    box-shadow: 0 4px 20px rgba(0,0,0,.08);
+    display: none; width: 340px;
+  }
+  .custom-panel.open { display: block; }
+  .custom-panel-title {
+    font-size: 9px; font-weight: 500; letter-spacing: .1em;
+    text-transform: uppercase; color: var(--subtle);
+    padding-bottom: 8px; border-bottom: 1px solid var(--border);
+    margin-bottom: 10px;
+  }
+  .custom-textarea {
+    width: 100%; height: 170px;
+    font-family: monospace; font-size: 10.5px; line-height: 1.5;
+    border: 1px solid var(--border-s); border-radius: 6px;
+    padding: 8px; resize: vertical;
+    background: var(--bg2); color: var(--text);
+    outline: none;
+  }
+  .custom-textarea:focus { border-color: var(--accent); }
+  .custom-apply {
+    width: 100%; margin-top: 8px; padding: 8px;
+    border-radius: 6px; background: var(--accent); color: white;
+    border: none; cursor: pointer; font-size: 12px; font-weight: 500;
+    font-family: var(--sans);
+  }
+  .custom-apply:hover { opacity: .88; }
+  .custom-err {
+    font-size: 11px; color: var(--danger);
+    margin-top: 6px; display: none; line-height: 1.4;
+  }
+  .niche-opt-custom {
+    font-size: 12px; color: var(--accent);
+    padding: 7px 14px; cursor: pointer;
+    transition: background .1s;
+    font-weight: 500;
+  }
+  .niche-opt-custom:hover { background: var(--bg2); }
+
   @media (max-width: 700px) {
     .slide { padding: 28px 24px 24px; }
     .nav { padding: 12px 24px; }
@@ -397,6 +439,26 @@
   <div class="niche-opt" onclick="applyNiche('manufacturing',this)">Manufacturing &amp; Industrial staffing</div>
   <div class="niche-opt" onclick="applyNiche('healthcare',this)">Healthcare staffing</div>
   <div class="niche-opt" onclick="applyNiche('va-staffing',this)">VA &amp; Virtual assistant staffing</div>
+  <div class="niche-sep"></div>
+  <div class="niche-opt-custom" onclick="openCustomPanel()">Custom prospect →</div>
+</div>
+
+<div class="custom-panel" id="customPanel">
+  <div class="custom-panel-title">Paste prospect JSON</div>
+  <textarea class="custom-textarea" id="customJson" placeholder='{
+  "prospectName": "Rob Berton / LTUSA",
+  "defaultFee": 28000,
+  "nonObvious": "DEA registrations, FSMB license apps...",
+  "cols": ["Facility", "Signal", "Recency", "Priority"],
+  "pills": ["Signal 1", "Signal 2", "Signal 3", "Signal 4"],
+  "hotLabel": "HOT — 3 signals stacked",
+  "companies": [
+    ["Company A", "Signal detail", "3 weeks ago", "HIGH"],
+    ["Company B", "Signal detail", "5 weeks ago", "MED"]
+  ]
+}'></textarea>
+  <button class="custom-apply" onclick="applyCustomJson()">Apply to deck</button>
+  <div class="custom-err" id="customErr"></div>
 </div>
 
 <div class="deck">
@@ -1058,11 +1120,87 @@
 
   function toggleNichePanel() {
     document.getElementById('nichePanel').classList.toggle('open');
+    document.getElementById('customPanel').classList.remove('open');
+  }
+
+  function openCustomPanel() {
+    document.getElementById('nichePanel').classList.remove('open');
+    document.getElementById('customPanel').classList.toggle('open');
+  }
+
+  function applyCustomJson() {
+    const raw = document.getElementById('customJson').value.trim();
+    const errEl = document.getElementById('customErr');
+    errEl.style.display = 'none';
+
+    let d;
+    try { d = JSON.parse(raw); }
+    catch(e) {
+      errEl.textContent = 'Invalid JSON: ' + e.message;
+      errEl.style.display = 'block';
+      return;
+    }
+
+    if (!d.companies || !Array.isArray(d.companies)) {
+      errEl.textContent = 'Missing "companies" array in JSON';
+      errEl.style.display = 'block';
+      return;
+    }
+
+    if (d.nonObvious) document.getElementById('niche-nonoby').textContent = d.nonObvious;
+
+    if (d.pills) {
+      const pillsEl = document.getElementById('niche-pills');
+      pillsEl.innerHTML = d.pills.map(p => `<span class="pill">${p}</span>`).join('') +
+        (d.hotLabel ? `<span class="pill-hot">${d.hotLabel}</span>` : '');
+    }
+
+    if (d.cols) {
+      const head = document.getElementById('niche-table-head');
+      const headCols = head.querySelectorAll('div');
+      d.cols.forEach((c, i) => { if (headCols[i + 1]) headCols[i + 1].textContent = c; });
+    }
+
+    const hClass = { HIGH:'b-danger', HOT:'b-danger', MED:'b-warn', WATCH:'b-warn', LOW:'b-info', MONITOR:'b-info',
+                     Hot:'b-danger', Watch:'b-warn', Monitor:'b-info' };
+    const colCount = d.cols ? d.cols.length : 4;
+    const rowsEl = document.getElementById('niche-table-rows');
+    rowsEl.innerHTML = d.companies.map((co, idx) => {
+      const isLast = idx === d.companies.length - 1;
+      const border = isLast ? '' : 'border-bottom:1px solid var(--border);';
+      const heat = co[co.length - 1];
+      const cls = hClass[heat] || 'b-info';
+      const midCols = co.slice(1, co.length - 1).map(v =>
+        `<div style="font-size:12px;color:var(--muted);line-height:1.35">${v}</div>`
+      ).join('');
+      return `<div style="display:grid;grid-template-columns:130px repeat(${colCount - 1},1fr) 72px;padding:8px 14px;${border}align-items:center;gap:6px">
+        <div style="font-weight:500;color:var(--text);font-size:13px">${co[0]}</div>
+        ${midCols}
+        <div style="text-align:center"><span class="badge ${cls}">${heat}</span></div>
+      </div>`;
+    }).join('');
+
+    if (d.curveLabel) document.getElementById('niche-curve-lbl').textContent = d.curveLabel;
+
+    if (d.defaultFee) {
+      const feeInput = document.getElementById('inp-fee');
+      if (feeInput) { feeInput.value = d.defaultFee; calcUpdate(); }
+    }
+
+    document.querySelectorAll('.niche-opt').forEach(o => o.classList.remove('active'));
+
+    if (d.prospectName) {
+      document.querySelector('.niche-btn').textContent = '\u229e ' + d.prospectName;
+    }
+
+    document.getElementById('customPanel').classList.remove('open');
   }
 
   document.addEventListener('click', e => {
-    if (!e.target.closest('.niche-panel') && !e.target.closest('.niche-btn')) {
+    if (!e.target.closest('.niche-panel') && !e.target.closest('.niche-btn') &&
+        !e.target.closest('.custom-panel')) {
       document.getElementById('nichePanel').classList.remove('open');
+      document.getElementById('customPanel').classList.remove('open');
     }
   });
 

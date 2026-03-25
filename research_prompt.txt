@@ -155,36 +155,38 @@ Fee per placement estimate: $___
 ---
 
 ## DECK INJECTION BLOCK
-(Use this to populate the niche selector in signal_pitch_light.html)
-Map findings to this JS structure — paste directly into the NICHES object:
+(Paste this JSON directly into the "Custom prospect" panel in signal_pitch_light.html)
+The deck has a "Custom prospect →" button in the niche picker — click it, paste JSON, click Apply.
 
-```js
-'[niche-key]': {
-  defaultFee: [fee in dollars, e.g. 28000],
-  nonObvious: [
-    'Signal 1 — one line, what to watch',
-    'Signal 2 — one line, what to watch',
-    'Signal 3 — one line, what to watch',
+Return EXACTLY this JSON structure (valid JSON, no JS comments):
+
+```json
+{
+  "prospectName": "[First Last / Agency Name]",
+  "defaultFee": 28000,
+  "nonObvious": "One sentence — the 3 non-obvious signal types you monitor for this niche (NOT job boards). E.g.: DEA registrations, FSMB physician license applications, and CMS enrollment changes — visible weeks before any agency gets a call.",
+  "cols": ["Facility", "Signal", "Recency", "Priority"],
+  "pills": ["Signal Type 1", "Signal Type 2", "Signal Type 3", "Signal Type 4"],
+  "hotLabel": "HOT — [specific urgency label, e.g. '3 locums open 60+ days']",
+  "companies": [
+    ["Company A", "Specific signal detail here", "3 weeks ago", "HIGH"],
+    ["Company B", "Specific signal detail here", "5 weeks ago", "MED"],
+    ["Company C", "Specific signal detail here", "2 months ago", "MED"]
   ],
-  cols: ['Facility / Company', 'Signal', 'Recency', 'Priority'],
-  pills: ['Signal Type 1', 'Signal Type 2', 'Signal Type 3', 'Signal Type 4'],
-  hotLabel: 'HOT — [niche-specific urgency label, e.g. "3 locums open 60+ days"]',
-  companies: [
-    ['Company A', 'Signal description', '3 weeks ago', 'HIGH'],
-    ['Company B', 'Signal description', '5 weeks ago', 'MED'],
-    ['Company C', 'Signal description', '2 months ago', 'MED'],
-  ],
-  curveLabel: 'Early Adopters',
+  "curveLabel": "Early Adopters"
 }
 ```
 
-Notes on DECK INJECTION:
-- niche-key: short slug, e.g. 'healthcare-staffing', 'exec-tech', 'legal'
-- defaultFee: use your estimated placement fee (integer, no $ sign)
-- nonObvious: 3 signal types that are NOT job boards — these are the "non-obvious layer"
-  that makes the pitch credible (e.g. "locum agency license filings", "DEA registrations",
-  "VA contract awards", "credentialing delays in CAQH")
-- pills: 4 short labels shown as tags on slide 4 (what signals you monitor)
-- hotLabel: appears as a red badge on the highest-priority row — make it specific
-- companies: use real names if found, "Undisclosed Facility" if hidden, never fabricate
-- curveLabel: always just 'Early Adopters' (do not add niche suffix)
+Field notes:
+- prospectName: shown on the niche button so you know which prospect is loaded
+- defaultFee: integer, no $ sign — updates the calculator automatically
+- nonObvious: one sentence, the "non-obvious layer" that makes slide 4 credible
+- cols: 4 column headers for the scoring table (first is always company/facility name)
+- pills: 4 short tags shown on slide 4 — what signal types you monitor
+- hotLabel: red badge label — make it specific to this market
+- companies: array of rows — [name, col2, col3, priority]
+  - priority values: HIGH, MED, LOW (or Hot, Watch, Monitor)
+  - name: use real company if found, "Undisclosed Facility" if hidden — never fabricate
+  - col2 is the main signal description — be specific (not "hiring pain")
+  - col3 is recency — e.g. "3 weeks ago", "60 days", "Jan 2026"
+- curveLabel: always "Early Adopters"

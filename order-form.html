@@ -174,10 +174,15 @@
   <div class="header">
     <div class="brand">System Hustle</div>
     <h1 class="client-name" id="el-greeting"></h1>
-    <div class="sub">As agreed on our call — here's a quick summary before you get started.</div>
+    <div class="sub">As discussed, here's a quick summary to get started.</div>
   </div>
 
   <div class="div"></div>
+
+  <div style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:16px 20px">
+    <div class="section-label" style="margin-bottom:6px">Goal</div>
+    <div id="el-goal" style="font-size:14px;color:var(--muted);line-height:1.5"></div>
+  </div>
 
   <div>
     <div class="section-label">What's included</div>
@@ -221,15 +226,16 @@
       priceLabel: 'one-time payment',
       start: 'Within 48 hours',
       startSub: 'kickoff call to finalize targeting',
+      goal: 'Validate signal-based outreach and generate first qualified conversations within 30 days.',
       scope: [
         ['Signal-based targeting setup', 'ICP refinement for your niche in days 1–5'],
-        ['2–3 qualified introductions', 'companies with active hiring pain, pre-qualified before your time'],
-        ['Full transparency', 'shared tracker with signals, outreach status, and outcomes'],
-        ['Pilot debrief', 'review results together by day 30'],
+        ['2–3 qualified introductions', 'companies actively dealing with unpredictable hiring pipeline, pre-qualified before your time'],
+        ['Live tracking', 'shared tracker with signals, outreach, and intro status throughout'],
+        ['Pilot debrief', 'review results together by day 30 — what worked, what to adjust'],
       ],
       note: 'One-time offer for new clients only. If you move to the full package, $800 is credited toward month one.',
-      btn: 'Start pilot — $800',
-      guarantee: 'Minimum 2 qualified intros guaranteed. If we don\'t hit 2 by Day 30, we keep working at no cost.',
+      btn: 'Secure your pilot — $800',
+      guarantee: 'Minimum 2 qualified intros guaranteed. If not delivered by Day 30, we continue at no cost until it\'s met.',
     },
     full: {
       label: '3-Month Package',
@@ -237,16 +243,17 @@
       priceLabel: 'per month — $9,000 total',
       start: 'This week',
       startSub: 'first intros within 8–21 days',
+      goal: 'Build a predictable, signal-based pipeline of qualified client conversations over 90 days — without ad spend or cold calling.',
       scope: [
         ['Signal-based targeting', 'ongoing monitoring of hiring triggers in your niche'],
-        ['8–10 qualified introductions', 'over 90 days — pre-qualified, decision-maker engaged'],
+        ['8–10 qualified introductions', 'over 90 days — companies with active hiring pain, decision-maker engaged'],
         ['Warm introductions', 'I reach out first and set the frame before you call'],
-        ['Bi-weekly updates', 'progress reports every 2 weeks, shared tracker throughout'],
+        ['Bi-weekly updates', 'progress reports every 2 weeks, live shared tracker throughout'],
         ['Monthly check-in', 'review what converted, adjust targeting as needed'],
       ],
-      note: 'Payment in 3 monthly installments of $3,000. No penalty to terminate with 30 days notice.',
-      btn: 'Get started — $3,000 first month',
-      guarantee: 'Minimum 8 qualified intros over 90 days. If we fall short, we keep working at no cost.',
+      note: 'Payment in 3 monthly installments of $3,000. Either party may terminate with 30 days notice, no penalty.',
+      btn: 'Get started this week — $3,000',
+      guarantee: 'Minimum 8 qualified intros over 90 days. If not delivered by Day 90, we continue at no cost until it\'s met.',
     }
   };
 
@@ -255,7 +262,8 @@
   const tierKey = p.get('tier') === 'full' ? 'full' : 'pilot';
   const tier = TIERS[tierKey];
 
-  document.getElementById('el-greeting').innerHTML = 'Hey ' + name + ',<br>here\'s what we discussed.';
+  document.getElementById('el-greeting').innerHTML = 'Hey ' + name + ',';
+  document.getElementById('el-goal').textContent = tier.goal;
   document.getElementById('el-price').textContent = '$' + tier.price;
   document.getElementById('el-start').textContent = tier.start;
   document.getElementById('el-start').nextElementSibling.textContent = tier.startSub;

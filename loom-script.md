@@ -3,8 +3,21 @@
 
 ---
 
+## SLIDE 0 — Who I am
+*(open recording, show slide 0, look into camera)*
+
+Hey — quick video before our call. My name is Leonid, I run System Hustle.
+
+In short — I help recruiting agencies build a predictable pipeline without ad spend. I do that through signal-based BD: I identify companies with active hiring pain before they go public, and I introduce your firm at exactly the right moment.
+
+The agencies I work with have gone from inconsistent, referral-dependent pipelines to 22 placements in 55 days, 39 placements in a quarter, $100K+ in new revenue — without adding headcount or running a single ad.
+
+That's the model. Let me show you why it works.
+
+---
+
 ## SLIDE 1 — The Problem
-*(open recording, show slide 1, look into camera first)*
+*(advance to slide 1, look into camera)*
 
 Hey — quick video before our call.
 
@@ -66,7 +79,7 @@ That changes everything about the conversation. You stop being the fifth agency 
 
 So here's what I want to do on our call.
 
-I'm going to show you the live signal report for your specific niche — real facilities, real signals, scored by urgency, specific to your market. Not generic data. Your market, right now.
+I want to understand how you're finding clients right now — and then walk you through what signals look like in your specific market. What I'm actually monitoring, how I score it, and what the first introduction to a facility looks like in practice.
 
 Then we'll figure out together whether this is a fit. No pressure. Forty minutes — you'll know by the end whether this makes sense for you or not.
 

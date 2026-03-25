@@ -287,12 +287,33 @@
 <body>
 
 <div class="deck">
-  <div class="progress"><div class="progress-fill" id="pbar" style="width:20%"></div></div>
+  <div class="progress"><div class="progress-fill" id="pbar" style="width:16.6%"></div></div>
 
   <div class="slides" id="slides">
 
-    <!-- 1: The Problem -->
+    <!-- 0: Who I am -->
     <div class="slide active" id="s0">
+      <div class="slide-tag">Before our call</div>
+      <h1 class="slide-title">I'm Leonid.<br>I help recruiting agencies<br>build a <span class="green">predictable pipeline</span> —<br>without ad spend.</h1>
+      <p class="lead">I run <strong>System Hustle</strong> — a signal-based BD service for recruiting and staffing agencies. Instead of cold outreach and job board monitoring, I identify companies with active hiring pain before they go public — and introduce your firm at exactly the right moment.</p>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px">
+        <div class="card">
+          <div style="font-family:var(--serif);font-size:36px;color:var(--accent);line-height:1">22</div>
+          <div style="font-size:12px;color:var(--muted);line-height:1.4">placements in 55 days<br><span style="color:var(--subtle)">Elate Staffing Solutions</span></div>
+        </div>
+        <div class="card">
+          <div style="font-family:var(--serif);font-size:36px;color:var(--accent);line-height:1">39</div>
+          <div style="font-size:12px;color:var(--muted);line-height:1.4">placements in 90 days + $100K revenue<br><span style="color:var(--subtle)">Crawford Thomas Recruiting</span></div>
+        </div>
+        <div class="card">
+          <div style="font-family:var(--serif);font-size:36px;color:var(--accent);line-height:1">$105K</div>
+          <div style="font-size:12px;color:var(--muted);line-height:1.4">additional revenue in one quarter<br><span style="color:var(--subtle)">Connect Group — AI & Tech</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 1: The Problem -->
+    <div class="slide" id="s1-prob">
       <div class="slide-tag">Before our call</div>
       <h1 class="slide-title">Your best clients came from referrals.<br>Your <em>growth</em> depends on something <span class="red">you can't control.</span></h1>
       <p class="lead">Most recruiting agencies I talk to have the same setup: a solid reputation, good relationships — and a pipeline that's completely unpredictable. Some months are great. Others, the phone doesn't ring.</p>
@@ -391,7 +412,7 @@
         </div>
         <div class="agenda-item">
           <div class="agenda-num">02</div>
-          <div class="agenda-text"><strong>Live signal report for your niche</strong> — real facilities with active pain signals in your market, scored by urgency</div>
+          <div class="agenda-text"><strong>What signals look like in your market</strong> — I'll walk you through what's active in your niche right now and how I score it</div>
         </div>
         <div class="agenda-item">
           <div class="agenda-num">03</div>
@@ -434,6 +455,7 @@
     btnPrev.disabled = cur === 0;
     btnNext.disabled = cur === slides.length - 1;
     navCount.textContent = (cur + 1) + ' / ' + slides.length;
+
   }
 
   document.addEventListener('keydown', e => {

@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>System Hustle — ROI Calculator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:       #fafaf8;
+    --bg2:      #f2f1ed;
+    --bg3:      #e8e7e2;
+    --border:   rgba(0,0,0,0.08);
+    --border-s: rgba(0,0,0,0.14);
+    --text:     #1a1a18;
+    --muted:    #6b6b66;
+    --subtle:   #a8a8a2;
+    --accent:   #2a6b3c;
+    --accent-bg:#e8f4ed;
+    --danger:   #c0392b;
+    --danger-bg:#fbeae8;
+    --amber:    #a05a00;
+    --amber-bg: #fef3e2;
+    --info:     #1a5a8a;
+    --info-bg:  #e6f0fa;
+    --serif:    'DM Serif Display', Georgia, serif;
+    --sans:     'DM Sans', system-ui, sans-serif;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    padding: 64px 24px 100px;
+  }
+
+  .wrap {
+    width: 100%;
+    max-width: 660px;
+    display: flex;
+    flex-direction: column;
+    gap: 44px;
+  }
+
+  /* mode indicator — tiny dot only Leonid knows about */
+  .mode-dot {
+    position: fixed;
+    top: 16px;
+    right: 18px;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--accent);
+    opacity: 0.35;
+    transition: background 0.3s, opacity 0.3s;
+  }
+  .mode-dot.pilot { background: var(--amber); }
+
+  /* header */
+  .brand {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--subtle);
+    margin-bottom: 10px;
+  }
+  .page-title {
+    font-family: var(--serif);
+    font-size: clamp(28px, 4vw, 42px);
+    line-height: 1.15;
+    color: var(--text);
+    margin-bottom: 10px;
+  }
+  .page-title em { font-style: italic; color: var(--accent); }
+  .page-sub {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.65;
+    max-width: 520px;
+  }
+
+  /* package banner */
+  .pkg-banner {
+    border-radius: 10px;
+    padding: 18px 22px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    transition: background 0.3s, border-color 0.3s;
+  }
+  .pkg-banner.is-full {
+    background: var(--accent-bg);
+    border: 1px solid rgba(42,107,60,.22);
+  }
+  .pkg-banner.is-pilot {
+    background: var(--amber-bg);
+    border: 1px solid rgba(160,90,0,.22);
+  }
+  .pkg-left { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+  .pkg-label {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+  }
+  .is-full  .pkg-label { color: var(--accent); }
+  .is-pilot .pkg-label { color: var(--amber); }
+  .pkg-note {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+  .pkg-price {
+    font-family: var(--serif);
+    font-size: 26px;
+    line-height: 1;
+    white-space: nowrap;
+  }
+  .is-full  .pkg-price { color: var(--accent); }
+  .is-pilot .pkg-price { color: var(--amber); }
+  .pkg-price-sub {
+    font-family: var(--sans);
+    font-size: 12px;
+    color: var(--muted);
+    font-weight: 400;
+    margin-left: 2px;
+  }
+
+  /* section label */
+  .sec-label {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--subtle);
+    margin-bottom: 14px;
+  }
+
+  /* value stack */
+  .vstack {
+    background: white;
+    border: 1px solid var(--border-s);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .vs-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 13px;
+    padding: 13px 18px;
+    border-bottom: 1px solid var(--border);
+  }
+  .vs-row:last-child { border-bottom: none; }
+  .vs-check {
+    width: 17px;
+    height: 17px;
+    border-radius: 50%;
+    background: var(--accent-bg);
+    border: 1px solid rgba(42,107,60,.25);
+    flex-shrink: 0;
+    margin-top: 1px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .vs-check::after {
+    content: '';
+    width: 5px;
+    height: 3px;
+    border-left: 1.5px solid var(--accent);
+    border-bottom: 1.5px solid var(--accent);
+    transform: rotate(-45deg) translateY(-1px);
+    display: block;
+  }
+  .vs-text { font-size: 13px; color: var(--muted); line-height: 1.6; }
+  .vs-text strong { color: var(--text); font-weight: 500; }
+
+  .hdiv { height: 1px; background: var(--border); }
+
+  /* inputs table */
+  .inp-table {
+    background: white;
+    border: 1px solid var(--border-s);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .inp-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    gap: 16px;
+  }
+  .inp-row:last-child { border-bottom: none; }
+  .inp-label { font-size: 14px; color: var(--muted); flex: 1; }
+  .inp-hint { font-size: 11px; color: var(--subtle); display: block; margin-top: 2px; }
+  .inp-ctrl {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+  }
+  .inp-ctrl input {
+    font-size: 14px;
+    font-weight: 500;
+    font-family: var(--sans);
+    color: var(--text);
+    background: var(--bg2);
+    border: 1px solid var(--border-s);
+    border-radius: 6px;
+    padding: 5px 10px;
+    text-align: right;
+    outline: none;
+    transition: border-color .15s;
+    width: 90px;
+  }
+  .inp-ctrl input:focus { border-color: var(--accent); }
+  .inp-ctrl input::placeholder { color: var(--bg3); font-weight: 400; }
+  .inp-suffix { color: var(--muted); font-weight: 400; font-size: 13px; }
+
+  /* slider rows */
+  .slider-ctrl {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 180px;
+  }
+  .slider-ctrl input[type=range] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 120px;
+    height: 4px;
+    background: var(--bg3);
+    border-radius: 2px;
+    outline: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+  }
+  .slider-ctrl input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--accent);
+    cursor: pointer;
+    border: 2px solid white;
+    box-shadow: 0 0 0 1px rgba(42,107,60,.3);
+  }
+  .slider-ctrl input[type=range]::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--accent);
+    cursor: pointer;
+    border: 2px solid white;
+  }
+  .slider-val {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+    min-width: 38px;
+    text-align: right;
+  }
+
+  /* scenarios */
+  .scenarios { display: flex; flex-direction: column; gap: 10px; }
+  .scenario {
+    background: white;
+    border: 1px solid var(--border-s);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .sc-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 13px 18px;
+    border-bottom: 1px solid var(--border);
+  }
+  .sc-title { font-size: 13px; font-weight: 500; color: var(--text); display: flex; align-items: center; gap: 8px; }
+  .badge {
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 500;
+  }
+  .b-c { background: var(--bg2); color: var(--muted); border: 1px solid var(--border-s); }
+  .b-e { background: var(--info-bg); color: var(--info); border: 1px solid rgba(26,90,138,.18); }
+  .b-s { background: var(--accent-bg); color: var(--accent); border: 1px solid rgba(42,107,60,.18); }
+
+  .sc-nums {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    border-bottom: 1px solid var(--border);
+  }
+  .sc-num {
+    padding: 12px 16px;
+    border-right: 1px solid var(--border);
+  }
+  .sc-num:last-child { border-right: none; }
+  .sc-num-label {
+    font-size: 10px;
+    color: var(--subtle);
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    margin-bottom: 5px;
+  }
+  .sc-num-val {
+    font-family: var(--serif);
+    font-size: 24px;
+    line-height: 1;
+    color: var(--bg3);
+    transition: color 0.2s;
+  }
+  .sc-num-val.has-val { color: var(--accent); }
+  .sc-num-val.is-cost { color: var(--muted); }
+
+  .sc-note {
+    padding: 9px 16px;
+    font-size: 11px;
+    color: var(--subtle);
+    line-height: 1.55;
+  }
+
+  /* per-intro callout */
+  .per-intro {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 18px;
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+  .per-intro strong { color: var(--text); font-weight: 500; }
+
+  /* risk reward */
+  .rr-card {
+    background: white;
+    border: 1px solid var(--border-s);
+    border-radius: 10px;
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .rr-bars { display: flex; flex-direction: column; gap: 10px; }
+  .rr-bar-row { display: flex; align-items: center; gap: 12px; }
+  .rr-bar-label { font-size: 11px; width: 72px; flex-shrink: 0; font-weight: 500; }
+  .rr-bar-track {
+    flex: 1;
+    height: 22px;
+    background: var(--bg2);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .rr-bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    transition: width 0.4s ease;
+    min-width: 0;
+  }
+  .rr-bar-fill span { font-size: 10px; font-weight: 500; color: white; white-space: nowrap; }
+  .rr-val { font-size: 13px; font-weight: 500; width: 56px; text-align: right; flex-shrink: 0; }
+  .rr-caption { font-size: 12px; color: var(--muted); line-height: 1.6; }
+
+  /* guarantee */
+  .guarantee {
+    border-left: 2px solid var(--accent);
+    padding: 14px 20px;
+    background: var(--accent-bg);
+    border-radius: 0 10px 10px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .guar-h { font-size: 13px; font-weight: 500; color: var(--accent); }
+  .guar-b { font-size: 13px; color: var(--muted); line-height: 1.65; }
+
+  /* qualified intro grid */
+  .qi-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .qi-item {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 13px 15px;
+  }
+  .qi-label { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 3px; }
+  .qi-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+  /* CTA */
+  .cta-section { display: flex; flex-direction: column; gap: 14px; }
+  .cta-title {
+    font-family: var(--serif);
+    font-size: clamp(20px, 3vw, 26px);
+    line-height: 1.3;
+    color: var(--text);
+    max-width: 440px;
+  }
+  .cta-btn {
+    display: inline-block;
+    background: var(--text);
+    color: var(--bg);
+    border: none;
+    border-radius: 8px;
+    padding: 12px 28px;
+    font-size: 14px;
+    font-weight: 500;
+    font-family: var(--sans);
+    cursor: pointer;
+    text-decoration: none;
+    transition: background .15s;
+  }
+  .cta-btn:hover { background: #333; }
+  .cta-small { font-size: 12px; color: var(--subtle); }
+
+  @media (max-width: 560px) {
+    .sc-nums { grid-template-columns: 1fr; }
+    .sc-num { border-right: none; border-bottom: 1px solid var(--border); }
+    .sc-num:last-child { border-bottom: none; }
+    .qi-grid { grid-template-columns: 1fr; }
+    .pkg-banner { flex-direction: column; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<div class="mode-dot" id="modeDot"></div>
+
+<div class="wrap">
+
+  <!-- Header -->
+  <div>
+    <div class="brand">System Hustle</div>
+    <h1 class="page-title">Your <em>return</em> on signal-based BD</h1>
+    <p class="page-sub">Enter the numbers you discussed. See what this engagement means for your bottom line.</p>
+  </div>
+
+  <!-- Package banner -->
+  <div class="pkg-banner is-full" id="pkgBanner">
+    <div class="pkg-left">
+      <div class="pkg-label" id="pkgLabel">Full Package</div>
+      <div class="pkg-note" id="pkgNote">3-month engagement · First payment to start · Months 2 & 3 come from your first placement</div>
+    </div>
+    <div>
+      <span class="pkg-price" id="pkgPrice">$3,000</span><span class="pkg-price-sub" id="pkgPriceSub">/mo</span>
+    </div>
+  </div>
+
+  <!-- What's included -->
+  <div>
+    <div class="sec-label">What's included</div>
+    <div class="vstack">
+      <div class="vs-row">
+        <div class="vs-check"></div>
+        <div class="vs-text"><strong>Signal monitoring across your niche</strong> — hiring triggers tracked across funding rounds, leadership moves, open roles, and market events. Obvious and non-obvious sources.</div>
+      </div>
+      <div class="vs-row">
+        <div class="vs-check"></div>
+        <div class="vs-text"><strong>Pre-qualified introductions only</strong> — every intro is screened for intent, budget, authority, and urgency before it reaches your calendar. No tire-kickers.</div>
+      </div>
+      <div class="vs-row">
+        <div class="vs-check"></div>
+        <div class="vs-text"><strong>Warm referral framing</strong> — you don't arrive cold. You arrive as a vetted specialist at the exact moment they need help. The conversation starts differently.</div>
+      </div>
+      <div class="vs-row">
+        <div class="vs-check"></div>
+        <div class="vs-text"><strong>Shared tracking dashboard</strong> — full transparency. Signals found, companies contacted, status, and outcomes. Updated in real time.</div>
+      </div>
+      <div class="vs-row" id="vsBiweekly">
+        <div class="vs-check"></div>
+        <div class="vs-text"><strong>Bi-weekly progress updates</strong> — what's in pipeline, what's moving, what we're prioritizing next. You're never in the dark.</div>
+      </div>
+      <div class="vs-row">
+        <div class="vs-check"></div>
+        <div class="vs-text" id="vsGuarantee"><strong>Minimum intro guarantee</strong> — if we don't hit the agreed number by the end of the engagement, we keep working at no extra cost until we do.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hdiv"></div>
+
+  <!-- Inputs -->
+  <div>
+    <div class="sec-label">Your numbers</div>
+    <div class="inp-table">
+      <div class="inp-row">
+        <div class="inp-label">
+          Typical placement fee
+          <span class="inp-hint">Your average fee per closed placement</span>
+        </div>
+        <div class="inp-ctrl">
+          $<input type="number" id="inpFee" placeholder="—" min="500" oninput="calc()">
+        </div>
+      </div>
+      <div class="inp-row">
+        <div class="inp-label">
+          Guaranteed intros
+          <span class="inp-hint">Number agreed for this engagement</span>
+        </div>
+        <div class="inp-ctrl">
+          <input type="number" id="inpIntros" placeholder="—" min="1" max="99" style="width:70px" oninput="calc()">
+          <span class="inp-suffix">intros</span>
+        </div>
+      </div>
+      <div class="inp-row">
+        <div class="inp-label">
+          Close rate
+          <span class="inp-hint">% of intros you convert to placements</span>
+        </div>
+        <div class="inp-ctrl slider-ctrl">
+          <input type="range" id="inpRate" min="5" max="80" value="30" step="5" oninput="calc()">
+          <span class="slider-val" id="inpRateVal">30%</span>
+        </div>
+      </div>
+      <div class="inp-row">
+        <div class="inp-label">
+          Net margin
+          <span class="inp-hint">% you keep after placements costs</span>
+        </div>
+        <div class="inp-ctrl slider-ctrl">
+          <input type="range" id="inpMargin" min="20" max="100" value="60" step="5" oninput="calc()">
+          <span class="slider-val" id="inpMarginVal">60%</span>
+        </div>
+      </div>
+      <div class="inp-row">
+        <div class="inp-label">
+          Your investment
+          <span class="inp-hint" id="invHint">$3,000/month × 3 months = $9,000 total</span>
+        </div>
+        <div class="inp-ctrl">
+          $<input type="number" id="inpPrice" value="3000" min="100" oninput="calc()">
+          <span class="inp-suffix" id="priceSuffix">/mo</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scenarios -->
+  <div>
+    <div class="sec-label">Return scenarios</div>
+    <div class="scenarios">
+
+      <div class="scenario">
+        <div class="sc-head">
+          <div class="sc-title"><span id="r1title">— placements</span> <span class="badge b-c">Conservative</span></div>
+        </div>
+        <div class="sc-nums">
+          <div class="sc-num">
+            <div class="sc-num-label">Revenue</div>
+            <div class="sc-num-val" id="r1rev">—</div>
+          </div>
+          <div class="sc-num">
+            <div class="sc-num-label">Net profit</div>
+            <div class="sc-num-val" id="r1net">—</div>
+          </div>
+          <div class="sc-num">
+            <div class="sc-num-label">ROI</div>
+            <div class="sc-num-val" id="r1roi">—</div>
+          </div>
+        </div>
+        <div class="sc-note" id="r1note">—</div>
+      </div>
+
+      <div class="scenario">
+        <div class="sc-head">
+          <div class="sc-title"><span id="r2title">— placements</span> <span class="badge b-e">Expected</span></div>
+        </div>
+        <div class="sc-nums">
+          <div class="sc-num">
+            <div class="sc-num-label">Revenue</div>
+            <div class="sc-num-val" id="r2rev">—</div>
+          </div>
+          <div class="sc-num">
+            <div class="sc-num-label">Net profit</div>
+            <div class="sc-num-val" id="r2net">—</div>
+          </div>
+          <div class="sc-num">
+            <div class="sc-num-label">ROI</div>
+            <div class="sc-num-val" id="r2roi">—</div>
+          </div>
+        </div>
+        <div class="sc-note" id="r2note">Based on your close rate applied to the guaranteed intros.</div>
+      </div>
+
+      <div class="scenario">
+        <div class="sc-head">
+          <div class="sc-title"><span id="r3title">— placements</span> <span class="badge b-s">Stretch</span></div>
+        </div>
+        <div class="sc-nums">
+          <div class="sc-num">
+            <div class="sc-num-label">Revenue</div>
+            <div class="sc-num-val" id="r3rev">—</div>
+          </div>
+          <div class="sc-num">
+            <div class="sc-num-label">Net profit</div>
+            <div class="sc-num-val" id="r3net">—</div>
+          </div>
+          <div class="sc-num">
+            <div class="sc-num-label">ROI</div>
+            <div class="sc-num-val" id="r3roi">—</div>
+          </div>
+        </div>
+        <div class="sc-note">Pre-qualified intros convert at a higher rate than cold outreach. If we find more qualified intros than guaranteed, you get all of them.</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Per-intro math -->
+  <div class="per-intro" id="perIntroBox">
+    <strong id="perIntroMath">Fill in the numbers above</strong> — and you'll see what you're paying per qualified conversation with a decision-maker who needs you right now.
+  </div>
+
+  <!-- Risk / Reward -->
+  <div>
+    <div class="sec-label">Risk vs. reward</div>
+    <div class="rr-card">
+      <div class="rr-bars">
+        <div class="rr-bar-row">
+          <div class="rr-bar-label" style="color:var(--danger)">Downside</div>
+          <div class="rr-bar-track">
+            <div class="rr-bar-fill" id="rrDown" style="background:var(--danger);opacity:.7;width:12%">
+              <span id="rrDownLabel"></span>
+            </div>
+          </div>
+          <div class="rr-val" style="color:var(--danger)" id="rrDownVal">—</div>
+        </div>
+        <div class="rr-bar-row">
+          <div class="rr-bar-label" style="color:var(--accent)">Expected</div>
+          <div class="rr-bar-track">
+            <div class="rr-bar-fill" id="rrUp" style="background:var(--accent);opacity:.75;width:12%">
+              <span id="rrUpLabel"></span>
+            </div>
+          </div>
+          <div class="rr-val" style="color:var(--accent)" id="rrUpVal">—</div>
+        </div>
+      </div>
+      <div class="rr-caption" id="rrCaption">Known cost. Variable upside. Every placement beyond breakeven is pure margin.</div>
+    </div>
+  </div>
+
+  <div class="hdiv"></div>
+
+  <!-- Guarantee -->
+  <div>
+    <div class="sec-label">The guarantee</div>
+    <div class="guarantee">
+      <div class="guar-h" id="guarH">Minimum intros — or we keep working</div>
+      <div class="guar-b" id="guarB">We guarantee the agreed number of qualified conversations with decision-makers who have an active hiring need, confirmed budget, and authority to engage. If we miss the number by the end of the engagement — we continue at no additional cost until we hit it.</div>
+    </div>
+  </div>
+
+  <!-- What qualified means -->
+  <div>
+    <div class="sec-label">What "qualified intro" means</div>
+    <div class="qi-grid">
+      <div class="qi-item">
+        <div class="qi-label">Intent</div>
+        <div class="qi-desc">Actively hiring or planning to within 30–60 days. Not vague future interest.</div>
+      </div>
+      <div class="qi-item">
+        <div class="qi-label">Budget</div>
+        <div class="qi-desc">Understands recruiter fees. Has budget allocated or confirmed funding to pay.</div>
+      </div>
+      <div class="qi-item">
+        <div class="qi-label">Authority</div>
+        <div class="qi-desc">Owner, VP, or HR Director level. Not a coordinator or screener.</div>
+      </div>
+      <div class="qi-item">
+        <div class="qi-label">Urgency</div>
+        <div class="qi-desc">A specific, confirmed hiring pain right now — not hypothetical. Signal proves it.</div>
+      </div>
+      <div class="qi-item">
+        <div class="qi-label">Interest</div>
+        <div class="qi-desc">Has expressed willingness to speak. You arrive expected — not cold.</div>
+      </div>
+      <div class="qi-item">
+        <div class="qi-label">Fit</div>
+        <div class="qi-desc">Company size, stage, and role type match your ICP. No mismatched conversations.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hdiv"></div>
+
+  <!-- CTA -->
+  <div class="cta-section">
+    <div class="cta-title">Ready to put these numbers to work?</div>
+    <div>
+      <a href="order-form.html" class="cta-btn">Get started →</a>
+    </div>
+    <div class="cta-small" id="ctaSub">First payment kicks things off. Kickoff call within 48 hours.</div>
+  </div>
+
+</div>
+
+<script>
+  let mode = 'full';
+
+  const CFG = {
+    full: {
+      dot:        '',
+      banner:     'is-full',
+      label:      'Full Package',
+      note:       '3-month engagement · First payment to start · Months 2 & 3 come from your first placement',
+      priceVal:   3000,
+      priceSub:   '/mo',
+      invHint:    '$3,000/month × 3 months = $9,000 total',
+      multiplier: 3,
+      guarH:      'Minimum intros — or we keep working',
+      guarB:      'We guarantee the agreed number of qualified conversations with decision-makers who have an active hiring need, confirmed budget, and authority to engage. If we miss the number by day 90 — we continue at no additional cost until we hit it.',
+      vsGuar:     '<strong>Minimum intro guarantee</strong> — if we don\'t hit the agreed number by day 90, we keep working at no extra cost.',
+      ctaSub:     'First payment kicks things off. Kickoff call within 48 hours.',
+      showBiweekly: true,
+    },
+    pilot: {
+      dot:        'pilot',
+      banner:     'is-pilot',
+      label:      'Starter Pilot',
+      note:       'One-time · New clients only · After pilot → $3K/month retainer. No auto-renewal, no pressure.',
+      priceVal:   800,
+      priceSub:   '',
+      invHint:    'One-time payment · New clients only',
+      multiplier: 1,
+      guarH:      'Minimum intros — guaranteed',
+      guarB:      'We guarantee the agreed number of qualified conversations. If we miss the number by day 30 — we continue at no additional cost until we hit it.',
+      vsGuar:     '<strong>Minimum intro guarantee</strong> — if we don\'t hit the agreed number by day 30, we keep working at no extra cost.',
+      ctaSub:     'One payment. Work begins within 48 hours of kickoff call.',
+      showBiweekly: false,
+    }
+  };
+
+  function setMode(m) {
+    mode = m;
+    const c = CFG[m];
+
+    document.getElementById('modeDot').className    = 'mode-dot ' + c.dot;
+    const banner = document.getElementById('pkgBanner');
+    banner.className = 'pkg-banner ' + c.banner;
+    document.getElementById('pkgLabel').textContent = c.label;
+    document.getElementById('pkgNote').textContent  = c.note;
+    document.getElementById('priceSuffix').textContent = c.priceSub;
+    document.getElementById('invHint').textContent  = c.invHint;
+    document.getElementById('inpPrice').value       = c.priceVal;
+    document.getElementById('guarH').textContent    = c.guarH;
+    document.getElementById('guarB').textContent    = c.guarB;
+    document.getElementById('vsGuarantee').innerHTML = c.vsGuar;
+    document.getElementById('ctaSub').textContent   = c.ctaSub;
+    document.getElementById('vsBiweekly').style.display = c.showBiweekly ? 'flex' : 'none';
+
+    updatePkgPriceDisplay(parseFloat(document.getElementById('inpPrice').value) || c.priceVal);
+    calc();
+  }
+
+  function updatePkgPriceDisplay(val) {
+    const c = CFG[mode];
+    document.getElementById('pkgPrice').textContent = val ? '$' + val.toLocaleString() : '$' + c.priceVal.toLocaleString();
+    document.getElementById('pkgPriceSub').textContent = c.priceSub;
+  }
+
+  function fmt(n) {
+    if (!n || isNaN(n)) return '—';
+    if (n >= 1000000) return '$' + (n / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+    if (n >= 1000)    return '$' + Math.round(n / 1000) + 'k';
+    return '$' + n.toLocaleString();
+  }
+
+  function fmtX(n) {
+    if (!n || isNaN(n) || !isFinite(n) || n <= 0) return '—';
+    return (Math.round(n * 10) / 10) + 'x';
+  }
+
+  function setVal(id, val, isAccent) {
+    const el = document.getElementById(id);
+    el.textContent = val;
+    el.classList.toggle('has-val', isAccent && val !== '—');
+  }
+
+  function calc() {
+    const fee    = parseFloat(document.getElementById('inpFee').value)    || 0;
+    const intros = parseFloat(document.getElementById('inpIntros').value) || 0;
+    const price  = parseFloat(document.getElementById('inpPrice').value)  || 0;
+    const rate   = parseFloat(document.getElementById('inpRate').value)   / 100 || 0.30;
+    const margin = parseFloat(document.getElementById('inpMargin').value) / 100 || 0.60;
+    const total  = price * CFG[mode].multiplier;
+
+    // update slider displays
+    document.getElementById('inpRateVal').textContent   = Math.round(rate * 100) + '%';
+    document.getElementById('inpMarginVal').textContent = Math.round(margin * 100) + '%';
+
+    updatePkgPriceDisplay(price);
+
+    // calculate placement counts per scenario
+    let consPlac = 0, expPlac = 0, strPlac = 0;
+    if (intros > 0 && rate > 0) {
+      expPlac  = Math.max(1, Math.round(intros * rate));
+      consPlac = Math.max(1, Math.floor(intros * Math.max(rate - 0.15, 0.05)));
+      strPlac  = Math.max(expPlac + 1, Math.ceil(intros * Math.min(rate + 0.15, 0.95)));
+      // ensure order
+      consPlac = Math.min(consPlac, expPlac);
+    }
+
+    const placs = [consPlac, expPlac, strPlac];
+    const pfx   = ['r1', 'r2', 'r3'];
+    const labels = [
+      (p) => p + ' placement' + (p !== 1 ? 's' : '') + ' closed',
+      (p) => p + ' placement' + (p !== 1 ? 's' : '') + ' closed',
+      (p) => p + ' placement' + (p !== 1 ? 's' : '') + ' closed',
+    ];
+
+    placs.forEach((plac, i) => {
+      const id   = pfx[i];
+      const rev  = fee > 0 && plac > 0 ? fee * plac : 0;
+      const net  = rev * margin;
+      const roi  = total > 0 && net > 0 ? net / total : 0;
+      const hasData = fee > 0 && intros > 0;
+
+      document.getElementById(id + 'title').textContent = hasData
+        ? labels[i](plac)
+        : '— placements';
+
+      setVal(id + 'rev', hasData ? fmt(rev) : '—', true);
+      setVal(id + 'net', hasData ? fmt(net) : '—', true);
+      setVal(id + 'roi', (hasData && total) ? fmtX(roi) : '—', true);
+    });
+
+    // r1 note
+    if (fee && total && intros) {
+      const net1 = fee * consPlac * margin;
+      const note = net1 >= total
+        ? consPlac + ' placement' + (consPlac !== 1 ? 's' : '') + ' already covers your full investment. Everything after is net gain.'
+        : 'Even the conservative case returns ' + fmtX(net1 / total) + 'x on your investment.';
+      document.getElementById('r1note').textContent = note;
+      document.getElementById('r2note').textContent =
+        'At your close rate of ' + Math.round(rate * 100) + '% — ' + expPlac +
+        ' placement' + (expPlac !== 1 ? 's' : '') + ' from ' + intros + ' intros.';
+    } else {
+      document.getElementById('r1note').textContent = 'Enter fee, intros and close rate to see your numbers.';
+      document.getElementById('r2note').textContent = 'Based on your close rate applied to the guaranteed intros.';
+    }
+
+    // per-intro math
+    if (total && intros) {
+      const perIntro = Math.round(total / intros);
+      document.getElementById('perIntroMath').textContent =
+        fmt(total) + ' \u00F7 ' + intros + ' intros = ' + fmt(perIntro) +
+        ' per qualified conversation with a decision-maker who needs you right now';
+    } else {
+      document.getElementById('perIntroMath').textContent = 'Fill in the numbers above';
+    }
+
+    // risk / reward — use expected net vs total cost
+    const downVal = total || CFG[mode].priceVal * CFG[mode].multiplier;
+    const upVal   = fee > 0 && expPlac > 0 ? fee * expPlac * margin : 0;
+
+    document.getElementById('rrDownVal').textContent   = fmt(downVal);
+    document.getElementById('rrUpVal').textContent     = upVal ? fmt(upVal) : '—';
+    document.getElementById('rrDownLabel').textContent = fmt(downVal);
+    document.getElementById('rrUpLabel').textContent   = upVal ? fmt(upVal) : '';
+
+    if (upVal && downVal) {
+      const max     = Math.max(downVal, upVal);
+      const downPct = Math.max(Math.round(downVal / max * 82), 10);
+      const upPct   = Math.max(Math.round(upVal   / max * 82), 10);
+      document.getElementById('rrDown').style.width = downPct + '%';
+      document.getElementById('rrUp').style.width   = upPct   + '%';
+    }
+
+    if (fee && total && expPlac) {
+      const expNet = fee * expPlac * margin;
+      document.getElementById('rrCaption').textContent =
+        'Known cost: ' + fmt(total) + '. Expected net: ' + fmt(expNet) +
+        ' (' + expPlac + ' placement' + (expPlac !== 1 ? 's' : '') +
+        ' at ' + Math.round(margin * 100) + '% margin). ROI: ' + fmtX(expNet / total);
+    } else {
+      document.getElementById('rrCaption').textContent =
+        'Known cost. Variable upside. Every placement beyond breakeven is pure margin.';
+    }
+  }
+
+  // hidden mode switch — F = Full, P = Pilot
+  document.addEventListener('keydown', e => {
+    if (document.activeElement.tagName === 'INPUT') return;
+    if (e.key === 'f' || e.key === 'F') setMode('full');
+    if (e.key === 'p' || e.key === 'P') setMode('pilot');
+  });
+
+  setMode('full');
+</script>
+</body>
+</html>

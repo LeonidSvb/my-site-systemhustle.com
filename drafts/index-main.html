@@ -566,6 +566,83 @@
             overflow: hidden;
         }
 
+        /* Calendar below hero */
+        .hero-cal-section {
+            padding: 0 0 80px;
+            text-align: center;
+        }
+
+        .hero-cal-section .cal-label {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .hero-cal-section .cal-subtitle {
+            font-size: 16px;
+            opacity: 0.7;
+            margin-bottom: 0;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* About section */
+        .about-section {
+            padding: 100px 0;
+        }
+
+        .about-inner {
+            display: grid;
+            grid-template-columns: 220px 1fr;
+            gap: 60px;
+            align-items: center;
+            max-width: 900px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 24px;
+            padding: 50px 50px;
+        }
+
+        .about-photo {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid rgba(16, 185, 129, 0.3);
+            display: block;
+            margin: 0 auto;
+        }
+
+        .about-text h3 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .about-text .about-role {
+            font-size: 14px;
+            color: #10b981;
+            font-weight: 500;
+            margin-bottom: 20px;
+        }
+
+        .about-text p {
+            font-size: 16px;
+            line-height: 1.7;
+            opacity: 0.75;
+        }
+
+        @media (max-width: 768px) {
+            .about-inner {
+                grid-template-columns: 1fr;
+                text-align: center;
+                padding: 40px 30px;
+                gap: 30px;
+            }
+        }
+
         footer {
             padding: 80px 0 40px;
             border-top: 1px solid rgba(255, 255, 255, 0.08);
@@ -666,17 +743,26 @@
 
             <div class="stats-row">
                 <div class="stat-item">
-                    <div class="stat-number">Qualified</div>
-                    <div class="stat-label">Meetings Every Month</div>
+                    <div class="stat-number">3–8</div>
+                    <div class="stat-label">Qualified Meetings / Month</div>
                 </div>
                 <div class="stat-item">
-                    <div class="stat-number">Cost-Effective</div>
-                    <div class="stat-label">vs Hiring SDRs</div>
+                    <div class="stat-number">48h</div>
+                    <div class="stat-label">To First Outreach</div>
                 </div>
                 <div class="stat-item">
-                    <div class="stat-number">Fast</div>
-                    <div class="stat-label">Implementation</div>
+                    <div class="stat-number">No</div>
+                    <div class="stat-label">Long-Term Contracts</div>
                 </div>
+            </div>
+        </section>
+
+        <!-- Calendar below hero -->
+        <section class="hero-cal-section" id="booking">
+            <h2 class="cal-label">Book a Call</h2>
+            <p class="cal-subtitle">Let's talk about your pipeline and whether this is a fit.</p>
+            <div class="cal-embed">
+                <iframe src="https://cal.com/leonidshvorob/fit-check-call" width="100%" height="700" frameborder="0"></iframe>
             </div>
         </section>
 
@@ -829,6 +915,18 @@
             </div>
         </section>
 
+        <!-- About -->
+        <section class="about-section">
+            <div class="about-inner">
+                <img src="../assets/photo.jpg" alt="Leonid Shvorob" class="about-photo">
+                <div class="about-text">
+                    <h3>Leonid Shvorob</h3>
+                    <div class="about-role">Founder, System Hustle</div>
+                    <p>I build outbound B2B sales systems for companies that are done with generic lead gen. I've worked with recruiting agencies, logistics operators, and B2B service providers to generate qualified meetings without scaling ad spend or hiring SDR teams. Every client works directly with me — no account managers, no junior staff.</p>
+                </div>
+            </div>
+        </section>
+
         <section class="faq-section" id="faq">
             <h2>Frequently Asked Questions</h2>
 
@@ -883,15 +981,6 @@
                     </div>
                 </div>
 
-                <div class="faq-item">
-                    <div class="faq-question">
-                        <h3>How does payment work?</h3>
-                        <div class="faq-icon">+</div>
-                    </div>
-                    <div class="faq-answer">
-                        <p>We structure our pricing around actual results, not vague commitments. Your initial setup fee includes your first five scheduled meetings, serving as our performance guarantee. Beyond that, payment is tied directly to the meetings we successfully book on your calendar—no wasted investment, only tangible results.</p>
-                    </div>
-                </div>
             </div>
         </section>
 
@@ -916,7 +1005,11 @@
         <footer>
             <div class="footer-content">
                 <div class="footer-copy">
-                    © 2025 System Hustle. All rights reserved.
+                    © 2026 System Hustle. All rights reserved.
+                </div>
+                <div class="footer-links" style="display:flex; gap:24px; align-items:center;">
+                    <a href="mailto:leo@systemhustle.com" style="color:rgba(255,255,255,0.5); text-decoration:none; font-size:14px; transition:opacity 0.3s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.5'">leo@systemhustle.com</a>
+                    <a href="https://wa.me/628175755953" target="_blank" style="color:rgba(255,255,255,0.5); text-decoration:none; font-size:14px; transition:opacity 0.3s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.5'">WhatsApp</a>
                 </div>
             </div>
         </footer>

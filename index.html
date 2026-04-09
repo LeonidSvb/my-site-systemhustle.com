@@ -210,51 +210,69 @@
             padding: 120px 0;
         }
 
-        .process-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 40px;
+        /* Desktop: horizontal steps with arrows */
+        .process-steps {
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            gap: 0;
             margin-top: 80px;
+            position: relative;
         }
 
-        .process-card {
+        .process-step {
+            flex: 1;
+            max-width: 320px;
+            text-align: center;
+            padding: 0 20px;
+            position: relative;
+        }
+
+        .process-step-inner {
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: 20px;
-            padding: 40px 30px;
-            text-align: center;
+            padding: 40px 28px;
             transition: all 0.3s ease;
+            height: 100%;
         }
 
-        .process-card:hover {
-            transform: translateY(-5px);
-            border-color: rgba(102, 126, 234, 0.3);
+        .process-step-inner:hover {
+            border-color: rgba(16, 185, 129, 0.3);
+            transform: translateY(-4px);
         }
 
-        .process-number {
-            width: 48px;
-            height: 48px;
-            background: rgba(102, 126, 234, 0.2);
-            border: 2px solid rgba(102, 126, 234, 0.4);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .process-step-num {
+            font-size: 72px;
+            font-weight: 700;
+            line-height: 1;
+            color: rgba(16, 185, 129, 0.12);
+            margin-bottom: -16px;
+            letter-spacing: -0.04em;
+        }
+
+        .process-step h3 {
             font-size: 20px;
             font-weight: 600;
-            margin: 0 auto 24px;
+            margin-bottom: 14px;
+            line-height: 1.3;
+            position: relative;
         }
 
-        .process-card h3 {
-            font-size: 24px;
-            font-weight: 600;
-            margin-bottom: 16px;
+        .process-step p {
+            font-size: 15px;
+            line-height: 1.65;
+            opacity: 0.65;
         }
 
-        .process-card p {
-            font-size: 16px;
-            line-height: 1.6;
-            opacity: 0.7;
+        /* Arrow connector between steps */
+        .process-arrow {
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            padding-top: 60px;
+            color: rgba(16, 185, 129, 0.4);
+            font-size: 28px;
         }
 
         .problem-section {
@@ -667,12 +685,28 @@
                 grid-template-columns: repeat(2, 1fr);
             }
 
-            .process-grid {
+            .case-studies-grid {
                 grid-template-columns: 1fr;
             }
 
-            .case-studies-grid {
-                grid-template-columns: 1fr;
+            .process-steps {
+                flex-direction: column;
+                align-items: center;
+                gap: 0;
+            }
+
+            .process-step {
+                max-width: 520px;
+                width: 100%;
+                padding: 0;
+                margin-bottom: 0;
+            }
+
+            .process-arrow {
+                transform: rotate(90deg);
+                padding-top: 0;
+                padding: 8px 0;
+                font-size: 24px;
             }
         }
 
@@ -767,25 +801,35 @@
         </section>
 
         <section class="process-section" id="process">
-            <h2 class="section-title">Our Proven B2B Sales System</h2>
+            <h2 class="section-title">How the System Works</h2>
 
-            <div class="process-grid">
-                <div class="process-card">
-                    <div class="process-number">1</div>
-                    <h3>Identify Pain Points</h3>
-                    <p>Research specific business challenges your prospects face</p>
+            <div class="process-steps">
+                <div class="process-step">
+                    <div class="process-step-inner">
+                        <div class="process-step-num">1</div>
+                        <h3>Find Companies With a Problem You Solve</h3>
+                        <p>We track signals — funding rounds, leadership changes, public complaints — to find prospects actively struggling right now, not someday.</p>
+                    </div>
                 </div>
 
-                <div class="process-card">
-                    <div class="process-number">2</div>
-                    <h3>Target & Connect</h3>
-                    <p>Reach decision-makers with personalized messaging</p>
+                <div class="process-arrow">→</div>
+
+                <div class="process-step">
+                    <div class="process-step-inner">
+                        <div class="process-step-num">2</div>
+                        <h3>Reach the Person Who Can Say Yes</h3>
+                        <p>Skip gatekeepers. We go directly to budget holders with a message about their specific situation — not a template.</p>
+                    </div>
                 </div>
 
-                <div class="process-card">
-                    <div class="process-number">3</div>
-                    <h3>Book & Qualify</h3>
-                    <p>Schedule qualified meetings with pre-vetted prospects</p>
+                <div class="process-arrow">→</div>
+
+                <div class="process-step">
+                    <div class="process-step-inner">
+                        <div class="process-step-num">3</div>
+                        <h3>Booked Meetings, Pre-Vetted</h3>
+                        <p>Only prospects who confirm budget, authority, and need get on your calendar. No tire-kickers.</p>
+                    </div>
                 </div>
             </div>
         </section>

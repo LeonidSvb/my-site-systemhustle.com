@@ -1,0 +1,50 @@
+SYSTEM HUSTLE — WEBSITE + DECK
+Updated: 2026-07-14
+Full history: CHANGELOG.md
+
+=== DONE: REDESIGN (2026-07-14 session) ===
+
+[x] 1. index.html — full boutique/editorial redesign (cream/serif/mono,
+        replaced dark SaaS look)
+[x] 2. What You Get, How I Reach Your Market (Sweep/Watch), real exhibit,
+        Results, About+CTA, FAQ — all sections rewritten
+[x] 3. Inline Cal.com booking widget (always-expanded, not popup)
+[x] 4. Real photo cropped clean (circle, transparent bg, web-sized)
+[x] 5. LinkedIn / WhatsApp / email surfaced on site
+[x] 6. og:title/description/image + meta description added
+[x] 7. FAQ reworded (Q1, Q2), commission-only objection added,
+        native exclusive accordion (details name=)
+[x] 8. Pricing language fixed everywhere — was pure pay-per-meeting/
+        success-fee (contradicted actual paid-pilot-then-retainer model)
+[x] 9. signal-deck.html replaced — old aggressive recruiting-only deck
+        swapped for the boutique deck matching the site
+[x] 10. Deck exported to PDF (Documents\System Hustle - Company Deck.pdf)
+[x] 11. Results case studies settled at 4 (Vention, Hippocratic AI,
+         Crawford Thomas, Regent Peak Wealth) — matches deck 1:1
+[x] 12. "Read the deck" link added to hero, pointing to /signal-deck.html
+[x] 13. drafts/index-boutique.html + drafts/signal-deck-boutique.html kept
+         as review copies, synced with the live files after every promotion
+
+=== OPEN — REVIEW NEXT SESSION ===
+
+[ ] 14. og:image is temporarily the avatar photo — needs a real 1200x630
+         banner image for link previews (Slack/LinkedIn/email shares)
+[ ] 15. "System Hustle" as a name still reads a bit tech/SaaS on its own —
+         decide: keep as-is, or add a tagline that leans it away from that?
+         (Raised early in the redesign, never blocking, never revisited.)
+[ ] 16. Mobile responsiveness — media queries are in place (tier/compare/
+         signal-grid/exhibit-imgs/about-grid all have breakpoints) but never
+         actually verified on a real phone or narrow viewport
+[ ] 17. roi-calc.html, order-form.html, link-generator.html, signal-intro.html,
+         signal-playbook.html, docs/call_prep_*.md, archive/, drafts/index-main.html,
+         drafts/index-recruiters-vsl.html — explicitly reference-only per Leonid,
+         not in active use. Revisit only if that changes.
+[ ] 18. Case studies beyond the current 4 (Connect Group, Crawford Thomas
+         alt version, ForPlayers, Elate Staffing, HelpCare AI, Fabulingua)
+         are listed with real numbers in
+         Mastr_Leads/../templates/case-studies/_index.md but most don't have
+         a full write-up yet (marked "need to fetch"). Only pull more in if
+         the 4 on file stop being enough.
+
+Next session: confirm whether 14-16 are worth doing now, or whether this is
+considered done and the next work is something else entirely.

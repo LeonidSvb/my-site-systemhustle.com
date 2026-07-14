@@ -21,7 +21,8 @@ Full history: CHANGELOG.md
 [x] 10. Deck exported to PDF (Documents\System Hustle - Company Deck.pdf)
 [x] 11. Results case studies settled at 4 (Vention, Hippocratic AI,
          Crawford Thomas, Regent Peak Wealth) — matches deck 1:1
-[x] 12. "Read the deck" link added to hero, pointing to /signal-deck.html
+[x] 12. "Read the deck" link added to hero, then removed same session —
+         not needed, decided against linking the deck from the site for now
 [x] 13. drafts/index-boutique.html + drafts/signal-deck-boutique.html kept
          as review copies, synced with the live files after every promotion
 
@@ -29,9 +30,9 @@ Full history: CHANGELOG.md
 
 [ ] 14. og:image is temporarily the avatar photo — needs a real 1200x630
          banner image for link previews (Slack/LinkedIn/email shares)
-[ ] 15. "System Hustle" as a name still reads a bit tech/SaaS on its own —
-         decide: keep as-is, or add a tagline that leans it away from that?
-         (Raised early in the redesign, never blocking, never revisited.)
+[x] 15. "System Hustle" name — keep as-is. Google Workspace email and other
+         infra already live on this domain, too costly/disruptive to change
+         now. Decided 2026-07-14, not revisiting.
 [ ] 16. Mobile responsiveness — media queries are in place (tier/compare/
          signal-grid/exhibit-imgs/about-grid all have breakpoints) but never
          actually verified on a real phone or narrow viewport

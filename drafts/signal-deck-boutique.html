@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>System Hustle — Company Deck</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;0,900;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F7F4EC; --paper-2:#EFEADC;
+    --ink:#17140F; --ink-soft:#6B6558; --rule:rgba(23,20,15,.16);
+    --accent:#A5402B;
+    --serif:'Fraunces', Georgia, serif;
+    --mono:'IBM Plex Mono','SFMono-Regular',Menlo,Consolas,monospace;
+  }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; padding:0; }
+  body{
+    background:#C9C3B2;
+    font-family:var(--serif); color:var(--ink);
+    display:flex; flex-direction:column; align-items:center; gap:34px;
+    padding:44px 16px 96px;
+  }
+  a{ color:inherit; }
+  a:focus-visible{ outline:2px solid var(--accent); outline-offset:3px; }
+  .deck-label{ font-family:var(--mono); font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:#7A7566; }
+
+  .slide{
+    width:1200px; max-width:100%; height:675px;
+    background:var(--paper); border:1px solid var(--rule);
+    box-shadow:0 18px 40px rgba(23,20,15,.28);
+    padding:40px 60px 28px;
+    display:flex; flex-direction:column;
+    position:relative; overflow:hidden;
+  }
+
+  .nav-row{ display:flex; justify-content:space-between; align-items:baseline; padding-bottom:14px; border-bottom:1px solid var(--rule); margin-bottom:26px; flex-shrink:0; }
+  .brand{ font-family:var(--mono); font-weight:600; font-size:13px; letter-spacing:.02em; }
+  .nav-role{ font-family:var(--mono); font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-soft); }
+
+  .eyebrow{ font-family:var(--mono); font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-soft); margin-bottom:14px; }
+  .eyebrow.accent{ color:var(--accent); }
+
+  .headline{ font-family:var(--serif); font-weight:900; font-size:clamp(1.7rem,3.1vw,2.5rem); line-height:1.16; text-wrap:balance; margin:0 0 14px; }
+  .headline.small{ font-size:clamp(1.4rem,2.4vw,1.9rem); }
+
+  .sub-italic{ font-family:var(--serif); font-style:italic; font-weight:400; font-size:1.08rem; color:var(--ink-soft); max-width:58ch; line-height:1.5; margin:0 0 6px; }
+  .body-text{ font-family:var(--serif); font-size:1.02rem; line-height:1.6; max-width:66ch; margin:0; }
+  .body-text + .body-text{ margin-top:12px; }
+
+  .rule{ border:none; border-top:1px solid var(--rule); margin:18px 0; flex-shrink:0; }
+
+  .tag-row{ font-family:var(--mono); font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-soft); }
+
+  .content{ flex:1; min-height:0; display:flex; flex-direction:column; justify-content:center; gap:14px; }
+  .content.top{ justify-content:flex-start; padding-top:2px; }
+
+  .footer-row{ display:flex; justify-content:space-between; align-items:baseline; font-family:var(--mono); font-size:10.5px; letter-spacing:.05em; color:var(--ink-soft); border-top:1px solid var(--rule); padding-top:12px; margin-top:auto; flex-shrink:0; font-variant-numeric:tabular-nums; }
+  .footer-row .tag{ color:var(--accent); text-transform:uppercase; }
+
+  /* stat row */
+  .stat-row{ display:grid; grid-auto-flow:column; grid-auto-columns:1fr; }
+  .stat{ padding:0 22px; border-left:1px solid var(--rule); }
+  .stat:first-child{ border-left:none; padding-left:0; }
+  .stat .val{ font-family:var(--mono); font-weight:600; font-size:1.9rem; font-variant-numeric:tabular-nums; line-height:1; }
+  .stat .lbl{ font-family:var(--mono); font-size:10px; letter-spacing:.05em; text-transform:uppercase; color:var(--ink-soft); margin-top:6px; }
+
+  /* tier rows (slide 2) */
+  .tier{ display:grid; grid-template-columns:40px 170px 1fr; gap:18px; padding:14px 0; border-top:1px solid var(--rule); align-items:baseline; }
+  .tier:first-of-type{ border-top:1px solid var(--rule); }
+  .tier .n{ font-family:var(--mono); color:var(--accent); font-weight:600; font-size:.95rem; }
+  .tier .t{ font-family:var(--serif); font-weight:600; font-size:1.02rem; }
+  .tier .d{ font-family:var(--serif); font-size:.98rem; line-height:1.5; color:var(--ink); }
+
+  .signal-grid{ display:grid; grid-template-columns:1fr 1fr; gap:6px 30px; margin-top:4px; }
+  .signal-row{ display:flex; gap:10px; font-size:.92rem; padding:6px 0; border-top:1px solid var(--rule); }
+  .signal-row .tag{ font-family:var(--mono); font-size:9.5px; letter-spacing:.05em; text-transform:uppercase; color:var(--accent); width:78px; flex-shrink:0; padding-top:2px; }
+
+  /* compare */
+  .compare{ display:grid; grid-template-columns:1fr 1fr; gap:0 40px; flex:1; align-items:start; }
+  .compare .col{ padding-top:2px; }
+  .compare .col + .col{ border-left:1px solid var(--rule); padding-left:40px; }
+  .compare h3{ font-family:var(--mono); font-size:.78rem; letter-spacing:.08em; text-transform:uppercase; margin:0 0 14px; font-weight:500; color:var(--ink-soft); }
+  .compare .col.new h3{ color:var(--accent); }
+  .compare ul{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:12px; }
+  .compare li{ font-family:var(--serif); font-size:1rem; line-height:1.5; padding-left:16px; position:relative; }
+  .compare li::before{ content:"—"; position:absolute; left:0; color:var(--ink-soft); }
+  .compare .col.new li::before{ color:var(--accent); }
+
+  /* steps */
+  .steps{ display:flex; flex-direction:column; }
+  .step{ display:grid; grid-template-columns:34px 1fr; gap:14px; padding:9px 0; border-top:1px solid var(--rule); }
+  .step .n{ font-family:var(--mono); color:var(--accent); font-weight:600; font-size:.92rem; }
+  .step .d{ font-family:var(--serif); font-size:.96rem; line-height:1.45; }
+
+  /* exhibit (real message) */
+  .exhibit{ border-left:2px solid var(--accent); padding:6px 0 6px 20px; margin-top:4px; }
+  .exhibit .ex-label{ font-family:var(--mono); font-size:9.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--accent); margin-bottom:8px; }
+  .exhibit .ex-body{ font-family:var(--mono); font-size:.82rem; line-height:1.65; color:var(--ink); white-space:pre-line; }
+  .exhibit .ex-reply{ font-family:var(--mono); font-size:.82rem; line-height:1.5; color:var(--ink-soft); margin-top:10px; font-style:italic; }
+
+  /* checklist */
+  .checklist{ display:flex; flex-direction:column; gap:0; margin-top:4px; }
+  .check{ display:flex; gap:12px; padding:10px 0; border-top:1px solid var(--rule); font-family:var(--serif); font-size:1rem; }
+  .check .mk{ font-family:var(--mono); color:var(--accent); flex-shrink:0; }
+
+  /* table */
+  table.mini{ border-collapse:collapse; width:100%; margin-top:2px; }
+  table.mini th{ font-family:var(--mono); font-size:9.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-soft); text-align:left; font-weight:500; padding:0 12px 8px 0; border-bottom:1px solid var(--rule); }
+  table.mini td{ font-family:var(--serif); font-size:.92rem; padding:11px 12px 11px 0; border-bottom:1px solid var(--rule); vertical-align:top; }
+  table.mini td.co{ font-weight:600; }
+  table.mini td.tg{ font-family:var(--mono); font-size:.72rem; text-transform:uppercase; color:var(--accent); letter-spacing:.04em; white-space:nowrap; }
+
+  .link-row a{ font-family:var(--mono); font-size:.85rem; text-decoration:none; border-bottom:1px solid var(--ink); padding-bottom:2px; }
+  .link-row a:hover{ border-color:var(--accent); color:var(--accent); }
+
+  @media print{
+    @page{ size:13.333in 7.5in; margin:0; }
+    body{ background:var(--paper); padding:0; gap:0; }
+    .deck-label{ display:none; }
+    .slide{ box-shadow:none; width:13.333in; height:7.5in; page-break-after:always; }
+    .slide:last-child{ page-break-after:auto; }
+  }
+</style>
+</head>
+<body>
+
+<p class="deck-label">SYSTEM HUSTLE — COMPANY DECK — SCROLL TO REVIEW, PRINT TO EXPORT AS PDF</p>
+
+<!-- SLIDE 1 — COVER -->
+<section class="slide">
+  <div class="nav-row">
+    <span class="brand">System Hustle</span>
+    <span class="nav-role">Leonid Shvorob — Outbound Research &amp; Introductions</span>
+  </div>
+  <div class="content top">
+    <div class="eyebrow">Connecting you with high-value opportunities in your niche</div>
+    <h1 class="headline">We find the exact moment a company in your niche has the problem you solve — before they start shopping around.</h1>
+    <p class="sub-italic">I research every company myself, and only reach out once there's a real reason to.</p>
+    <hr class="rule">
+    <div class="tag-row">RECRUITING &nbsp;·&nbsp; LOGISTICS &nbsp;·&nbsp; B2B SERVICES</div>
+    <hr class="rule">
+    <div class="stat-row">
+      <div class="stat"><div class="val">3–8 /mo</div><div class="lbl">Real Conversations</div></div>
+      <div class="stat"><div class="val">48h</div><div class="lbl">To First Outreach</div></div>
+      <div class="stat"><div class="val">1–2</div><div class="lbl">Client Slots / Quarter</div></div>
+    </div>
+    <div class="link-row" style="margin-top:16px;"><a href="https://cal.com/systemhustle/fit-check-call">Book a call — cal.com/systemhustle/fit-check-call →</a></div>
+  </div>
+  <div class="footer-row"><span class="tag">System Hustle</span><span>001 / 008</span></div>
+</section>
+
+<!-- SLIDE 2 — HOW I COVER YOUR MARKET -->
+<section class="slide">
+  <div class="nav-row"><span class="brand">System Hustle</span><span class="nav-role">Leonid Shvorob — Outbound Research &amp; Introductions</span></div>
+  <div class="eyebrow accent">02 — How I Cover Your Market</div>
+  <h2 class="headline small">Three layers, one target: the right company, at the right moment.</h2>
+  <div>
+    <div class="tier"><span class="n">01</span><span class="t">Full Market</span><span class="d">I map your entire addressable market first — every company that could ever be a fit.</span></div>
+    <div class="tier"><span class="n">02</span><span class="t">Your Segment</span><span class="d">From there, I narrow to your exact segment — country, industry, company size — and that's what gets watched daily.</span></div>
+    <div class="tier"><span class="n">03</span><span class="t">The Signal</span><span class="d">Inside that segment, the moment something changes, it gets flagged and turned into outreach.</span></div>
+  </div>
+  <div class="signal-grid">
+    <div class="signal-row"><span class="tag">Funding</span><span>A company raises funding</span></div>
+    <div class="signal-row"><span class="tag">M&amp;A</span><span>A company gets acquired, or acquires someone else</span></div>
+    <div class="signal-row"><span class="tag">Leadership</span><span>A company hires a new CEO or VP</span></div>
+    <div class="signal-row"><span class="tag">Key Exit</span><span>A company loses a key person</span></div>
+    <div class="signal-row"><span class="tag">Growth</span><span>A company suddenly starts hiring fast</span></div>
+  </div>
+  <p class="sub-italic" style="margin-top:14px;">The moment there's a real reason to talk — before competition shows up, before a queue forms.</p>
+  <div class="footer-row"><span class="tag">System Hustle</span><span>002 / 008</span></div>
+</section>
+
+<!-- SLIDE 3 — RESEARCH FIRST -->
+<section class="slide">
+  <div class="nav-row"><span class="brand">System Hustle</span><span class="nav-role">Leonid Shvorob — Outbound Research &amp; Introductions</span></div>
+  <div class="eyebrow accent">03 — Why Most Outbound Fails</div>
+  <h2 class="headline small">Research first. Then a message worth reading.</h2>
+  <hr class="rule">
+  <div class="compare">
+    <div class="col old">
+      <h3>The Old Way</h3>
+      <ul>
+        <li>A generic message sent to a job title</li>
+        <li>No idea if they need this right now</li>
+        <li>You pay for volume, not outcomes</li>
+      </ul>
+    </div>
+    <div class="col new">
+      <h3>How This Works</h3>
+      <ul>
+        <li>I research every company first, and find the real reason to reach out</li>
+        <li>Every message is tied to something that actually just happened there</li>
+        <li>You only talk to people who can decide, and who need this now — not next-quarter tire-kickers, not people just shopping around</li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-row"><span class="tag">System Hustle</span><span>003 / 008</span></div>
+</section>
+
+<!-- SLIDE 4 — HOW THIS WORKS -->
+<section class="slide">
+  <div class="nav-row"><span class="brand">System Hustle</span><span class="nav-role">Leonid Shvorob — Outbound Research &amp; Introductions</span></div>
+  <div style="display:grid; grid-template-columns:1.05fr 1fr; gap:40px; flex:1; min-height:0;">
+    <div>
+      <div class="eyebrow accent">04 — How This Works</div>
+      <h2 class="headline small">From noticing something, to a confirmed conversation.</h2>
+      <div class="steps">
+        <div class="step"><span class="n">01</span><span class="d">First, we figure out your fit together — which companies, which segment, where you actually win.</span></div>
+        <div class="step"><span class="n">02</span><span class="d">I watch that market every day. The moment something changes, the research starts.</span></div>
+        <div class="step"><span class="n">03</span><span class="d">I map who can actually say yes — sometimes one person, sometimes two or three.</span></div>
+        <div class="step"><span class="n">04</span><span class="d">Then comes the message — always tied to what just happened, never a template.</span></div>
+        <div class="step"><span class="n">05</span><span class="d">Before anything reaches your calendar, it gets confirmed as real.</span></div>
+        <div class="step"><span class="n">06</span><span class="d">You get the meeting — already warm, already confirmed.</span></div>
+      </div>
+    </div>
+    <div style="display:flex; flex-direction:column; justify-content:center; gap:10px;">
+      <div class="ex-label" style="font-family:var(--mono); font-size:9.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--accent);">Exhibit — an actual message, unedited</div>
+      <img src="assets/exhibit-message-sent.png" alt="Real outreach email: subject 'someone I'd like to introduce', referencing Holle Baby Food's acquisition by Masergroup" style="width:100%; border:1px solid var(--rule); box-shadow:0 4px 14px rgba(23,20,15,.12);">
+      <img src="assets/exhibit-reply.png" alt="Real reply received: 'thanks for your message, yes sounds good'" style="width:100%; border:1px solid var(--rule); box-shadow:0 4px 14px rgba(23,20,15,.12);">
+    </div>
+  </div>
+  <div class="footer-row"><span class="tag">System Hustle</span><span>004 / 008</span></div>
+</section>
+
+<!-- SLIDE 5 — WHAT LANDS ON YOUR CALENDAR -->
+<section class="slide">
+  <div class="nav-row"><span class="brand">System Hustle</span><span class="nav-role">Leonid Shvorob — Outbound Research &amp; Introductions</span></div>
+  <div class="eyebrow accent">05 — What Lands On Your Calendar</div>
+  <h2 class="headline small">Never a courtesy call. Always a confirmed catch.</h2>
+  <p class="body-text">Not a junior coordinator. Not an assistant's assistant. Before anything reaches your calendar, three things get confirmed — if any of them isn't true, it doesn't get booked.</p>
+  <div class="checklist">
+    <div class="check"><span class="mk">—</span><span>A real need, right now</span></div>
+    <div class="check"><span class="mk">—</span><span>Real budget or authority to move</span></div>
+    <div class="check"><span class="mk">—</span><span>A direct yes to talking</span></div>
+  </div>
+  <p class="sub-italic" style="margin-top:14px;">Three real conversations a month beat ten maybes.</p>
+  <div class="footer-row"><span class="tag">System Hustle</span><span>005 / 008</span></div>
+</section>
+
+<!-- SLIDE 6 — IF YOU ALREADY REACH OUT YOURSELF -->
+<section class="slide">
+  <div class="nav-row"><span class="brand">System Hustle</span><span class="nav-role">Leonid Shvorob — Outbound Research &amp; Introductions</span></div>
+  <div class="eyebrow accent">06 — If You Already Reach Out Yourself</div>
+  <h2 class="headline small">Here's exactly how this fits in.</h2>
+  <p class="body-text">Depending on your niche, expect roughly 20–30 strong signals a month — up to 50 in a wider market. Each signal is a company, and inside many of them I find more than one real contact. About half come with a working email, and I reach out to those directly. The rest are LinkedIn-only — you send those yourself, but I tell you exactly what to write and when. That volume is what turns into the 3–8 real conversations a month on the cover — not every signal converts, but every one gets worked.</p>
+  <p class="sub-italic">Replacing this yourself would mean running a small in-house research and BD team — most companies don't have 10–15 people free for that.</p>
+  <hr class="rule" style="margin:16px 0;">
+  <table class="mini">
+    <thead><tr><th>Company</th><th>Signal</th><th>Contact</th><th>Why now</th></tr></thead>
+    <tbody>
+      <tr><td class="co">Northgate Logistics</td><td class="tg">Funding</td><td>Dana Ruiz, Head of Talent</td><td>Hiring push expected within weeks</td></tr>
+      <tr><td class="co">Bellhaven Studios</td><td class="tg">Leadership</td><td>Marcus Webb, VP Engineering</td><td>New execs usually rebuild the team in month one</td></tr>
+      <tr><td class="co">Corex Materials</td><td class="tg">M&amp;A</td><td>Priya Nair, COO</td><td>Post-acquisition budget just got approved</td></tr>
+    </tbody>
+  </table>
+  <div class="footer-row"><span class="tag">System Hustle</span><span>006 / 008</span></div>
+</section>
+
+<!-- SLIDE 7 — RESULTS ON FILE -->
+<section class="slide">
+  <div class="nav-row"><span class="brand">System Hustle</span><span class="nav-role">Leonid Shvorob — Outbound Research &amp; Introductions</span></div>
+  <div class="eyebrow accent">07 — Results On File</div>
+  <h2 class="headline small">Closed engagements, verified outcomes.</h2>
+  <hr class="rule">
+  <div class="stat-row" style="padding:6px 0;">
+    <div class="stat">
+      <div class="val" style="font-size:1.4rem;">+$85K</div>
+      <div class="lbl">Vention<br>Industrial Automation — one quarter</div>
+    </div>
+    <div class="stat">
+      <div class="val" style="font-size:1.4rem;">2 partners</div>
+      <div class="lbl">Hippocratic AI<br>Healthcare Technology — $35K, 60 days</div>
+    </div>
+    <div class="stat">
+      <div class="val" style="font-size:1.4rem;">+39</div>
+      <div class="lbl">Crawford Thomas Recruiting<br>Staffing — placements, +$100K revenue</div>
+    </div>
+    <div class="stat">
+      <div class="val" style="font-size:1.4rem;">6 intros</div>
+      <div class="lbl">Regent Peak Wealth Advisors<br>Wealth Management — 45 days</div>
+    </div>
+  </div>
+  <p class="sub-italic" style="margin-top:20px;">Every one of these started the same way — noticing something before anyone else did, and following it through end to end.</p>
+  <div class="footer-row"><span class="tag">System Hustle</span><span>007 / 008</span></div>
+</section>
+
+<!-- SLIDE 8 — WHO'S BEHIND THIS + NEXT STEP (merged) -->
+<section class="slide">
+  <div class="nav-row"><span class="brand">System Hustle</span><span class="nav-role">Leonid Shvorob — Outbound Research &amp; Introductions</span></div>
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:48px; flex:1; min-height:0;">
+    <div style="display:flex; flex-direction:column; justify-content:center;">
+      <div class="eyebrow accent">08 — Who's Behind This</div>
+      <div style="display:flex; align-items:center; gap:16px; margin-bottom:6px;">
+        <img src="assets/leonid-avatar.png" alt="Leonid Shvorob" style="width:64px; height:64px; border-radius:50%; flex-shrink:0;">
+        <h2 class="headline small" style="margin:0;">Leonid Shvorob<br>Founder, System Hustle</h2>
+      </div>
+      <p class="body-text">I work with a small number of companies at a time — recruiting agencies, logistics operators, B2B service providers. I only take on a couple of new clients a quarter. I'm looking for people I'll still be working with a year from now, not a one-off campaign.</p>
+      <div class="link-row" style="margin-top:10px; display:flex; gap:16px; flex-wrap:wrap;">
+        <a href="https://www.linkedin.com/in/leonid-shvorob/">LinkedIn ↗</a>
+        <a href="https://wa.me/628175755953">WhatsApp ↗</a>
+        <a href="mailto:leo@systemhustle.com">leo@systemhustle.com</a>
+      </div>
+    </div>
+    <div style="display:flex; flex-direction:column; justify-content:center; border-left:1px solid var(--rule); padding-left:48px;">
+      <div class="eyebrow accent">Next Step</div>
+      <h2 class="headline small">Let's talk about your pipeline.</h2>
+      <p class="sub-italic">We'll figure out the right setup on the call — usually starting with a pilot, so you can see how this works with less risk on your side.</p>
+      <div class="link-row" style="margin-top:14px;"><a href="https://cal.com/systemhustle/fit-check-call">Book a call — cal.com/systemhustle/fit-check-call →</a></div>
+    </div>
+  </div>
+  <div class="footer-row"><span class="tag">System Hustle</span><span>008 / 008</span></div>
+</section>
+
+</body>
+</html>

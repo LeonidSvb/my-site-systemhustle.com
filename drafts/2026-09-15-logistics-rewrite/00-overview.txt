@@ -1,0 +1,31 @@
+STRUCTURAL CHANGES (page order, top to bottom):
+
+1. Hero (01-hero.txt) — rewritten copy + new stats row
+2. Book a Call — KEEP AS IS (Cal.com embed, no changes needed)
+3. How It Works (02-how-it-works.txt) — same 3-step shape, rewritten copy
+4. Who This Is For (03-who-this-is-for.txt) — NEW SECTION, replaces the old
+   "Old Way vs What Actually Works" comparison block entirely (delete that section)
+5. Pricing (04-pricing.txt) — NEW SECTION, sits where "Results/Case Studies" used to be
+6. REMOVE: the whole case-studies section (Vention/Hippocratic AI/Crawford Thomas) —
+   those are your mentor's numbers, not yours, and your own logistics work is still
+   in progress. Nothing to replace it with yet except pricing (above) — better an
+   honest gap than a borrowed or fabricated case study.
+7. About (05-about.txt) — same layout, rewritten copy, recruiting mentioned once
+   as a footnote instead of sitting equal to logistics
+8. FAQ (06-faq.txt) — same 4-question layout, rewritten around real objections
+9. Footer — KEEP AS IS
+
+WHAT THIS FIXES (from the original review):
+- Site voice matched generic "agency marketing" language (badges, "Old Way vs What
+  Actually Works" checklists) instead of the plain, specific language that's actually
+  worked live on calls (Gulf Coast corridor / UK EPR-style specificity).
+- Stats in the hero (3-8 meetings/month, 48h to first outreach) didn't match numbers
+  ever said on a real call (3-5 intros over a 30-60 day pilot) — fixed to match.
+- Case studies were borrowed from your mentor and your own logistics case isn't closed
+  yet — removed rather than guessing or borrowing further.
+- FAQ answers were generic (the CFO/cash-flow example matches no niche you're in) —
+  replaced with real objections from Ken DeWitt and Earthpack calls.
+- Page also felt long/overloaded for a page whose real job is "give something in
+  writing to a lead who just got off a call with you" (Cy Hill, Ronan both asked for
+  exactly that) — cutting the case-studies section and tightening copy should make it
+  noticeably shorter without losing anything that actually does work.

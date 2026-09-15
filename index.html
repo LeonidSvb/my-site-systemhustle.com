@@ -3,1031 +3,647 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>System Hustle - B2B Sales Systems</title>
+    <title>System Hustle — Logistics Deal Sourcing</title>
+    <meta name="description" content="I connect packaging suppliers, trucking carriers, and warehouses with the businesses that need them right now.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        :root {
+            --bg: #15130f;
+            --bg-2: #100e0b;
+            --surface: #1d1a15;
+            --surface-2: #24211a;
+            --border: #372f22;
+            --border-soft: #2a2519;
+            --text: #ece6d9;
+            --text-muted: #a89d87;
+            --text-dim: #766c5a;
+            --accent: #e8963c;
+            --accent-dim: #8a5f28;
+            --accent-ink: #1a1108;
         }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            font-family: 'Inter', sans-serif;
-            background: #0a0e1a;
-            color: #ffffff;
+            font-family: 'IBM Plex Sans', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
             min-height: 100vh;
-            overflow-x: hidden;
-            position: relative;
+            line-height: 1.6;
         }
 
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background:
-                radial-gradient(
-                    ellipse 80% 50% at 50% 0%,
-                    rgba(37, 99, 235, 0.15) 0%,
-                    rgba(37, 99, 235, 0.05) 40%,
-                    transparent 70%
-                ),
-                radial-gradient(
-                    ellipse 60% 50% at 100% 50%,
-                    rgba(14, 165, 233, 0.08) 0%,
-                    transparent 60%
-                ),
-                radial-gradient(
-                    ellipse 60% 50% at 0% 100%,
-                    rgba(30, 64, 175, 0.06) 0%,
-                    transparent 60%
-                ),
-                linear-gradient(
-                    180deg,
-                    #0f1117 0%,
-                    #0a0d14 30%,
-                    #060810 70%,
-                    #03040a 100%
-                );
-            z-index: -1;
-            pointer-events: none;
+        .container { max-width: 1180px; margin: 0 auto; padding: 0 24px; }
+
+        /* ===== Manifest ruled-paper texture (hero + pricing) ===== */
+        .ruled {
+            background-image: repeating-linear-gradient(
+                to bottom,
+                transparent 0px, transparent 34px,
+                rgba(232, 150, 60, 0.05) 35px
+            );
         }
 
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 40px;
-        }
-
+        /* ===== Nav ===== */
         nav {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 40px 0;
+            padding: 30px 0;
+            border-bottom: 1px solid var(--border-soft);
         }
-
         .logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 20px;
-            font-weight: 600;
-            color: #ffffff;
+            font-family: 'Barlow Condensed', sans-serif;
+            font-weight: 700;
+            font-size: 21px;
+            letter-spacing: 0.03em;
+            text-transform: uppercase;
+            color: var(--text);
             text-decoration: none;
         }
-
-        .nav-menu {
-            display: flex;
-            gap: 40px;
-            list-style: none;
-        }
-
+        .logo span { color: var(--accent); }
+        .nav-menu { display: flex; gap: 34px; list-style: none; }
         .nav-menu a {
-            color: #ffffff;
+            color: var(--text-muted);
             text-decoration: none;
-            font-size: 16px;
-            font-weight: 400;
-            transition: opacity 0.3s;
+            font-size: 14.5px;
+            transition: color 0.2s;
         }
-
-        .nav-menu a:hover {
-            opacity: 0.7;
-        }
-
+        .nav-menu a:hover { color: var(--text); }
         .nav-cta {
-            background: rgba(102, 126, 234, 0.15);
-            border: 1.5px solid rgba(102, 126, 234, 0.3);
-            color: #ffffff;
-            padding: 11px 26px;
-            border-radius: 24px;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 12.5px;
+            letter-spacing: 0.03em;
+            text-transform: uppercase;
+            color: var(--accent);
+            border: 1px solid var(--accent-dim);
+            padding: 9px 18px;
             text-decoration: none;
-            font-weight: 500;
-            font-size: 15px;
-            transition: all 0.3s ease;
+            transition: all 0.2s;
         }
+        .nav-cta:hover { background: rgba(232, 150, 60, 0.1); border-color: var(--accent); }
 
-        .nav-cta:hover {
-            background: rgba(102, 126, 234, 0.25);
-            border-color: rgba(102, 126, 234, 0.5);
-            transform: translateY(-1px);
-        }
+        /* ===== Hero ===== */
+        .hero { padding: 90px 0 60px; }
 
-        .hero {
-            text-align: center;
-            padding: 100px 0 80px;
-        }
-
-        .hero-avatar-row {
-            display: flex;
+        .tag {
+            display: inline-flex;
             align-items: center;
-            justify-content: center;
-            gap: 14px;
-            margin-bottom: 36px;
+            gap: 8px;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 12px;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            color: var(--accent);
+            background: rgba(232, 150, 60, 0.08);
+            border: 1px solid var(--accent-dim);
+            padding: 7px 14px 7px 10px;
+            margin-bottom: 30px;
+            position: relative;
+            clip-path: polygon(0 50%, 10px 0, 100% 0, 100% 100%, 10px 100%);
         }
-
-        .hero-avatar {
-            width: 52px;
-            height: 52px;
+        .tag::before {
+            content: '';
+            width: 5px; height: 5px;
             border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid rgba(16, 185, 129, 0.4);
-            flex-shrink: 0;
-        }
-
-        .hero-avatar-label {
-            text-align: left;
-        }
-
-        .hero-avatar-name {
-            font-size: 15px;
-            font-weight: 600;
-            color: #ffffff;
-            line-height: 1.2;
-        }
-
-        .hero-avatar-role {
-            font-size: 13px;
-            color: #10b981;
-            font-weight: 400;
+            background: var(--accent);
+            margin-left: 6px;
         }
 
         h1 {
-            font-size: 72px;
-            font-weight: 600;
-            line-height: 1.05;
-            margin-bottom: 28px;
-            max-width: 1000px;
-            margin-left: auto;
-            margin-right: auto;
-            letter-spacing: -0.02em;
+            font-family: 'Barlow Condensed', sans-serif;
+            font-weight: 700;
+            font-size: 58px;
+            line-height: 1.06;
+            text-transform: uppercase;
+            letter-spacing: 0.005em;
+            max-width: 880px;
+            margin-bottom: 26px;
+            text-wrap: balance;
         }
+        h1 em { color: var(--accent); font-style: normal; }
 
         .subtitle {
             font-size: 18px;
-            font-weight: 400;
-            line-height: 1.6;
-            max-width: 60ch;
-            margin: 0 auto 48px;
-            opacity: 0.7;
-        }
-
-        .stats-row {
-            display: flex;
-            justify-content: center;
-            gap: 60px;
-            margin-top: 48px;
-            flex-wrap: wrap;
-        }
-
-        .stat-item {
-            text-align: center;
-        }
-
-        .stat-number {
-            font-size: 32px;
-            font-weight: 600;
-            color: #10b981;
-            margin-bottom: 8px;
-        }
-
-        .stat-label {
-            font-size: 14px;
-            opacity: 0.6;
-        }
-
-        .cta-button {
-            display: inline-block;
-            padding: 16px 40px;
-            border: 2px solid rgba(16, 185, 129, 0.6);
-            border-radius: 30px;
-            color: #ffffff;
-            text-decoration: none;
-            font-size: 16px;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            background: rgba(16, 185, 129, 0.08);
-        }
-
-        .cta-button:hover {
-            background: rgba(16, 185, 129, 0.15);
-            border-color: rgba(16, 185, 129, 0.8);
-            transform: translateY(-1px);
-        }
-
-        .section-title {
-            font-size: 48px;
-            font-weight: 600;
-            line-height: 1.1;
-            margin-bottom: 60px;
-            letter-spacing: -0.02em;
-            text-align: center;
-        }
-
-        .process-section {
-            padding: 120px 0;
-        }
-
-        /* Desktop: horizontal steps with arrows */
-        .process-steps {
-            display: flex;
-            align-items: flex-start;
-            justify-content: center;
-            gap: 0;
-            margin-top: 80px;
-            position: relative;
-        }
-
-        .process-step {
-            flex: 1;
-            max-width: 320px;
-            text-align: center;
-            padding: 0 20px;
-            position: relative;
-        }
-
-        .process-step-inner {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 20px;
-            padding: 40px 28px;
-            transition: all 0.3s ease;
-            height: 100%;
-        }
-
-        .process-step-inner:hover {
-            border-color: rgba(16, 185, 129, 0.3);
-            transform: translateY(-4px);
-        }
-
-        .process-step-num {
-            font-size: 72px;
-            font-weight: 700;
-            line-height: 1;
-            color: rgba(16, 185, 129, 0.12);
-            margin-bottom: -16px;
-            letter-spacing: -0.04em;
-        }
-
-        .process-step h3 {
-            font-size: 20px;
-            font-weight: 600;
-            margin-bottom: 14px;
-            line-height: 1.3;
-            position: relative;
-        }
-
-        .process-step p {
-            font-size: 15px;
             line-height: 1.65;
-            opacity: 0.65;
-        }
-
-        /* Arrow connector between steps */
-        .process-arrow {
-            flex-shrink: 0;
-            display: flex;
-            align-items: center;
-            padding-top: 60px;
-            color: rgba(16, 185, 129, 0.4);
-            font-size: 28px;
-        }
-
-        .problem-section {
-            padding: 80px 0;
-        }
-
-        .problem-intro {
-            text-align: center;
-            max-width: 800px;
-            margin: 0 auto 80px;
-            font-size: 18px;
-            line-height: 1.6;
-            opacity: 0.8;
-        }
-
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 30px;
-        }
-
-        .feature-card {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 16px;
-            padding: 40px 30px;
-            transition: all 0.3s ease;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-5px);
-            border-color: rgba(16, 185, 129, 0.3);
-        }
-
-        .feature-icon {
-            width: 48px;
-            height: 48px;
-            background: rgba(16, 185, 129, 0.1);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 24px;
-        }
-
-        .feature-icon svg {
-            width: 24px;
-            height: 24px;
-            stroke: #10b981;
-            fill: none;
-            stroke-width: 2;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-        }
-
-        .feature-card h3 {
-            font-size: 20px;
-            font-weight: 600;
-            margin-bottom: 12px;
-        }
-
-        .feature-card p {
-            font-size: 15px;
-            line-height: 1.6;
-            opacity: 0.7;
-        }
-
-        .comparison-section {
-            padding: 100px 0;
-        }
-
-        .comparison-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 60px;
-            max-width: 1200px;
-            margin: 80px auto 0;
-        }
-
-        .comparison-card {
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 24px;
-            padding: 50px 40px;
-        }
-
-        .comparison-card h3 {
-            font-size: 32px;
-            font-weight: 600;
-            margin-bottom: 24px;
-        }
-
-        .comparison-list {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            margin-top: 30px;
-        }
-
-        .comparison-item {
-            display: flex;
-            gap: 16px;
-            align-items: flex-start;
-        }
-
-        .comparison-icon {
-            flex-shrink: 0;
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            margin-top: 2px;
-        }
-
-        .comparison-icon.negative {
-            border: 2px solid rgba(239, 68, 68, 0.5);
-            color: rgba(239, 68, 68, 0.8);
-        }
-
-        .comparison-icon.positive {
-            border: 2px solid rgba(16, 185, 129, 0.5);
-            color: rgba(16, 185, 129, 0.8);
-        }
-
-        .comparison-item p {
-            font-size: 16px;
-            line-height: 1.6;
-            opacity: 0.85;
-        }
-
-        .case-studies-section {
-            padding: 100px 0;
-        }
-
-        .case-studies-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 40px;
-            margin-top: 80px;
-        }
-
-        .case-study {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 20px;
-            padding: 40px 30px;
-            transition: all 0.3s ease;
-        }
-
-        .case-study:hover {
-            transform: translateY(-5px);
-            border-color: rgba(102, 126, 234, 0.3);
-        }
-
-        .case-study-header {
-            font-size: 14px;
-            color: #10b981;
-            font-weight: 600;
-            margin-bottom: 16px;
-        }
-
-        .case-study h3 {
-            font-size: 24px;
-            font-weight: 600;
-            margin-bottom: 16px;
-            line-height: 1.3;
-        }
-
-        .case-study-company {
-            font-size: 14px;
-            opacity: 0.6;
-            margin-bottom: 20px;
-        }
-
-        .case-study p {
-            font-size: 16px;
-            line-height: 1.6;
-            opacity: 0.7;
-        }
-
-        .faq-section {
-            padding: 120px 0;
-            max-width: 900px;
-            margin: 0 auto;
-        }
-
-        .faq-section h2 {
-            font-size: 48px;
-            font-weight: 600;
-            line-height: 1.1;
-            margin-bottom: 60px;
-            letter-spacing: -0.02em;
-        }
-
-        .faq-item {
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-            padding: 32px 0;
-        }
-
-        .faq-question {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            cursor: pointer;
-            user-select: none;
-            gap: 20px;
-        }
-
-        .faq-question h3 {
-            font-size: 20px;
-            font-weight: 500;
-            letter-spacing: -0.01em;
-            transition: color 0.3s ease;
-        }
-
-        .faq-question:hover h3 {
-            color: rgba(255, 255, 255, 0.7);
-        }
-
-        .faq-icon {
-            font-size: 24px;
-            color: rgba(255, 255, 255, 0.5);
-            transition: transform 0.3s ease;
-            flex-shrink: 0;
-        }
-
-        .faq-item.active .faq-icon {
-            transform: rotate(45deg);
-        }
-
-        .faq-answer {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s ease, padding 0.3s ease;
-            padding: 0;
-        }
-
-        .faq-item.active .faq-answer {
-            max-height: 500px;
-            padding-top: 24px;
-        }
-
-        .faq-answer p {
-            font-size: 16px;
-            line-height: 1.6;
-            opacity: 0.7;
-            margin: 0;
-        }
-
-        .cta-section {
-            padding: 120px 0;
-            text-align: center;
-        }
-
-        .cta-section h2 {
-            font-size: 48px;
-            font-weight: 600;
-            margin-bottom: 32px;
-        }
-
-        .cta-section p {
-            font-size: 18px;
-            opacity: 0.7;
+            max-width: 58ch;
+            color: var(--text-muted);
             margin-bottom: 40px;
         }
 
-        .cta-checklist {
-            max-width: 600px;
-            margin: 40px auto;
-            text-align: left;
+        .stamp-btn {
+            display: inline-block;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 14px;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--accent-ink);
+            background: var(--accent);
+            padding: 15px 34px;
+            text-decoration: none;
+            border: 1px solid var(--accent);
+            transform: rotate(-0.6deg);
+            transition: transform 0.2s ease, filter 0.2s ease;
+        }
+        .stamp-btn:hover { transform: rotate(0deg) scale(1.02); filter: brightness(1.08); }
+        .stamp-btn.ghost {
+            background: transparent;
+            color: var(--accent);
+            margin-left: 14px;
         }
 
-        .cta-checklist h3 {
-            font-size: 20px;
+        /* ===== Book a call ===== */
+        .hero-cal-section { padding: 70px 0 90px; border-top: 1px solid var(--border-soft); border-bottom: 1px solid var(--border-soft); }
+        .cal-label {
+            font-family: 'Barlow Condensed', sans-serif;
             font-weight: 600;
-            margin-bottom: 24px;
+            font-size: 30px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
         }
-
-        .cta-checklist ul {
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        .cta-checklist li {
-            display: flex;
-            gap: 12px;
-            font-size: 16px;
-            line-height: 1.6;
-        }
-
-        .cta-checklist li::before {
-            content: '•';
-            color: #10b981;
-            font-weight: bold;
-            font-size: 20px;
-        }
-
+        .cal-subtitle { color: var(--text-muted); font-size: 15px; margin-bottom: 34px; max-width: 55ch; }
         .cal-embed {
-            max-width: 900px;
-            margin: 60px auto;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 20px;
-            overflow: hidden;
+            border: 1px solid var(--border);
+            background: var(--surface);
         }
+        .cal-embed iframe { display: block; width: 100%; height: 700px; border: none; }
 
-        /* Calendar below hero */
-        .hero-cal-section {
-            padding: 0 0 80px;
-            text-align: center;
-        }
-
-        .hero-cal-section .cal-label {
-            font-size: 28px;
-            font-weight: 600;
+        /* ===== Section shared ===== */
+        section { padding: 100px 0; }
+        .eyebrow {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 12.5px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--accent);
             margin-bottom: 12px;
         }
-
-        .hero-cal-section .cal-subtitle {
-            font-size: 16px;
-            opacity: 0.7;
-            margin-bottom: 0;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        /* About section */
-        .about-section {
-            padding: 100px 0;
-        }
-
-        .about-inner {
-            display: grid;
-            grid-template-columns: 220px 1fr;
-            gap: 60px;
-            align-items: center;
-            max-width: 900px;
-            margin: 0 auto;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 24px;
-            padding: 50px 50px;
-        }
-
-        .about-photo {
-            width: 180px;
-            height: 180px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid rgba(16, 185, 129, 0.3);
-            display: block;
-            margin: 0 auto;
-        }
-
-        .about-text h3 {
-            font-size: 24px;
+        .section-title {
+            font-family: 'Barlow Condensed', sans-serif;
             font-weight: 600;
+            font-size: 40px;
+            text-transform: uppercase;
+            letter-spacing: 0.005em;
+            margin-bottom: 20px;
+            max-width: 700px;
+            text-wrap: balance;
+        }
+        .section-lede { color: var(--text-muted); font-size: 16.5px; max-width: 62ch; margin-bottom: 56px; line-height: 1.65; }
+
+        /* ===== How it works — route ===== */
+        .route-wrap { position: relative; }
+        .route-line-svg { position: absolute; top: 34px; left: 0; right: 0; width: 100%; height: 6px; display: block; }
+        .route-line-svg path {
+            stroke: var(--border);
+            stroke-width: 2;
+        }
+        .route-line-svg path.progress {
+            stroke: var(--accent);
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            transition: stroke-dashoffset 1.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .route-wrap.in-view .route-line-svg path.progress { stroke-dashoffset: 0; }
+
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            position: relative;
+        }
+        .step { position: relative; }
+        .step-marker {
+            width: 68px; height: 68px;
+            border-radius: 50%;
+            background: var(--surface);
+            border: 2px solid var(--border);
+            display: flex; align-items: center; justify-content: center;
+            margin-bottom: 24px;
+            position: relative;
+            z-index: 2;
+            transition: border-color 0.6s ease 0.3s, background 0.6s ease 0.3s;
+        }
+        .route-wrap.in-view .step-marker { border-color: var(--accent); background: var(--surface-2); }
+        .step-marker svg { width: 28px; height: 28px; stroke: var(--accent); fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+        .step-num {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 12px;
+            color: var(--text-dim);
             margin-bottom: 8px;
         }
+        .step h3 { font-size: 19px; font-weight: 600; margin-bottom: 10px; line-height: 1.3; }
+        .step p { font-size: 14.5px; line-height: 1.6; color: var(--text-muted); }
 
-        .about-text .about-role {
-            font-size: 14px;
-            color: #10b981;
-            font-weight: 500;
-            margin-bottom: 20px;
+        /* ===== Who this is for — tag manifest ===== */
+        .tag-manifest { display: flex; flex-wrap: wrap; gap: 14px; align-items: flex-start; }
+        .seg-tag {
+            font-family: 'IBM Plex Sans', sans-serif;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            padding: 16px 20px;
+            position: relative;
         }
-
-        .about-text p {
-            font-size: 16px;
-            line-height: 1.7;
-            opacity: 0.75;
+        .seg-tag::before {
+            content: '';
+            position: absolute;
+            left: -1px; top: 50%;
+            width: 8px; height: 8px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
         }
-
-        @media (max-width: 768px) {
-            .about-inner {
-                grid-template-columns: 1fr;
-                text-align: center;
-                padding: 40px 30px;
-                gap: 30px;
-            }
+        .seg-tag.primary {
+            border-color: var(--accent-dim);
+            background: rgba(232, 150, 60, 0.06);
+            flex-basis: 100%;
+            padding: 22px 26px;
         }
-
-        footer {
-            padding: 80px 0 40px;
-            border-top: 1px solid rgba(255, 255, 255, 0.08);
+        .seg-tag.primary::before { background: var(--accent); border-color: var(--accent); }
+        .seg-tag.primary h3 { font-size: 20px; }
+        .seg-tag.primary p { font-size: 15px; }
+        .seg-tag:not(.primary) { flex: 1 1 240px; }
+        .seg-tag h3 { font-size: 16px; font-weight: 600; margin-bottom: 6px; }
+        .seg-tag p { font-size: 14px; color: var(--text-muted); line-height: 1.55; }
+        .seg-tag.trail {
+            flex: 0 1 auto;
+            padding: 9px 15px;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 12.5px;
+            color: var(--text-dim);
         }
+        .seg-tag.trail::before { display: none; }
 
-        .footer-content {
+        .callout {
+            border-left: 2px solid var(--accent-dim);
+            padding: 4px 0 4px 24px;
+            margin-bottom: 50px;
+            font-size: 17px;
+            color: var(--text-muted);
+            max-width: 62ch;
+            line-height: 1.65;
+        }
+        .callout strong { color: var(--text); font-weight: 500; }
+
+        /* ===== Pricing — receipt ===== */
+        .receipt {
+            max-width: 560px;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            padding: 40px 40px 32px;
+            position: relative;
+        }
+        .receipt::before, .receipt::after {
+            content: '';
+            position: absolute;
+            left: 0; right: 0;
+            height: 12px;
+            background:
+                linear-gradient(-45deg, var(--bg) 6px, transparent 0) 0 6px,
+                linear-gradient(45deg, var(--bg) 6px, transparent 0) 0 6px;
+            background-size: 12px 12px;
+            background-repeat: repeat-x;
+        }
+        .receipt::before { top: -1px; }
+        .receipt::after { bottom: -1px; transform: rotate(180deg); }
+
+        .receipt-row {
             display: flex;
             justify-content: space-between;
+            align-items: baseline;
+            gap: 20px;
+            padding: 16px 0;
+            border-bottom: 1px dashed var(--border);
+        }
+        .receipt-row:last-of-type { border-bottom: none; }
+        .receipt-row .label { font-size: 15px; color: var(--text-muted); }
+        .receipt-row .value { font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: var(--text-dim); text-align: right; }
+        .receipt-row.emphasis .label { color: var(--text); font-weight: 500; font-size: 16px; }
+        .receipt-row.emphasis .value { color: var(--accent); font-size: 14px; }
+
+        .pricing-copy { max-width: 46ch; }
+        .pricing-copy p { color: var(--text-muted); font-size: 15.5px; line-height: 1.7; margin-bottom: 16px; }
+        .pricing-copy strong { color: var(--text); font-weight: 500; }
+
+        .pricing-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: start; }
+
+        /* ===== About — badge card ===== */
+        .badge-card {
+            display: grid;
+            grid-template-columns: 150px 1fr;
+            gap: 34px;
             align-items: center;
-            max-width: 1400px;
-            margin: 0 auto;
+            max-width: 720px;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            padding: 34px;
+            position: relative;
         }
-
-        .footer-copy {
-            font-size: 14px;
-            opacity: 0.5;
+        .badge-card::before, .badge-card::after,
+        .rivet-tl, .rivet-tr, .rivet-bl, .rivet-br { content: ''; }
+        .rivet {
+            position: absolute;
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            background: var(--border);
+            box-shadow: inset 0 1px 1px rgba(0,0,0,0.4);
         }
+        .rivet.tl { top: 10px; left: 10px; }
+        .rivet.tr { top: 10px; right: 10px; }
+        .rivet.bl { bottom: 10px; left: 10px; }
+        .rivet.br { bottom: 10px; right: 10px; }
 
-
-        @media (max-width: 1024px) {
-            .features-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .case-studies-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .process-steps {
-                flex-direction: column;
-                align-items: center;
-                gap: 0;
-            }
-
-            .process-step {
-                max-width: 520px;
-                width: 100%;
-                padding: 0;
-                margin-bottom: 0;
-            }
-
-            .process-arrow {
-                transform: rotate(90deg);
-                padding-top: 0;
-                padding: 8px 0;
-                font-size: 24px;
-            }
+        .badge-photo {
+            width: 150px; height: 150px;
+            object-fit: cover;
+            border: 2px solid var(--border);
+            filter: grayscale(0.3);
         }
+        .badge-text h3 { font-family: 'Barlow Condensed', sans-serif; font-size: 24px; text-transform: uppercase; margin-bottom: 4px; }
+        .badge-role { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--accent); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 16px; }
+        .badge-text p { font-size: 15px; color: var(--text-muted); line-height: 1.65; }
 
-        @media (max-width: 768px) {
-            .container {
-                padding: 0 24px;
-            }
+        /* ===== FAQ — clipboard ===== */
+        .clipboard { max-width: 760px; border: 1px solid var(--border); background: var(--surface); }
+        .faq-item { border-bottom: 1px solid var(--border-soft); }
+        .faq-item:last-child { border-bottom: none; }
+        .faq-question {
+            display: flex; align-items: center; gap: 18px;
+            padding: 22px 26px;
+            cursor: pointer;
+            user-select: none;
+        }
+        .faq-question h3 { font-size: 16px; font-weight: 500; flex: 1; }
+        .faq-mark {
+            font-family: 'IBM Plex Mono', monospace;
+            width: 22px; height: 22px;
+            border: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: center;
+            color: var(--text-dim);
+            font-size: 13px;
+            flex-shrink: 0;
+            transition: all 0.25s ease;
+        }
+        .faq-item.active .faq-mark { transform: rotate(45deg); border-color: var(--accent); color: var(--accent); }
+        .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
+        .faq-item.active .faq-answer { max-height: 240px; }
+        .faq-answer p { padding: 0 26px 24px 66px; font-size: 15px; color: var(--text-muted); line-height: 1.65; }
 
-            h1 {
-                font-size: 42px;
-            }
+        /* ===== Footer ===== */
+        footer { padding: 60px 0 40px; border-top: 1px solid var(--border-soft); }
+        .footer-content { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+        .footer-copy { font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; color: var(--text-dim); }
+        .footer-links { display: flex; gap: 24px; }
+        .footer-links a { color: var(--text-dim); text-decoration: none; font-size: 13.5px; transition: color 0.2s; }
+        .footer-links a:hover { color: var(--accent); }
 
-            .section-title {
-                font-size: 32px;
-            }
-
-            .nav-menu {
-                display: none;
-            }
-
-            .comparison-grid {
-                grid-template-columns: 1fr;
-                gap: 30px;
-            }
-
-            .features-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .stats-row {
-                flex-direction: column;
-                gap: 30px;
-            }
-
-            .footer-content {
-                flex-direction: column;
-                gap: 30px;
-                text-align: center;
-            }
+        /* ===== Responsive ===== */
+        @media (max-width: 900px) {
+            h1 { font-size: 40px; }
+            .section-title { font-size: 30px; }
+            .nav-menu { display: none; }
+            .steps { grid-template-columns: 1fr; gap: 34px; }
+            .route-line-svg { display: none; }
+            .step { padding-left: 26px; border-left: 2px dashed var(--border); }
+            .step-marker { width: 52px; height: 52px; margin-bottom: 14px; margin-left: -28px; background: var(--bg); }
+            .pricing-grid { grid-template-columns: 1fr; gap: 40px; }
+            .badge-card { grid-template-columns: 1fr; text-align: center; justify-items: center; }
+            .cal-embed iframe { height: 620px; }
+        }
+        @media (max-width: 520px) {
+            h1 { font-size: 32px; }
+            .container { padding: 0 18px; }
+            section { padding: 70px 0; }
+            .seg-tag.primary { padding: 18px 20px; }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <nav>
-            <a href="#" class="logo">
-                System Hustle
-            </a>
+            <a href="#" class="logo">System<span>Hustle</span></a>
             <ul class="nav-menu">
-                <li><a href="#process">How It Works</a></li>
-                <li><a href="#cases">Case Studies</a></li>
+                <li><a href="#how">How It Works</a></li>
+                <li><a href="#who">Who This Is For</a></li>
+                <li><a href="#pricing">Pricing</a></li>
                 <li><a href="#faq">FAQ</a></li>
             </ul>
-            <a href="https://www.linkedin.com/in/leonid-shvorob/" target="_blank" style="color:rgba(255,255,255,0.6); text-decoration:none; font-size:15px; font-weight:400; transition:opacity 0.3s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.6'">LinkedIn</a>
             <a href="#booking" class="nav-cta">Book a Call</a>
         </nav>
 
-        <section class="hero">
-            <div class="badge">Outbound That Actually Works</div>
-
-            <h1>
-                Qualified Meetings.<br/>
-                Without the Chaos.
-            </h1>
-
-            <p class="subtitle">
-                I build outbound B2B sales systems that find prospects with urgent problems you solve, reach decision-makers with messages that actually land, and book qualified meetings while you focus on closing.
-            </p>
-
-            <div class="stats-row">
-                <div class="stat-item">
-                    <div class="stat-number">3–8</div>
-                    <div class="stat-label">Qualified Meetings / Month</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number">48h</div>
-                    <div class="stat-label">To First Outreach</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number">No</div>
-                    <div class="stat-label">Long-Term Contracts</div>
-                </div>
-            </div>
+        <section class="hero ruled">
+            <div class="tag">Built for old-school logistics operators</div>
+            <h1>I connect <em>packaging suppliers, trucking carriers,</em> and warehouses — and other old-school logistics operators — with the businesses that actually need them right now.</h1>
+            <p class="subtitle">I watch for real signals — a company expanding, launching a new line, switching suppliers — and only reach out once the need is real. When they're interested, I introduce you directly.</p>
+            <a href="#booking" class="stamp-btn">Book a Call</a>
         </section>
 
-        <!-- Calendar below hero -->
         <section class="hero-cal-section" id="booking">
             <h2 class="cal-label">Book a Call</h2>
             <p class="cal-subtitle">Let's talk about your pipeline and whether this is a fit.</p>
             <div class="cal-embed">
-                <iframe src="https://cal.com/systemhustle/fit-check-call" width="100%" height="700" frameborder="0"></iframe>
+                <iframe src="https://cal.com/systemhustle/fit-check-call" loading="lazy"></iframe>
             </div>
         </section>
 
-        <section class="process-section" id="process">
-            <h2 class="section-title">How the System Works</h2>
+        <section id="how">
+            <p class="eyebrow">Process</p>
+            <h2 class="section-title">How It Works</h2>
 
-            <div class="process-steps">
-                <div class="process-step">
-                    <div class="process-step-inner">
-                        <div class="process-step-num">1</div>
-                        <h3>Find Companies With a Problem You Solve</h3>
-                        <p>We track signals — funding rounds, leadership changes, public complaints — to find prospects actively struggling right now, not someday.</p>
+            <div class="route-wrap" id="routeWrap">
+                <svg class="route-line-svg" viewBox="0 0 100 6" preserveAspectRatio="none" aria-hidden="true">
+                    <path d="M 17 3 L 83 3" vector-effect="non-scaling-stroke"></path>
+                    <path class="progress" d="M 17 3 L 83 3" vector-effect="non-scaling-stroke"></path>
+                </svg>
+
+                <div class="steps">
+                    <div class="step">
+                        <div class="step-marker">
+                            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M12 2v4M12 18v4M2 12h4M18 12h4"></path></svg>
+                        </div>
+                        <p class="step-num">01</p>
+                        <h3>I watch for real signals</h3>
+                        <p>I map every company in your niche, then track industry news and portals for what's actually changing — a new regulation, an expansion, a supplier switch. Every company gets checked against its own website and socials before it makes the list, so the ones I reach out to are prioritized by how real the signal actually is.</p>
                     </div>
-                </div>
-
-                <div class="process-arrow">→</div>
-
-                <div class="process-step">
-                    <div class="process-step-inner">
-                        <div class="process-step-num">2</div>
-                        <h3>Reach the Person Who Can Say Yes</h3>
-                        <p>Skip gatekeepers. We go directly to budget holders with a message about their specific situation — not a template.</p>
+                    <div class="step">
+                        <div class="step-marker">
+                            <svg viewBox="0 0 24 24"><path d="M8 12h8M12 8l4 4-4 4"></path><rect x="3" y="4" width="18" height="16" rx="1"></rect></svg>
+                        </div>
+                        <p class="step-num">02</p>
+                        <h3>I reach out to the person who can say yes</h3>
+                        <p>Not a job title. A Supply Chain Director, Procurement Manager, or the founder themselves for a smaller shop — a real person with the authority to actually make this decision.</p>
                     </div>
-                </div>
-
-                <div class="process-arrow">→</div>
-
-                <div class="process-step">
-                    <div class="process-step-inner">
-                        <div class="process-step-num">3</div>
-                        <h3>Booked Meetings, Pre-Vetted</h3>
-                        <p>Only prospects who confirm budget, authority, and need get on your calendar. No tire-kickers.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-
-        <section class="comparison-section">
-            <h2 class="section-title">The Old Way vs. What Actually Works</h2>
-
-            <div class="comparison-grid">
-                <div class="comparison-card">
-                    <h3>The Old Way</h3>
-                    <div class="comparison-list">
-                        <div class="comparison-item">
-                            <div class="comparison-icon negative">✕</div>
-                            <p>Blast generic messages to job titles and hope something sticks</p>
+                    <div class="step">
+                        <div class="step-marker">
+                            <svg viewBox="0 0 24 24"><path d="M4 12l6 6L20 6"></path></svg>
                         </div>
-                        <div class="comparison-item">
-                            <div class="comparison-icon negative">✕</div>
-                            <p>Chase leads who have no urgent reason to buy now</p>
-                        </div>
-                        <div class="comparison-item">
-                            <div class="comparison-icon negative">✕</div>
-                            <p>Burn budget on ads or agencies with no performance accountability</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="comparison-card">
-                    <h3>What Actually Works</h3>
-                    <div class="comparison-list">
-                        <div class="comparison-item">
-                            <div class="comparison-icon positive">✓</div>
-                            <p>Find companies actively struggling with a problem you solve</p>
-                        </div>
-                        <div class="comparison-item">
-                            <div class="comparison-icon positive">✓</div>
-                            <p>Reach the person with budget and authority — with a message that lands</p>
-                        </div>
-                        <div class="comparison-item">
-                            <div class="comparison-icon positive">✓</div>
-                            <p>Pay for results, not activity — meetings booked or you don't pay</p>
-                        </div>
+                        <p class="step-num">03</p>
+                        <h3>If they're interested, I introduce you directly</h3>
+                        <p>Only once I've confirmed it's urgent for them right now — not something they'll maybe think about next year. Then you pick it up from there. No middlemen, no scripts, no fake urgency.</p>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section class="case-studies-section" id="cases">
-            <h2 class="section-title">Results</h2>
+        <section id="who">
+            <p class="eyebrow">Fit</p>
+            <h2 class="section-title">Who This Is For</h2>
+            <div class="callout">Referrals are great — <strong>until your warehouse frees up space you need filled now</strong>, or you launch a new product line and need buyers for it immediately. Word of mouth can't time that for you.</div>
 
-            <div class="case-studies-grid">
-                <div class="case-study">
-                    <div class="case-study-header">+$85K in 1 Quarter</div>
-                    <h3>From cold outreach to enterprise pipeline</h3>
-                    <div class="case-study-company">Vention — Industrial Automation</div>
-                    <p>Built a targeted outreach system that connected with engineering and ops decision-makers. Closed $85K in new revenue within the first quarter.</p>
+            <div class="tag-manifest">
+                <div class="seg-tag primary">
+                    <h3>Packaging suppliers</h3>
+                    <p>Custom, specialty, or bulk — for the industries that need it right now.</p>
+                </div>
+                <div class="seg-tag">
+                    <h3>Trucking carriers & fleets</h3>
+                    <p>Finding shippers before they call around.</p>
+                </div>
+                <div class="seg-tag">
+                    <h3>Warehousing & 3PL</h3>
+                    <p>Filling space with the right tenants, not just any tenant.</p>
+                </div>
+                <div class="seg-tag">
+                    <h3>Freight forwarders & movers</h3>
+                    <p>Same problem, different cargo.</p>
+                </div>
+                <div class="seg-tag trail">+ cold chain</div>
+                <div class="seg-tag trail">+ rail</div>
+                <div class="seg-tag trail">+ customs brokerage</div>
+                <div class="seg-tag trail">+ equipment & fleet services</div>
+                <div class="seg-tag trail">+ other old-school logistics</div>
+            </div>
+        </section>
+
+        <section id="pricing" class="ruled">
+            <p class="eyebrow">Structure</p>
+            <h2 class="section-title">How This Works Financially</h2>
+
+            <div class="pricing-grid">
+                <div class="pricing-copy">
+                    <p>There's a <strong>small amount to start</strong> — enough that we're both serious, nothing more. I only take on one or two new clients a month; doing this properly for a new niche takes real, focused time.</p>
+                    <p>That covers a short pilot to find the right signals and approach for your market, with a guaranteed number of real conversations with the right people.</p>
+                    <p>After that, if it's working, we keep going — a modest monthly amount to keep the system running, plus <strong>a share of what actually closes</strong>. On a deal worth real money, that share is the part I actually care about — I win when you win.</p>
+                    <p>Picture this: I bring you a client worth <strong>$100K to you over the life of the deal</strong>. My share of that is somewhere around <strong>$10&ndash;15K</strong>. Every niche is different, but that's the shape of the deal I'm actually looking for.</p>
                 </div>
 
-                <div class="case-study">
-                    <div class="case-study-header">2 New Partners in 60 Days</div>
-                    <h3>Breaking into hospital decision-makers</h3>
-                    <div class="case-study-company">Hippocratic AI — Healthcare Technology</div>
-                    <p>Inbound wasn't cutting through. Built a targeted outbound system reaching hospital admins and tech leaders with personalised messaging. Result: 2 new partnership deals worth $35K in under 60 days.</p>
-                </div>
-
-                <div class="case-study">
-                    <div class="case-study-header">+$100K Revenue</div>
-                    <h3>Transforming doubt into proven results</h3>
-                    <div class="case-study-company">Crawford Thomas Recruiting</div>
-                    <p>Achieved +39 successful placements in a single quarter, eliminated team burnout, and built stronger partnerships with clients.</p>
+                <div class="receipt">
+                    <div class="receipt-row">
+                        <span class="label">Pilot</span>
+                        <span class="value">SMALL &middot; ONE-TIME</span>
+                    </div>
+                    <div class="receipt-row">
+                        <span class="label">Duration</span>
+                        <span class="value">30&ndash;60 DAYS</span>
+                    </div>
+                    <div class="receipt-row">
+                        <span class="label">Ongoing infrastructure</span>
+                        <span class="value">SMALL &middot; MONTHLY</span>
+                    </div>
+                    <div class="receipt-row emphasis">
+                        <span class="label">Share of what closes</span>
+                        <span class="value">WE BOTH WIN</span>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <!-- About -->
-        <section class="about-section">
-            <div class="about-inner">
-                <img src="assets/photo.jpg" alt="Leonid Shvorob" class="about-photo">
-                <div class="about-text">
+        <section id="about">
+            <p class="eyebrow">Who's behind this</p>
+            <h2 class="section-title">About</h2>
+
+            <div class="badge-card">
+                <span class="rivet tl"></span><span class="rivet tr"></span><span class="rivet bl"></span><span class="rivet br"></span>
+                <img src="assets/photo.jpg" alt="Leonid Shvorob" class="badge-photo">
+                <div class="badge-text">
                     <h3>Leonid Shvorob</h3>
-                    <div class="about-role">Founder, System Hustle</div>
-                    <p>I build outbound B2B sales systems for companies that are done with generic lead gen. I've worked with recruiting agencies, logistics operators, and B2B service providers to generate qualified meetings without scaling ad spend or hiring SDR teams. Every client works directly with me — no account managers, no junior staff.</p>
+                    <div class="badge-role">Founder, System Hustle</div>
+                    <p>My focus is logistics — warehousing, packaging, carriers, freight forwarders. I watch these industries for real signals and connect the companies in them with the businesses that need them. Every client works directly with me, no account managers, no junior staff.</p>
                 </div>
             </div>
         </section>
 
-        <section class="faq-section" id="faq">
-            <h2>Frequently Asked Questions</h2>
+        <section id="faq">
+            <p class="eyebrow">Questions</p>
+            <h2 class="section-title">Frequently Asked Questions</h2>
 
-            <div class="faq-list">
+            <div class="clipboard">
                 <div class="faq-item">
                     <div class="faq-question">
-                        <h3>What if prospects don't respond to our messaging?</h3>
-                        <div class="faq-icon">+</div>
+                        <h3>What if it doesn't work?</h3>
+                        <div class="faq-mark">+</div>
                     </div>
-                    <div class="faq-answer">
-                        <p>Generic messages get ignored. That's why we research each prospect's specific challenges first. When a CFO sees an email about the exact cash flow problem they complained about on LinkedIn last week, they respond. Our messaging gets significantly higher response rates than generic outreach.</p>
-                    </div>
+                    <div class="faq-answer"><p>The small upfront amount isn't a retainer — it's what it takes to run a focused search for your specific market and find the right approach. If nothing comes of it, that's where it ends. I only make real money if you actually close a deal.</p></div>
                 </div>
-
                 <div class="faq-item">
                     <div class="faq-question">
-                        <h3>How is this different from other agencies?</h3>
-                        <div class="faq-icon">+</div>
+                        <h3>Do I need to sign a long-term contract?</h3>
+                        <div class="faq-mark">+</div>
                     </div>
-                    <div class="faq-answer">
-                        <p>Most agencies blast thousands of generic messages hoping for minimal response. We send fewer, highly researched messages and get significantly better results. Quality over quantity. We target business problems, not job titles.</p>
-                    </div>
+                    <div class="faq-answer"><p>No. It starts as a short pilot, then we both decide if it makes sense to keep going.</p></div>
                 </div>
-
                 <div class="faq-item">
                     <div class="faq-question">
-                        <h3>What if we can't handle too many meetings?</h3>
-                        <div class="faq-icon">+</div>
+                        <h3>What do you need from me to get started?</h3>
+                        <div class="faq-mark">+</div>
                     </div>
-                    <div class="faq-answer">
-                        <p>That's actually a good problem to have. We can throttle the system to match your capacity - fewer meetings for smaller teams, or ramp up for larger sales organizations. The system scales with your needs.</p>
-                    </div>
+                    <div class="faq-answer"><p>A short call to understand your ideal customer, your typical deal size, and how you currently land new accounts. That's it.</p></div>
                 </div>
-
                 <div class="faq-item">
                     <div class="faq-question">
-                        <h3>How does pricing work?</h3>
-                        <div class="faq-icon">+</div>
+                        <h3>How is this different from just hiring an agency?</h3>
+                        <div class="faq-mark">+</div>
                     </div>
-                    <div class="faq-answer">
-                        <p>Flexible. There's a small setup fee to get everything configured and the first outreach running. After that, pricing is tied to results — you pay based on the meetings we book, not a flat retainer. No long-term contracts. Book a call and we'll put together something that makes sense for your situation.</p>
-                    </div>
+                    <div class="faq-answer"><p>Most agencies send generic messages to a list of job titles and hope something sticks. I only reach out when I've spotted a real signal that a company needs what you do right now, and I go to a real person, not a title.</p></div>
                 </div>
-
             </div>
         </section>
 
         <footer>
             <div class="footer-content">
-                <div class="footer-copy">
-                    © 2026 System Hustle. All rights reserved.
-                </div>
-                <div class="footer-links" style="display:flex; gap:24px; align-items:center;">
-                    <a href="mailto:leo@systemhustle.com" style="color:rgba(255,255,255,0.5); text-decoration:none; font-size:14px; transition:opacity 0.3s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.5'">leo@systemhustle.com</a>
-                    <a href="https://wa.me/628175755953" target="_blank" style="color:rgba(255,255,255,0.5); text-decoration:none; font-size:14px; transition:opacity 0.3s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.5'">WhatsApp</a>
-                    <a href="https://www.linkedin.com/in/leonid-shvorob/" target="_blank" style="color:rgba(255,255,255,0.5); text-decoration:none; font-size:14px; transition:opacity 0.3s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.5'">LinkedIn</a>
+                <div class="footer-copy">&copy; 2026 System Hustle. All rights reserved.</div>
+                <div class="footer-links">
+                    <a href="mailto:leo@systemhustle.com">leo@systemhustle.com</a>
+                    <a href="https://wa.me/628175755953" target="_blank">WhatsApp</a>
+                    <a href="https://www.linkedin.com/in/leonid-shvorob/" target="_blank">LinkedIn</a>
                 </div>
             </div>
         </footer>
     </div>
 
     <script>
-        document.querySelectorAll('.faq-question').forEach(question => {
-            question.addEventListener('click', () => {
-                const item = question.parentElement;
+        document.querySelectorAll('.faq-question').forEach(q => {
+            q.addEventListener('click', () => {
+                const item = q.parentElement;
                 const isActive = item.classList.contains('active');
-
-                document.querySelectorAll('.faq-item').forEach(faq => {
-                    faq.classList.remove('active');
-                });
-
-                if (!isActive) {
-                    item.classList.add('active');
-                }
+                document.querySelectorAll('.faq-item').forEach(f => f.classList.remove('active'));
+                if (!isActive) item.classList.add('active');
             });
         });
 
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
+        document.querySelectorAll('a[href^="#"]').forEach(a => {
+            a.addEventListener('click', e => {
                 e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
+                const t = document.querySelector(a.getAttribute('href'));
+                if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' });
             });
         });
+
+        const routeWrap = document.getElementById('routeWrap');
+        if (routeWrap && 'IntersectionObserver' in window) {
+            const io = new IntersectionObserver(entries => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        routeWrap.classList.add('in-view');
+                        io.unobserve(routeWrap);
+                    }
+                });
+            }, { threshold: 0.4 });
+            io.observe(routeWrap);
+        } else if (routeWrap) {
+            routeWrap.classList.add('in-view');
+        }
     </script>
 </body>
 </html>

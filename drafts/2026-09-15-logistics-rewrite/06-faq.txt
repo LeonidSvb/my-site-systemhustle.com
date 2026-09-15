@@ -1,0 +1,18 @@
+SECTION TITLE:
+Frequently Asked Questions
+
+Q: What if it doesn't work?
+A: The small upfront amount isn't a retainer — it's what it takes to run a focused search for your specific market and find the right approach. If nothing comes of it, that's where it ends. I only make real money if you actually close a deal.
+
+Q: Do I need to sign a long-term contract?
+A: No. It starts as a short pilot, then we both decide if it makes sense to keep going.
+
+Q: What do you need from me to get started?
+A: A short call to understand your ideal customer, your typical deal size, and how you currently land new accounts. That's it.
+
+Q: How is this different from just hiring an agency?
+A: Most agencies send generic messages to a list of job titles and hope something sticks. I only reach out when I've spotted a real signal that a company needs what you do right now, and I go to a real person, not a title.
+
+NOTES FOR LEO:
+- Moved "how is this different from an agency" to last and dropped the ZoomInfo/undeliverables/domains language — that level of technical detail only came up on the Colby call, and leaning on it risks putting you in the same category as the agencies you're distancing yourself from, rather than above them.
+- Dropped the old CFO/cash-flow example (not your niche) and the vague "flexible" pricing FAQ, which is now its own real section (04-pricing.txt).

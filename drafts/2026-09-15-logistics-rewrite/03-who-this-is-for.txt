@@ -1,0 +1,15 @@
+SECTION TITLE:
+Who This Is For
+
+INTRO LINE:
+If most of your new business comes from referrals and word of mouth — and you don't have a systematic way to find the companies that need you right when they need you — this is for you.
+
+LIST (4 cards, replaces the old "Old Way vs What Actually Works" comparison block):
+- Warehousing & 3PL operators — filling space with the right tenants, not just any tenant
+- Packaging suppliers — custom, specialty, or bulk, for the industries that need it right now
+- Carriers & trucking companies with their own fleet — finding shippers before they call around
+- Freight forwarders, movers, and storage operators — the same problem, different cargo
+
+NOTES FOR LEO:
+- This replaces the "Old Way vs What Actually Works" block — that was generic agency-template copy (checkmarks, "chase leads", "burn budget on ads") that could describe literally any lead-gen agency. This version names YOUR actual sub-niches directly, pulled from real positive replies in the DB (CRC Global/warehousing, Earthpack + Evesham/packaging, Boost Transport + Encore Trucking/carriers with fleets, Alliance International + Global Forwarding/freight forwarding, Globe Moving & Storage). A reader in any of these should immediately think "that's us."
+- Left recruiting off this list on purpose since logistics is the current focus — it's covered as a footnote in the About section instead.

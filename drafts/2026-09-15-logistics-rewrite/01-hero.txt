@@ -1,0 +1,21 @@
+BADGE (small label above headline):
+Built for logistics, warehousing & packaging
+
+H1:
+I connect logistics, warehousing, and packaging companies with the businesses that actually need them right now.
+
+SUBTITLE:
+I watch for real signals — a company expanding, opening a new location, switching suppliers — and only reach out once I've confirmed the need is real. When they're interested, I introduce you directly. No cold blasts, no job-title spam.
+
+STATS ROW (replace old 3-8/48h/no-contracts row — those numbers didn't match what's actually said on calls):
+- "3-5" / "Qualified intros per pilot"
+- "30-60 days" / "Pilot length"
+- "10%" / "Only if it closes"
+
+CTA BUTTON:
+Book a Call
+
+NOTES FOR LEO:
+- Dropped "Qualified Meetings. Without the Chaos." and "Outbound That Actually Works" badge — that's agency-marketing voice, not how you actually talk on calls.
+- Dropped "48h to first outreach" and "3-8 meetings/month" — neither number matches what you say live (pilot = 3-5 intros over 30-60 days). Numbers on the site should never say something different from what you say on the call.
+- Recruiting isn't mentioned here on purpose — see 05-about.txt for where it goes.

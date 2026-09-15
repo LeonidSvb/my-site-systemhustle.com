@@ -200,8 +200,8 @@
         }
         .route-line-svg path.progress {
             stroke: var(--accent);
-            stroke-dasharray: 1000;
-            stroke-dashoffset: 1000;
+            stroke-dasharray: 2000;
+            stroke-dashoffset: 2000;
             transition: stroke-dashoffset 1.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .route-wrap.in-view .route-line-svg path.progress { stroke-dashoffset: 0; }
@@ -257,13 +257,13 @@
         .seg-tag.primary {
             border-color: var(--accent-dim);
             background: rgba(232, 150, 60, 0.06);
-            flex-basis: 100%;
-            padding: 22px 26px;
+            flex: 1.5 1 280px;
+            padding: 18px 20px;
         }
         .seg-tag.primary::before { background: var(--accent); border-color: var(--accent); }
-        .seg-tag.primary h3 { font-size: 20px; }
-        .seg-tag.primary p { font-size: 15px; }
-        .seg-tag:not(.primary) { flex: 1 1 240px; }
+        .seg-tag.primary h3 { font-size: 17px; }
+        .seg-tag.primary p { font-size: 14px; }
+        .seg-tag:not(.primary):not(.trail) { flex: 1 1 240px; }
         .seg-tag h3 { font-size: 16px; font-weight: 600; margin-bottom: 6px; }
         .seg-tag p { font-size: 14px; color: var(--text-muted); line-height: 1.55; }
         .seg-tag.trail {
@@ -319,6 +319,8 @@
         .receipt-row:last-of-type { border-bottom: none; }
         .receipt-row .label { font-size: 15px; color: var(--text-muted); }
         .receipt-row .value { font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: var(--text-dim); text-align: right; }
+        .receipt-icon { display: inline-flex; align-items: center; gap: 6px; }
+        .receipt-icon svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
         .receipt-row.emphasis .label { color: var(--text); font-weight: 500; font-size: 16px; }
         .receipt-row.emphasis .value { color: var(--accent); font-size: 14px; }
 
@@ -452,9 +454,9 @@
             <h2 class="section-title">How It Works</h2>
 
             <div class="route-wrap" id="routeWrap">
-                <svg class="route-line-svg" viewBox="0 0 100 6" preserveAspectRatio="none" aria-hidden="true">
-                    <path d="M 17 3 L 83 3" vector-effect="non-scaling-stroke"></path>
-                    <path class="progress" d="M 17 3 L 83 3" vector-effect="non-scaling-stroke"></path>
+                <svg class="route-line-svg" id="routeLineSvg" aria-hidden="true">
+                    <path></path>
+                    <path class="progress"></path>
                 </svg>
 
                 <div class="steps">
@@ -531,7 +533,7 @@
                 <div class="receipt">
                     <div class="receipt-row">
                         <span class="label">Pilot</span>
-                        <span class="value">SMALL &middot; ONE-TIME</span>
+                        <span class="value receipt-icon"><svg viewBox="0 0 24 24"><path d="M20.6 12.7L12.7 20.6a2 2 0 0 1-2.8 0l-7.5-7.5a2 2 0 0 1 0-2.8L10.3 2.4a2 2 0 0 1 1.4-.6H19a2 2 0 0 1 2 2v6.5a2 2 0 0 1-.4 1.2z"></path><circle cx="15" cy="7" r="1.2"></circle></svg>ONE-TIME</span>
                     </div>
                     <div class="receipt-row">
                         <span class="label">Duration</span>
@@ -539,7 +541,7 @@
                     </div>
                     <div class="receipt-row">
                         <span class="label">Ongoing infrastructure</span>
-                        <span class="value">SMALL &middot; MONTHLY</span>
+                        <span class="value receipt-icon"><svg viewBox="0 0 24 24"><path d="M20.6 12.7L12.7 20.6a2 2 0 0 1-2.8 0l-7.5-7.5a2 2 0 0 1 0-2.8L10.3 2.4a2 2 0 0 1 1.4-.6H19a2 2 0 0 1 2 2v6.5a2 2 0 0 1-.4 1.2z"></path><circle cx="15" cy="7" r="1.2"></circle></svg>MONTHLY</span>
                     </div>
                     <div class="receipt-row emphasis">
                         <span class="label">Share of what closes</span>
@@ -631,6 +633,28 @@
         });
 
         const routeWrap = document.getElementById('routeWrap');
+        const routeSvg = document.getElementById('routeLineSvg');
+
+        function layoutRouteLine() {
+            if (!routeWrap || !routeSvg) return;
+            const markers = routeWrap.querySelectorAll('.step-marker');
+            if (markers.length < 2 || getComputedStyle(routeSvg).display === 'none') return;
+            const wrapRect = routeWrap.getBoundingClientRect();
+            const first = markers[0].getBoundingClientRect();
+            const last = markers[markers.length - 1].getBoundingClientRect();
+            const x1 = first.left - wrapRect.left + first.width / 2;
+            const x2 = last.left - wrapRect.left + last.width / 2;
+            const y = first.top - wrapRect.top + first.height / 2;
+            routeSvg.setAttribute('viewBox', `0 0 ${wrapRect.width} ${Math.max(y * 2, 6)}`);
+            routeSvg.style.top = '0';
+            routeSvg.style.height = `${y * 2}px`;
+            const d = `M ${x1} ${y} L ${x2} ${y}`;
+            routeSvg.querySelectorAll('path').forEach(p => p.setAttribute('d', d));
+        }
+        layoutRouteLine();
+        window.addEventListener('resize', layoutRouteLine);
+        if (document.fonts && document.fonts.ready) document.fonts.ready.then(layoutRouteLine);
+
         if (routeWrap && 'IntersectionObserver' in window) {
             const io = new IntersectionObserver(entries => {
                 entries.forEach(entry => {

@@ -8,14 +8,22 @@
         chart: '<path d="M3 3v18h18"></path><path d="M7 15l4-5 3 3 5-7"></path>'
     };
 
+    // Repeats the title list enough times that the ticker track is always
+    // wider than the viewport, so the CSS loop never shows a short, jumpy
+    // sliver of text instead of a continuous scroll.
     function renderTicker(el, titles) {
         if (!el || !titles || !titles.length) return;
+        var REPEATS = 6;
+        var parts = [];
+        for (var r = 0; r < REPEATS; r++) {
+            titles.forEach(function (t, i) {
+                parts.push(r === 0 && i === 0 ? '<b>' + t + '</b>' : t);
+            });
+        }
+        var group = parts.join(' &nbsp;·&nbsp; ') + ' &nbsp;·&nbsp; ';
         var track = document.createElement('div');
         track.className = 'ticker-track';
-        var html = titles.map(function (t, i) {
-            return (i === 0 ? '<b>' + t + '</b>' : t);
-        }).join(' &nbsp;·&nbsp; ') + ' &nbsp;·&nbsp; ';
-        track.innerHTML = '<span>' + html + '</span><span>' + html + '</span>';
+        track.innerHTML = '<span>' + group + '</span><span>' + group + '</span>';
         el.appendChild(track);
     }
 
@@ -61,9 +69,9 @@
         }
 
         function update() {
-            var deal = parseFloat(dealInput.value) || 0;
+            var annual = parseFloat(dealInput.value) || 0;
             var years = parseFloat(yearsInput.value) || 0;
-            out.textContent = fmt(deal * years);
+            out.textContent = fmt(annual * years);
         }
 
         dealInput.addEventListener('input', update);
@@ -92,12 +100,53 @@
         });
     }
 
+    function initRouteLine() {
+        var routeWrap = document.getElementById('routeWrap');
+        var routeSvg = document.getElementById('routeLineSvg');
+        if (!routeWrap || !routeSvg) return;
+
+        function layout() {
+            var markers = routeWrap.querySelectorAll('.step-marker');
+            if (markers.length < 2 || getComputedStyle(routeSvg).display === 'none') return;
+            var wrapRect = routeWrap.getBoundingClientRect();
+            var first = markers[0].getBoundingClientRect();
+            var last = markers[markers.length - 1].getBoundingClientRect();
+            var x1 = first.left - wrapRect.left + first.width / 2;
+            var x2 = last.left - wrapRect.left + last.width / 2;
+            var y = first.top - wrapRect.top + first.height / 2;
+            routeSvg.setAttribute('viewBox', '0 0 ' + wrapRect.width + ' ' + Math.max(y * 2, 6));
+            routeSvg.style.top = '0';
+            routeSvg.style.height = (y * 2) + 'px';
+            var d = 'M ' + x1 + ' ' + y + ' L ' + x2 + ' ' + y;
+            routeSvg.querySelectorAll('path').forEach(function (p) { p.setAttribute('d', d); });
+        }
+
+        layout();
+        window.addEventListener('resize', layout);
+        if (document.fonts && document.fonts.ready) document.fonts.ready.then(layout);
+
+        if ('IntersectionObserver' in window) {
+            var io = new IntersectionObserver(function (entries) {
+                entries.forEach(function (entry) {
+                    if (entry.isIntersecting) {
+                        routeWrap.classList.add('in-view');
+                        io.unobserve(routeWrap);
+                    }
+                });
+            }, { threshold: 0.4 });
+            io.observe(routeWrap);
+        } else {
+            routeWrap.classList.add('in-view');
+        }
+    }
+
     function initNichePage(data) {
         document.addEventListener('DOMContentLoaded', function () {
             renderTicker(document.getElementById('titlesTicker'), data.titles);
             renderSignals(document.getElementById('signalCarousel'), document.getElementById('signalDots'), data.signals);
             initRoiCalculator(document.getElementById('roiBox'));
             initFaqAndNav();
+            initRouteLine();
         });
     }
 

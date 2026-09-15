@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Packaging segment — personalization format options</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #15130f; --bg-2: #100e0b; --surface: #1d1a15; --surface-2: #24211a;
+  --border: #372f22; --border-soft: #2a2519; --text: #ece6d9; --text-muted: #a89d87;
+  --text-dim: #766c5a; --accent: #e8963c; --accent-dim: #8a5f28; --accent-ink: #1a1108;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'IBM Plex Sans',sans-serif; background:var(--bg); color:var(--text); padding:40px 20px; }
+h1.page-title { font-family:'Barlow Condensed',sans-serif; font-size:22px; color:var(--text-muted); text-transform:uppercase; letter-spacing:.06em; margin-bottom:4px; }
+p.page-sub { font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--text-dim); margin-bottom:36px; }
+.variant { max-width:760px; margin:0 auto 64px; background:var(--surface); border:1px solid var(--border); border-radius:6px; overflow:hidden; }
+.variant-label { font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--bg); background:var(--accent); padding:6px 14px; text-transform:uppercase; letter-spacing:.08em; display:inline-block; }
+.variant-body { padding:32px; }
+h2.headline { font-family:'Barlow Condensed',sans-serif; font-weight:600; font-size:34px; line-height:1.1; text-transform:uppercase; margin-bottom:10px; }
+h2.headline .accent { color:var(--accent); }
+p.stat-line { font-family:'IBM Plex Mono',monospace; font-size:13px; color:var(--text-muted); margin-bottom:28px; }
+p.stat-line b { color:var(--accent); }
+
+.block { margin-bottom:26px; }
+.block-label { font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--text-dim); text-transform:uppercase; letter-spacing:.06em; margin-bottom:10px; }
+
+/* A: static stacked list */
+.list-item { padding:10px 0; border-bottom:1px solid var(--border-soft); font-size:14.5px; color:var(--text); display:flex; gap:10px; }
+.list-item:last-child { border-bottom:none; }
+.list-item::before { content:"—"; color:var(--accent); flex-shrink:0; }
+.pill-row { display:flex; flex-wrap:wrap; gap:8px; }
+.pill { font-family:'IBM Plex Mono',monospace; font-size:12px; padding:6px 12px; border:1px solid var(--border); border-radius:20px; color:var(--text-muted); }
+
+/* B: ticker + fade carousel */
+.ticker-wrap { overflow:hidden; border-top:1px solid var(--border-soft); border-bottom:1px solid var(--border-soft); padding:12px 0; }
+.ticker-track { display:flex; gap:40px; white-space:nowrap; animation:ticker 16s linear infinite; width:max-content; }
+.ticker-track span { font-family:'IBM Plex Mono',monospace; font-size:13px; color:var(--text-muted); }
+.ticker-track span b { color:var(--accent); }
+@keyframes ticker { from{transform:translateX(0);} to{transform:translateX(-50%);} }
+.carousel { position:relative; height:60px; }
+.carousel-slide { position:absolute; inset:0; display:flex; align-items:center; font-size:14.5px; color:var(--text); opacity:0; animation:fadeCycle 9s infinite; }
+.carousel-slide::before { content:"—"; color:var(--accent); margin-right:10px; }
+.carousel-slide:nth-child(1){animation-delay:0s;}
+.carousel-slide:nth-child(2){animation-delay:3s;}
+.carousel-slide:nth-child(3){animation-delay:6s;}
+@keyframes fadeCycle { 0%{opacity:0;} 5%{opacity:1;} 28%{opacity:1;} 33%{opacity:0;} 100%{opacity:0;} }
+
+/* C: chip cloud, no animation */
+.chip-cloud { display:flex; flex-wrap:wrap; gap:8px; }
+.chip { font-family:'IBM Plex Mono',monospace; font-size:12.5px; padding:7px 13px; background:var(--surface-2); border:1px solid var(--border); border-radius:4px; color:var(--text-muted); }
+.chip.signal { color:var(--accent); border-color:var(--accent-dim); }
+
+.note { max-width:760px; margin:0 auto 64px; font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--text-dim); line-height:1.6; padding:0 32px; }
+</style>
+</head>
+<body>
+
+<h1 class="page-title">/for/packaging — 3 format options</h1>
+<p class="page-sub">same copy, three ways to render the "titles" + "signals" blocks — pick one, not a ranking</p>
+
+<!-- VARIANT A -->
+<div class="variant">
+  <div class="variant-label">A — static list (no animation)</div>
+  <div class="variant-body">
+    <h2 class="headline">Built for <span class="accent">packaging suppliers</span></h2>
+    <p class="stat-line"><b>17%</b> of the businesses we source deals for are in packaging — export capacity, contract manufacturing, distribution</p>
+
+    <div class="block">
+      <div class="block-label">Who reaches out to us</div>
+      <div class="list-item">Procurement Manager</div>
+      <div class="list-item">Supply Chain Director</div>
+      <div class="list-item">VP of Operations</div>
+    </div>
+
+    <div class="block">
+      <div class="block-label">Signals we watch for</div>
+      <div class="list-item">New warehouse or fulfillment facility announced</div>
+      <div class="list-item">Export contract signed with a new international account</div>
+      <div class="list-item">Recent funding round or acquisition</div>
+    </div>
+  </div>
+</div>
+<p class="note">A: cheapest to build, zero JS, loads instantly, fully accessible, works identically on mobile. Reads as a factual spec sheet — matches the "industrial/manifest" tone of the rest of the site. Downside: static, doesn't visually signal "this updates / this is live data."</p>
+
+<!-- VARIANT B -->
+<div class="variant">
+  <div class="variant-label">B — ticker + fade carousel</div>
+  <div class="variant-body">
+    <h2 class="headline">Built for <span class="accent">packaging suppliers</span></h2>
+    <p class="stat-line"><b>17%</b> of the businesses we source deals for are in packaging — export capacity, contract manufacturing, distribution</p>
+
+    <div class="block">
+      <div class="block-label">Who reaches out to us</div>
+      <div class="ticker-wrap">
+        <div class="ticker-track">
+          <span><b>Procurement Manager</b> &nbsp;·&nbsp; Supply Chain Director &nbsp;·&nbsp; VP of Operations &nbsp;·&nbsp;</span>
+          <span><b>Procurement Manager</b> &nbsp;·&nbsp; Supply Chain Director &nbsp;·&nbsp; VP of Operations &nbsp;·&nbsp;</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-label">Signals we watch for</div>
+      <div class="carousel">
+        <div class="carousel-slide">New warehouse or fulfillment facility announced</div>
+        <div class="carousel-slide">Export contract signed with a new international account</div>
+        <div class="carousel-slide">Recent funding round or acquisition</div>
+      </div>
+    </div>
+  </div>
+</div>
+<p class="note">B: ticker for titles = infinite horizontal scroll (reads "we know this whole role landscape"). Signals rotate one-at-a-time via fade (reads "these are live/ongoing," reinforces the signal-based positioning). Costs: needs JS/CSS-animation care on mobile (marquees can jank on low-end phones), and a lead skimming fast may miss a signal mid-fade — worse for scanability than a static list.</p>
+
+<!-- VARIANT C -->
+<div class="variant">
+  <div class="variant-label">C — chip cloud (static, no scroll/fade)</div>
+  <div class="variant-body">
+    <h2 class="headline">Built for <span class="accent">packaging suppliers</span></h2>
+    <p class="stat-line"><b>17%</b> of the businesses we source deals for are in packaging — export capacity, contract manufacturing, distribution</p>
+
+    <div class="block">
+      <div class="block-label">Who reaches out to us</div>
+      <div class="chip-cloud">
+        <span class="chip">Procurement Manager</span>
+        <span class="chip">Supply Chain Director</span>
+        <span class="chip">VP of Operations</span>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-label">Signals we watch for</div>
+      <div class="chip-cloud">
+        <span class="chip signal">New warehouse announced</span>
+        <span class="chip signal">Export contract signed</span>
+        <span class="chip signal">Funding round / acquisition</span>
+      </div>
+    </div>
+  </div>
+</div>
+<p class="note">C: middle ground — no animation cost, but still visually distinct from a plain paragraph (reads as tags/keywords, scannable in one glance). Cheapest of the three to keep consistent across niches since chip count naturally varies without breaking layout — a niche with 5 signals doesn't need special-casing the way a fixed 3-slide carousel would.</p>
+
+</body>
+</html>

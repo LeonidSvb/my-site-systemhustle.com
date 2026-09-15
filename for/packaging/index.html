@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Hustle — Deal Sourcing for Packaging Suppliers</title>
+    <meta name="description" content="We connect packaging suppliers with the businesses that need them right now.">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%2315130f'/%3E%3Ctext x='16' y='23' font-family='Georgia,serif' font-size='20' font-weight='700' fill='%23e8963c' text-anchor='middle'%3ES%3C/text%3E%3C/svg%3E">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../assets/niche.css">
+</head>
+<body>
+    <div class="container">
+        <nav>
+            <a href="../../index.html" class="logo">System<span>Hustle</span></a>
+            <ul class="nav-menu">
+                <li><a href="../../index.html#how">How It Works</a></li>
+                <li><a href="../../index.html#who">Who This Is For</a></li>
+                <li><a href="../../index.html#faq">FAQ</a></li>
+            </ul>
+            <a href="#booking" class="nav-cta">Book a Call</a>
+        </nav>
+
+        <section class="hero ruled">
+            <div class="tag">Built for packaging suppliers</div>
+            <h1>We connect <em>packaging suppliers</em> with the businesses that need them right now.</h1>
+            <p class="subtitle">Custom, specialty, or bulk — we watch for the companies expanding, launching a new line, or switching suppliers, and only reach out once the need is real.</p>
+            <a href="#booking" class="stamp-btn">Book a Call</a>
+        </section>
+
+        <section id="signals">
+            <p class="eyebrow">Who reaches out to us</p>
+            <h2 class="section-title">The people who say yes at a packaging company</h2>
+            <div class="ticker-wrap"><div id="titlesTicker"></div></div>
+
+            <p class="eyebrow">Signals we watch for</p>
+            <h2 class="section-title">These are already looking for a supplier like you</h2>
+            <div class="signal-carousel" id="signalCarousel"></div>
+            <div class="signal-dots" id="signalDots"></div>
+
+            <div class="callout">Every one of those signals is a company that needs a packaging supplier <strong>right now</strong>. Without a direct line to the person who decides, that deal goes by default to whoever they already know — not necessarily the best fit, just the first one they think of.</div>
+        </section>
+
+        <section id="roi" class="ruled">
+            <p class="eyebrow">Worth doing the math</p>
+            <h2 class="section-title">What one closed deal is actually worth</h2>
+            <p class="section-lede">Plug in your own numbers — this isn't ours to estimate, it's yours.</p>
+
+            <div class="roi-box" id="roiBox">
+                <div class="roi-fields">
+                    <div class="roi-field">
+                        <label for="roiDeal">Average contract value ($)</label>
+                        <input type="number" id="roiDeal" data-roi-deal value="4000" min="0" step="100">
+                    </div>
+                    <div class="roi-field">
+                        <label for="roiYears">Years a client typically stays</label>
+                        <input type="number" id="roiYears" data-roi-years value="3" min="0" step="0.5">
+                    </div>
+                </div>
+                <div class="roi-result">
+                    <div class="label">Lifetime value of one closed introduction</div>
+                    <div class="value" data-roi-result>$0</div>
+                    <p class="roi-note">Against that, we take a small one-time pilot fee and a share of the first deal only — the rest is yours.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="how">
+            <p class="eyebrow">Process</p>
+            <h2 class="section-title">How It Works</h2>
+            <div class="loom-frame">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M10 9l6 3-6 3z"></path></svg>
+                <p>WALKTHROUGH VIDEO — TO BE ADDED</p>
+            </div>
+        </section>
+
+        <section class="hero-cal-section" id="booking">
+            <h2 class="cal-label">Book a Call</h2>
+            <p class="cal-subtitle">Let's talk about your pipeline and whether this is a fit.</p>
+            <div class="cal-embed">
+                <iframe src="https://cal.com/systemhustle/fit-check-call" loading="lazy"></iframe>
+            </div>
+        </section>
+
+        <footer>
+            <div class="footer-content">
+                <div class="footer-copy">&copy; 2026 System Hustle. All rights reserved.</div>
+                <div class="footer-links">
+                    <a href="mailto:leo@systemhustle.com">leo@systemhustle.com</a>
+                    <a href="https://wa.me/628175755953" target="_blank">WhatsApp</a>
+                    <a href="https://www.linkedin.com/in/leonid-shvorob/" target="_blank">LinkedIn</a>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script src="../../assets/niche.js"></script>
+    <script>
+        SystemHustleNiche.init({
+            titles: ["Procurement Manager", "Supply Chain Director", "VP of Operations"],
+            signals: [
+                { icon: "warehouse", text: "New facility or production line announced" },
+                { icon: "ship", text: "Export contract signed with a new international account" },
+                { icon: "handshake", text: "Recent funding round or acquisition" }
+            ]
+        });
+    </script>
+</body>
+</html>

@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>System Hustle — Logistics Deal Sourcing</title>
-    <meta name="description" content="I connect packaging suppliers, trucking carriers, and warehouses with the businesses that need them right now.">
+    <meta name="description" content="We connect packaging suppliers, trucking carriers, and warehouses with the businesses that need them right now.">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%2315130f'/%3E%3Ctext x='16' y='23' font-family='Georgia,serif' font-size='20' font-weight='700' fill='%23e8963c' text-anchor='middle'%3ES%3C/text%3E%3C/svg%3E">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
@@ -286,6 +287,29 @@
         }
         .callout strong { color: var(--text); font-weight: 500; }
 
+        /* ===== Explore by industry ===== */
+        .explore-industry { margin-top: 56px; padding-top: 44px; border-top: 1px solid var(--border-soft); }
+        .explore-label {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 12.5px;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            margin-bottom: 18px;
+        }
+        .explore-grid { display: flex; flex-wrap: wrap; gap: 12px; }
+        .explore-card {
+            font-family: 'IBM Plex Sans', sans-serif;
+            font-size: 14.5px;
+            color: var(--text);
+            text-decoration: none;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            padding: 12px 20px;
+            transition: border-color 0.2s ease, color 0.2s ease;
+        }
+        .explore-card:hover { border-color: var(--accent); color: var(--accent); }
+
         /* ===== Pricing — receipt ===== */
         .receipt {
             max-width: 560px;
@@ -441,8 +465,8 @@
 
         <section class="hero ruled">
             <div class="tag">Built for old-school logistics operators</div>
-            <h1>I connect <em>packaging suppliers, trucking carriers,</em> and warehouses — and other old-school logistics operators — with the businesses that actually need them right now.</h1>
-            <p class="subtitle">I watch for real signals — a company expanding, launching a new line, switching suppliers — and only reach out once the need is real. When they're interested, I introduce you directly.</p>
+            <h1>We connect <em>packaging suppliers, trucking carriers,</em> and warehouses — and other old-school logistics operators — with the businesses that actually need them right now.</h1>
+            <p class="subtitle">We watch for real signals — a company expanding, launching a new line, switching suppliers — and only reach out once the need is real. When they're interested, we introduce you directly.</p>
             <a href="#booking" class="stamp-btn">Book a Call</a>
         </section>
 
@@ -470,15 +494,15 @@
                             <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M12 2v4M12 18v4M2 12h4M18 12h4"></path></svg>
                         </div>
                         <p class="step-num">01</p>
-                        <h3>I watch for real signals</h3>
-                        <p>I map every company in your niche, then track industry news and portals for what's actually changing — a new regulation, an expansion, a supplier switch. Every company gets checked against its own website and socials before it makes the list, so the ones I reach out to are prioritized by how real the signal actually is.</p>
+                        <h3>We watch for real signals</h3>
+                        <p>We map every company in your niche, then track industry news and portals for what's actually changing — a new regulation, an expansion, a supplier switch. Every company gets checked against its own website and socials before it makes the list, so the ones we reach out to are prioritized by how real the signal actually is.</p>
                     </div>
                     <div class="step">
                         <div class="step-marker">
                             <svg viewBox="0 0 24 24"><path d="M8 12h8M12 8l4 4-4 4"></path><rect x="3" y="4" width="18" height="16" rx="1"></rect></svg>
                         </div>
                         <p class="step-num">02</p>
-                        <h3>I reach out to the person who can say yes</h3>
+                        <h3>We reach out to the person who can say yes</h3>
                         <p>Not a job title. A Supply Chain Director, Procurement Manager, or the founder themselves for a smaller shop — a real person with the authority to actually make this decision.</p>
                     </div>
                     <div class="step">
@@ -487,7 +511,7 @@
                         </div>
                         <p class="step-num">03</p>
                         <h3>If they're interested, I introduce you directly</h3>
-                        <p>Only once I've confirmed it's urgent for them right now — not something they'll maybe think about next year. Then you pick it up from there. No middlemen, no scripts, no fake urgency.</p>
+                        <p>Only once we've confirmed it's urgent for them right now — not something they'll maybe think about next year. Then you pick it up from there. No middlemen, no scripts, no fake urgency.</p>
                     </div>
                 </div>
             </div>
@@ -520,6 +544,17 @@
                 <div class="seg-tag trail">+ customs brokerage</div>
                 <div class="seg-tag trail">+ equipment & fleet services</div>
                 <div class="seg-tag trail">+ other old-school logistics</div>
+            </div>
+
+            <div class="explore-industry">
+                <p class="explore-label">See how it applies to your industry</p>
+                <div class="explore-grid">
+                    <a href="for/packaging/index.html" class="explore-card">Packaging Suppliers</a>
+                    <a href="for/trucking/index.html" class="explore-card">Trucking Carriers</a>
+                    <a href="for/general-freight/index.html" class="explore-card">Freight &amp; Logistics</a>
+                    <a href="for/3pl-warehousing/index.html" class="explore-card">3PL &amp; Warehousing</a>
+                    <a href="for/freight-forwarding/index.html" class="explore-card">Freight Forwarding &amp; Customs</a>
+                </div>
             </div>
         </section>
 
@@ -581,7 +616,7 @@
                         <h3>What if it doesn't work?</h3>
                         <div class="faq-mark">+</div>
                     </div>
-                    <div class="faq-answer"><p>The small upfront amount isn't a retainer — it's what it takes to run a focused search for your specific market and find the right approach. If nothing comes of it, that's where it ends. I only make real money if you actually close a deal.</p></div>
+                    <div class="faq-answer"><p>The small upfront amount isn't a retainer — it's what it takes to run a focused search for your specific market and find the right approach. If nothing comes of it, that's where it ends. We only make real money if you actually close a deal.</p></div>
                 </div>
                 <div class="faq-item">
                     <div class="faq-question">
@@ -602,7 +637,7 @@
                         <h3>How is this different from just hiring an agency?</h3>
                         <div class="faq-mark">+</div>
                     </div>
-                    <div class="faq-answer"><p>Most agencies send generic messages to a list of job titles and hope something sticks. I only reach out when I've spotted a real signal that a company needs what you do right now, and I go to a real person, not a title.</p></div>
+                    <div class="faq-answer"><p>Most agencies send generic messages to a list of job titles and hope something sticks. We only reach out when we've spotted a real signal that a company needs what you do right now, and we go to a real person, not a title.</p></div>
                 </div>
             </div>
         </section>

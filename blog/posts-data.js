@@ -3,7 +3,7 @@
 // for it to show up in /blog/ and in "Read next" on other posts.
 window.BLOG_POSTS = [
   {
-    slug: "how-to-llm-process-10k-leads-for-5-usd",
+    slug: "how-to-process-10k-leads-with-an-llm-for-5-usd",
     title: "How to Process 10,000 Leads With an LLM for $5",
     date: "2026-09-18",
     tags: ["infrastructure", "llm", "cost"],

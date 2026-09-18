@@ -1,0 +1,584 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>How to Scrape 10,000 Company Websites in 15 Minutes for Free — System Hustle</title>
+<meta name="description" content="Most scraping APIs charge the same price whether a site is plain HTML or a JavaScript fortress. Most sites aren't fortresses. How I built a free HTTP scraper that covers 76% of a niche, plus the rate-limit lesson, the DNS bug, and the worker-pool trick that made it fast.">
+<meta property="og:title" content="How to Scrape 10,000 Company Websites in 15 Minutes for Free">
+<meta property="og:description" content="Most scraping APIs charge the same price whether a site is plain HTML or a JavaScript fortress. Most sites aren't fortresses. How I built a free HTTP scraper that covers 76% of a niche, plus the rate-limit lesson, the DNS bug, and the worker-pool trick that made it fast.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://systemhustle.com/blog/how-to-scrape-10k-company-websites-in-15-minutes-for-free/">
+<meta property="og:image" content="https://systemhustle.com/assets/leonid-avatar.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://systemhustle.com/blog/how-to-scrape-10k-company-websites-in-15-minutes-for-free/">
+<style>
+  :root{
+    color-scheme: light;
+    --bg: #f1eee6;
+    --surface: #faf8f2;
+    --surface-2: #ffffff;
+    --ink: #1c1811;
+    --ink-2: #57503f;
+    --ink-3: #8c8474;
+    --border: rgba(28,24,17,0.12);
+    --border-strong: rgba(28,24,17,0.22);
+    --accent: #0f9e8f;
+    --accent-ink: #ffffff;
+    --amber: #c05621;
+    --amber-soft: #b07a2e;
+    --chart-surface: #f7f4ee;
+    --chart-grid: #e3ddd0;
+    --chart-baseline: #c9c1af;
+    --chart-teal: #0f9e8f;
+    --chart-amber: #c05621;
+    --chart-ink: #1c1811;
+    --chart-ink-2: #8c8474;
+    --shadow: 0 1px 2px rgba(28,24,17,0.06), 0 8px 24px rgba(28,24,17,0.06);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      color-scheme: dark;
+      --bg: #16130f;
+      --surface: #1d1912;
+      --surface-2: #211c15;
+      --ink: #f3efe6;
+      --ink-2: #c7bfac;
+      --ink-3: #8c8474;
+      --border: rgba(243,239,230,0.12);
+      --border-strong: rgba(243,239,230,0.22);
+      --accent: #17b39f;
+      --accent-ink: #08211d;
+      --amber: #e08a4c;
+      --amber-soft: #c98a4a;
+      --chart-surface: #1d1912;
+      --chart-grid: #34302a;
+      --chart-baseline: #4a4438;
+      --chart-teal: #0fa592;
+      --chart-amber: #d9762f;
+      --chart-ink: #f3efe6;
+      --chart-ink-2: #948c78;
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 12px 32px rgba(0,0,0,0.35);
+    }
+  }
+  :root[data-theme="dark"]{
+    color-scheme: dark;
+    --bg: #16130f;
+    --surface: #1d1912;
+    --surface-2: #211c15;
+    --ink: #f3efe6;
+    --ink-2: #c7bfac;
+    --ink-3: #8c8474;
+    --border: rgba(243,239,230,0.12);
+    --border-strong: rgba(243,239,230,0.22);
+    --accent: #17b39f;
+    --accent-ink: #08211d;
+    --amber: #e08a4c;
+    --amber-soft: #c98a4a;
+    --chart-surface: #1d1912;
+    --chart-grid: #34302a;
+    --chart-baseline: #4a4438;
+    --chart-teal: #0fa592;
+    --chart-amber: #d9762f;
+    --chart-ink: #f3efe6;
+    --chart-ink-2: #948c78;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 12px 32px rgba(0,0,0,0.35);
+  }
+
+  * { box-sizing: border-box; }
+  html, body{ margin: 0; }
+  body{
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap{ max-width: 920px; margin: 0 auto; padding-inline: 20px; }
+  .prose{ max-width: 660px; margin-inline: auto; }
+
+  header.top{
+    position: sticky; top: env(safe-area-inset-top, 0px);
+    z-index: 5;
+    background: color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter: blur(6px);
+    border-bottom: 1px solid var(--border);
+  }
+  .top-inner{
+    max-width: 920px; margin: 0 auto; padding: 14px 20px;
+    display: flex; align-items: center; justify-content: space-between;
+    font-family: "IBM Plex Mono", monospace; font-size: 12.5px;
+    color: var(--ink-2); letter-spacing: 0.02em;
+  }
+  .top-inner a.mark{ color: var(--ink); font-weight: 600; text-decoration: none; }
+  .top-inner a.mark span{ color: var(--accent); }
+
+  main{ padding-block: 56px 90px; }
+
+  .eyebrow{
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--accent); font-weight: 600; margin: 0 0 18px;
+  }
+  h1.headline{
+    font-family: "Fraunces", Georgia, serif;
+    font-optical-sizing: auto;
+    font-weight: 600;
+    font-size: clamp(30px, 5vw, 46px);
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+    margin: 0 0 18px;
+  }
+  h1.headline .num{ color: var(--accent); }
+  .dek{
+    font-size: 19px; color: var(--ink-2); max-width: 48ch;
+    margin: 0 0 28px; text-wrap: balance;
+  }
+  .meta-row{
+    display: flex; gap: 18px; flex-wrap: wrap;
+    font-family: "IBM Plex Mono", monospace; font-size: 12.5px;
+    color: var(--ink-3); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+    padding-block: 12px; margin-bottom: 44px;
+  }
+  .meta-row b{ color: var(--ink-2); font-weight: 600; }
+
+  .prose p{ font-size: 17.5px; margin: 0 0 22px; color: var(--ink); }
+  .prose h2{
+    font-family: "Fraunces", Georgia, serif; font-weight: 600;
+    font-size: clamp(22px, 3vw, 27px); letter-spacing: -0.005em;
+    margin: 52px 0 18px; text-wrap: balance;
+  }
+  .prose strong{ color: var(--ink); font-weight: 600; }
+  .prose .accent{ color: var(--accent); }
+
+  .quickmath{
+    margin: 34px 0; padding: 20px 22px;
+    border: 1px dashed var(--border-strong); border-radius: 10px;
+    background: var(--surface);
+    font-family: "IBM Plex Mono", monospace; font-size: 14px; color: var(--ink-2);
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .quickmath .row{ display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .quickmath .arrow{ color: var(--ink-3); }
+  .quickmath b{ color: var(--ink); }
+
+  blockquote.pull{
+    margin: 34px 0; padding: 4px 0 4px 20px;
+    border-left: 3px solid var(--amber);
+    font-family: "Fraunces", Georgia, serif; font-style: italic; font-weight: 500;
+    font-size: 20px; line-height: 1.4; color: var(--ink);
+  }
+
+  .aside-box{
+    margin: 34px 0; padding: 22px 24px;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+  }
+  .aside-box .aside-label{
+    font-family: "IBM Plex Mono", monospace; font-size: 11px; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--ink-3); margin-bottom: 12px; font-weight: 600;
+  }
+  .aside-box p{ font-size: 15.5px; color: var(--ink-2); margin: 0 0 12px; }
+  .aside-box p:last-child{ margin-bottom: 0; }
+  .aside-box .figs{
+    display: flex; gap: 24px; flex-wrap: wrap; margin-top: 14px;
+    font-family: "IBM Plex Mono", monospace; font-size: 13px;
+  }
+  .aside-box .figs .fig b{ display: block; font-size: 17px; color: var(--ink); font-weight: 600; }
+  .aside-box .figs .fig span{ color: var(--ink-3); }
+
+  .prose ul, .aside-box ul{ list-style: none; margin: 0 0 22px; padding: 0; }
+  .aside-box ul{ margin-bottom: 0; }
+  .prose ul li, .aside-box ul li{
+    position: relative; padding-left: 26px; margin-bottom: 14px;
+    font-size: 15.5px; color: var(--ink-2);
+  }
+  .prose ul li{ font-size: 17.5px; color: var(--ink); margin-bottom: 16px; }
+  .prose ul li:last-child, .aside-box ul li:last-child{ margin-bottom: 0; }
+  .prose ul li::before, .aside-box ul li::before{
+    content: ""; position: absolute; left: 0; top: 0.65em;
+    width: 8px; height: 8px; border-radius: 2px; background: var(--accent);
+  }
+  .prose ul li strong, .aside-box ul li strong{ color: var(--ink); font-weight: 600; }
+
+  .stat-band{
+    display: grid; grid-template-columns: 1fr 1fr; gap: 2px;
+    background: var(--border); border: 1px solid var(--border);
+    border-radius: 10px; overflow: hidden;
+    margin: 40px 0;
+  }
+  .stat-tile{
+    background: var(--surface); padding: 26px 22px;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .stat-tile .label{
+    font-family: "IBM Plex Mono", monospace; font-size: 11.5px;
+    letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3);
+  }
+  .stat-tile .value{
+    font-family: "IBM Plex Mono", monospace; font-weight: 600;
+    font-size: clamp(22px, 3.4vw, 30px);
+    font-variant-numeric: tabular-nums;
+    display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap;
+  }
+  .stat-tile .value .from{ color: var(--ink-3); text-decoration: line-through; text-decoration-color: var(--border-strong); font-size: 0.72em; }
+  .stat-tile .value .to{ color: var(--accent); }
+  .stat-tile .note{ font-size: 13.5px; color: var(--ink-2); }
+  @media (max-width: 600px){ .stat-band{ grid-template-columns: 1fr; } }
+
+  .chart-card{
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 26px 22px 22px; margin: 40px 0;
+    box-shadow: var(--shadow);
+  }
+  .chart-head{ margin-bottom: 14px; }
+  .chart-title{ font-weight: 600; font-size: 15.5px; color: var(--ink); }
+  .chart-sub{ font-size: 13.5px; color: var(--ink-3); margin-top: 2px; }
+  .chart-svg-wrap{ overflow-x: auto; margin-top: 6px; }
+  .chart-svg-wrap svg{ display: block; min-width: 520px; width: 100%; height: auto; }
+  .chart-legend{
+    display: flex; gap: 20px; flex-wrap: wrap; margin-top: 14px;
+    font-family: "IBM Plex Mono", monospace; font-size: 12px; color: var(--ink-2);
+  }
+  .chart-legend .item{ display: flex; align-items: center; gap: 7px; }
+  .chart-legend .swatch{ width: 10px; height: 10px; border-radius: 2px; }
+  .bar-val{ font-family: "IBM Plex Mono", monospace; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .bar-cat{ font-family: "IBM Plex Mono", monospace; }
+
+  .ptable{ width: 100%; border-collapse: collapse; font-size: 14px; }
+  .ptable-wrap{ overflow-x: auto; }
+  .ptable th{
+    text-align: left; font-family: "IBM Plex Mono", monospace; font-size: 11px;
+    letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-3);
+    font-weight: 600; padding: 0 12px 10px; border-bottom: 1px solid var(--border-strong);
+    white-space: nowrap;
+  }
+  .ptable td{
+    padding: 12px 12px; border-bottom: 1px solid var(--border);
+    color: var(--ink-2); vertical-align: top;
+  }
+  .ptable td:first-child{ color: var(--ink); font-weight: 600; white-space: nowrap; border-left: 3px solid transparent; }
+  .ptable td.num{ font-family: "IBM Plex Mono", monospace; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .ptable tr.flag-bad td:first-child{ border-left-color: var(--amber); }
+  .ptable tr.flag-warn td:first-child{ border-left-color: var(--amber-soft); }
+  .ptable tr.flag-good td:first-child{ border-left-color: var(--accent); }
+  .ptable tr.flag-good td{ color: var(--ink); }
+  .ptable tr:last-child td{ border-bottom: none; }
+
+  .cta-section{
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 16px; padding: 40px clamp(20px,4vw,44px); margin-top: 64px;
+  }
+  .cta-section h2{
+    font-family: "Fraunces", Georgia, serif; font-weight: 600;
+    font-size: clamp(22px, 3vw, 27px); margin: 0 0 12px;
+  }
+  .cta-section > p{ color: var(--ink-2); font-size: 16px; max-width: 62ch; margin: 0 0 30px; }
+  .cta-grid{ display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  @media (max-width: 760px){ .cta-grid{ grid-template-columns: 1fr; } }
+  .cta-card{
+    background: var(--surface-2); border: 1px solid var(--border);
+    border-radius: 12px; padding: 20px 18px; display: flex; flex-direction: column; gap: 10px;
+  }
+  .cta-card.lead{ border-color: var(--border-strong); }
+  .cta-card .tag{
+    font-family: "IBM Plex Mono", monospace; font-size: 11px; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--accent); font-weight: 600;
+  }
+  .cta-card p{ font-size: 14.5px; color: var(--ink-2); margin: 0; flex: 1; }
+  .cta-card .cta-link{
+    font-family: "IBM Plex Mono", monospace; font-size: 13px; font-weight: 600;
+    color: var(--ink); text-decoration: none; display: inline-flex; align-items: center; gap: 6px;
+    border-top: 1px solid var(--border); padding-top: 12px; margin-top: 4px;
+  }
+  .cta-card .cta-link:hover{ color: var(--accent); }
+  .whatsapp-row{
+    margin-top: 28px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+  }
+  .whatsapp-btn{
+    background: var(--accent); color: var(--accent-ink); font-weight: 600;
+    font-size: 14.5px; padding: 12px 20px; border-radius: 8px; text-decoration: none;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+
+  footer.bottom{
+    max-width: 920px; margin: 70px auto 0; padding: 20px 20px 40px;
+    border-top: 1px solid var(--border);
+    font-family: "IBM Plex Mono", monospace; font-size: 12px; color: var(--ink-3);
+  }
+  footer.bottom a{ color: var(--ink-2); }
+
+  .read-next{ margin-top: 40px; }
+  .read-next-label{
+    font-family: "IBM Plex Mono", monospace; font-size: 11px; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--ink-3); font-weight: 600; margin-bottom: 14px;
+  }
+  .read-next-grid{ display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 600px){ .read-next-grid{ grid-template-columns: 1fr; } }
+  .read-next-card{
+    display: block; background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 18px; text-decoration: none;
+  }
+  .read-next-card .tag{
+    font-family: "IBM Plex Mono", monospace; font-size: 11px; letter-spacing: 0.06em;
+    text-transform: uppercase; color: var(--accent); font-weight: 600;
+  }
+  .read-next-card h3{
+    font-family: "Fraunces", Georgia, serif; font-weight: 600; font-size: 17px;
+    color: var(--ink); margin: 8px 0 6px; line-height: 1.25;
+  }
+  .read-next-card p{ font-size: 13.5px; color: var(--ink-2); margin: 0; }
+
+  .flow-note{ font-size: 12.5px; color: var(--ink-3); text-align: center; margin-top: 10px; font-family: "IBM Plex Mono", monospace; }
+</style>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;0,900;1,500&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<header class="top">
+  <div class="top-inner">
+    <a class="mark" href="/blog/">systemhustle<span>.</span>blog</a>
+    <a href="https://systemhustle.com" style="color: var(--ink-3); text-decoration: none;">systemhustle.com ↗</a>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <div class="prose">
+      <p class="eyebrow">Scraping infrastructure</p>
+      <h1 class="headline">How to Scrape <span class="num">10,000</span> Company Websites in <span class="num">15</span> Minutes for Free</h1>
+      <p class="dek">Some sites are just plain text — free to grab. Others need a real browser to even open. Every scraping tool charges you the same price either way. Most sites are the free kind. Here's how I stopped paying for them.</p>
+      <div class="meta-row">
+        <span><b>Leo</b></span>
+        <span>Web scraping infrastructure</span>
+        <span>~7 min read</span>
+      </div>
+
+      <blockquote class="pull">2,600 sent, 15 replies, 11 positive. 73% of everyone who wrote back said yes — one real campaign, running right now. I won't name the niche, it's mine to keep scaling. But the setup cost me a couple hours, once. Now I've got ready-to-use leads sitting in my database for a month or more, on demand, for free.</blockquote>
+
+      <p>Here's where that came from. "Hi {{firstName}}, love what you're building" gets deleted in half a second. A line that actually shows you looked at the company gets read. So before my AI writes one word of an email, it needs real text about that company — every lead in the pipeline gets their site pulled first.</p>
+
+      <p>That text has to earn its place before it touches the copy, though. First question it answers: is this company even worth emailing? Consumer-facing, wrong size, a dozen other red flags — cut it now for a few cents, don't waste real time on it later. Even a booked call is a wasted call if the company was never a fit. That's a different post. This one is just about getting the text, cheap.</p>
+
+      <div class="quickmath">
+        <div class="row">homepage only, on a paid API <span class="arrow">→</span> roughly <b>$1 per 1,000 domains</b></div>
+        <div class="row">10,000-domain niche <span class="arrow">→</span> <b>~$10</b>. Cheap, you say.</div>
+        <div class="row">do it right — 5 to 7 pages a site, not just the homepage <span class="arrow">→</span> <b>$50–70</b> for that same niche</div>
+        <div class="row">why pay for what's free <span class="arrow">→</span> <b>this post</b></div>
+      </div>
+
+      <h2>The "free" promo that cost me hours, not dollars</h2>
+      <p>First real attempt at this: Firecrawl, a paid scraping tool. I found a free promo — real credit, zero dollars charged. I had three accounts, so I grabbed it on all three. I figured that meant three times the speed.</p>
+      <p>It didn't. <strong>They track you by IP, not by account</strong> — doesn't matter how many accounts you run, you're still stuck behind the same one door. What should've taken minutes took hours. Free wasn't free. It just charged me in time instead of money.</p>
+      <p>I hit that same wall again later, for real, inside the actual project — and this time I measured it instead of guessing. Real, sustained speed: about 5.5 sites a minute.</p>
+
+      <h2>So I stopped renting permission to scrape</h2>
+      <p>Then I noticed something working an old-school niche: most of these company sites are dumb-simple. No JavaScript app, no fancy framework — just plain HTML that shows up the second you ask for it.</p>
+
+      <p>Here's the part that should annoy you: <strong>every paid scraping tool charges the exact same price whether a site needs a full browser or not.</strong> You're paying moving-truck prices to carry one box.</p>
+
+      <p>So I built the thing that only carries the box. A scraper that just asks the site for its page, directly. No browser. No third-party tool. No rate limit — because it isn't sharing anyone else's budget.</p>
+    </div>
+
+    <div class="stat-band">
+      <div class="stat-tile">
+        <span class="label">Mine, free</span>
+        <span class="value"><span class="to">662</span></span>
+        <span class="note">domains/minute, live test, no rate limit — different target sites, not a shared API budget</span>
+      </div>
+      <div class="stat-tile">
+        <span class="label">Firecrawl, paid, honestly measured</span>
+        <span class="value"><span class="to">5.5</span></span>
+        <span class="note">domains/minute, sustained, on a real paid plan (their cap is ~20 requests/min, but each domain can eat up to 3 of them)</span>
+      </div>
+    </div>
+
+    <div class="prose">
+      <p>Do the math on the headline number: <strong>662 domains a minute means 10,000 domains in about 15 minutes.</strong> Not overnight. Not a queue you check tomorrow morning. And it costs <strong>$0</strong> — the only thing it spends is your own server's CPU.</p>
+
+      <div class="aside-box">
+        <div class="aside-label">The honest ceiling</div>
+        <p>This isn't a magic trick that works on 100% of the internet. I'm not going to pretend it is.</p>
+        <p>A real run across 23,427 domains landed at <strong>76.1% usable</strong> on the free pass alone. Three out of every four sites, for nothing.</p>
+        <p>The rest genuinely need a real browser, or the site's blocked or dead. And this split is specific to the old-school niche I tested on — a more modern industry, like marketing agencies, will lean harder toward needing a browser. Your number will move.</p>
+        <div class="figs">
+          <div class="fig"><b>76.1%</b><span>ok — real usable text, no browser needed</span></div>
+          <div class="fig"><b>1.8%</b><span>thin — page loaded, too little text</span></div>
+          <div class="fig"><b>8.2%</b><span>needs a real browser to load</span></div>
+          <div class="fig"><b>14.0%</b><span>dead, blocked, or timed out</span></div>
+        </div>
+      </div>
+
+      <h2>The bug that made live sites look dead</h2>
+      <p>Every batch had sites logged as "dead" that weren't dead at all — just misdiagnosed by a bottleneck buried in our own setup, nothing to do with the site itself. I checked one batch by hand: <strong>5,797 of 8,068 "failed" sites were completely alive.</strong> One setting fixed it.</p>
+
+      <p>This is exactly the kind of landmine your coding agent should catch, not you. Copy this whole post to it before you build your own version — it'll know what to look for. No reason to make you learn the plumbing.</p>
+
+      <p>Silver lining: even before that bug was fixed, this cheap first pass was already paying for itself — a free way to tell which sites in a niche are simple and which need a real browser, before you spend a cent finding that out the expensive way. <strong>Just knowing that split saved me 20-30% of what I'd otherwise have paid downstream.</strong></p>
+    </div>
+
+    <div class="stat-band">
+      <div class="stat-tile">
+        <span class="label">"Dead" domains in one batch</span>
+        <span class="value"><span class="from">8,068 errors</span> <span class="to">→ 5,797 fake</span></span>
+        <span class="note">false alarms from our own bottleneck, not real dead sites</span>
+      </div>
+      <div class="stat-tile">
+        <span class="label">The fix</span>
+        <span class="value"><span class="from">4</span> <span class="to">→ 64</span></span>
+        <span class="note">one setting, ask your coding agent for the name</span>
+      </div>
+    </div>
+
+    <div class="prose">
+      <h2>Nobody waits for the slow one</h2>
+      <p>One more thing that makes 662 domains a minute possible: how many sites run at the same time, and what happens when one of them is slow. Too few at once and you're wasting time. Too many and sites start timing out on each other. We tested a range and landed on 40 at once. But the number alone isn't the trick — it's what happens the instant one finishes early.</p>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-head">
+        <div class="chart-title">Waiting for the group vs. never waiting — same 8 sites, same durations</div>
+        <div class="chart-sub">Every bar is one site's real scrape time. The only thing that changes is how the next site gets picked up.</div>
+      </div>
+      <div class="chart-svg-wrap">
+        <svg viewBox="0 0 640 260" role="img" aria-label="Two-lane diagram comparing fixed batching, where four sites must all wait for the slowest one before the next batch starts, against picking up the next site immediately, where a freed slot grabs the next site with no idle gap.">
+          <rect x="0" y="0" width="640" height="260" fill="var(--chart-surface)"></rect>
+
+          <text x="24" y="28" font-family="IBM Plex Sans, sans-serif" font-size="12.5" font-weight="600" fill="var(--chart-ink)">Fixed batch of 4 — everyone waits for the slowest</text>
+
+          <line x1="24" y1="46" x2="616" y2="46" stroke="var(--chart-grid)" stroke-width="1"></line>
+          <line x1="24" y1="70" x2="616" y2="70" stroke="var(--chart-grid)" stroke-width="1"></line>
+          <line x1="24" y1="94" x2="616" y2="94" stroke="var(--chart-grid)" stroke-width="1"></line>
+          <line x1="24" y1="118" x2="616" y2="118" stroke="var(--chart-grid)" stroke-width="1"></line>
+
+          <rect x="24" y="38" width="70" height="16" rx="4" fill="var(--chart-teal)"></rect>
+          <rect x="24" y="62" width="140" height="16" rx="4" fill="var(--chart-teal)"></rect>
+          <rect x="24" y="86" width="95" height="16" rx="4" fill="var(--chart-teal)"></rect>
+          <rect x="24" y="110" width="430" height="16" rx="4" fill="var(--chart-teal)"><title>the one slow site — 20s</title></rect>
+
+          <rect x="94" y="38" width="361" height="16" fill="var(--chart-amber)" opacity="0.35"></rect>
+          <rect x="164" y="62" width="291" height="16" fill="var(--chart-amber)" opacity="0.35"></rect>
+          <rect x="119" y="86" width="336" height="16" fill="var(--chart-amber)" opacity="0.35"></rect>
+          <text x="280" y="136" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="var(--chart-amber)">idle — waiting on the slow one</text>
+
+          <rect x="455" y="38" width="140" height="88" rx="4" fill="none" stroke="var(--chart-baseline)" stroke-width="1" stroke-dasharray="3 3"></rect>
+          <text x="525" y="20" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="10" fill="var(--chart-ink-3)">next batch can't start until here</text>
+
+          <text x="24" y="168" font-family="IBM Plex Sans, sans-serif" font-size="12.5" font-weight="600" fill="var(--chart-ink)">Grab the next one immediately — nobody waits</text>
+
+          <line x1="24" y1="186" x2="616" y2="186" stroke="var(--chart-grid)" stroke-width="1"></line>
+          <line x1="24" y1="210" x2="616" y2="210" stroke="var(--chart-grid)" stroke-width="1"></line>
+          <line x1="24" y1="234" x2="616" y2="234" stroke="var(--chart-grid)" stroke-width="1"></line>
+
+          <rect x="24" y="178" width="70" height="16" rx="4" fill="var(--chart-teal)"></rect>
+          <rect x="98" y="178" width="95" height="16" rx="4" fill="var(--chart-teal)"></rect>
+          <rect x="197" y="178" width="60" height="16" rx="4" fill="var(--chart-teal)"></rect>
+          <rect x="261" y="178" width="110" height="16" rx="4" fill="var(--chart-teal)"></rect>
+          <rect x="375" y="178" width="80" height="16" rx="4" fill="var(--chart-teal)"></rect>
+
+          <rect x="24" y="202" width="140" height="16" rx="4" fill="var(--chart-teal)"></rect>
+          <rect x="168" y="202" width="75" height="16" rx="4" fill="var(--chart-teal)"></rect>
+          <rect x="247" y="202" width="90" height="16" rx="4" fill="var(--chart-teal)"></rect>
+          <rect x="341" y="202" width="65" height="16" rx="4" fill="var(--chart-teal)"></rect>
+
+          <rect x="24" y="226" width="95" height="16" rx="4" fill="var(--chart-teal)"></rect>
+          <rect x="123" y="226" width="430" height="16" rx="4" fill="var(--chart-teal)" opacity="0.9"><title>the one slow site — 20s, doesn't block anyone else</title></rect>
+        </svg>
+      </div>
+      <div class="chart-legend">
+        <span class="item"><span class="swatch" style="background:var(--chart-teal)"></span>real scrape time</span>
+        <span class="item"><span class="swatch" style="background:var(--chart-amber)"></span>idle, waiting on the group</span>
+      </div>
+      <p class="flow-note">Top: everyone waits for the group. Bottom: nobody waits — the slow site only ever costs one slot, not the whole run.</p>
+    </div>
+
+    <div class="prose">
+      <blockquote class="pull">One slow site should cost you one slot. If it's costing you the whole batch, you don't have a scraping problem — you have a scheduling problem.</blockquote>
+
+      <p>Same rule, applied twice: never let capacity sit idle while there's work waiting for it. Whether that's a slot in your own scraper or spending room on a paid tool's per-minute limit doesn't matter — the fix is the same.</p>
+
+      <h2>What actually made it faster and more reliable</h2>
+      <p>A few practical fixes, kept short on purpose — this is plumbing, not something you need to understand, just know it exists:</p>
+
+      <div class="aside-box">
+        <div class="aside-label">Own HTTP scraper — what actually helped</div>
+        <ul>
+          <li><strong>Stopped rejecting sites with outdated security certificates.</strong> Recovered a pile of real, working sites — for free.</li>
+          <li><strong>Every request gets a hard time limit, no exceptions.</strong> A stuck site never holds up the run.</li>
+          <li><strong>Save results in small groups, not one at a time.</strong> Saving one-by-one crashed the whole thing once, not just that one job.</li>
+          <li><strong>Read the page properly instead of a shortcut.</strong> Fixed junk text — leftover code, duplicated menus — sneaking into the results.</li>
+        </ul>
+        <p style="margin-top: 16px;">None of this is exotic. It's exactly the kind of thing your coding agent handles on its own if you just tell it to build this — copy this post over and it'll know what to look for.</p>
+      </div>
+
+      <h2>Getting more than the homepage — for free</h2>
+      <p>Homepage alone is thin. 5 to 7 pages a site — services, about, case studies — gives the AI real material to work with. <strong>More material, sharper copy. Sharper copy, better replies.</strong> If you can get more for free, get more. There's no reason not to.</p>
+      <p>Finding that list of pages is simple: some sites publish a sitemap — a built-in table of contents. The rest, you do it the way a person would — check the homepage for links to other pages, follow those a level or two deep. Some sites genuinely don't have more to give — dead ones, one-page placeholders. Not a tooling problem, just how much that site has.</p>
+
+      <h2>One more quiet decision</h2>
+      <p>I identify a lead by their email domain, not the "website" field on their record — people change jobs, that field goes stale, and guessing wrong scrapes the wrong company. Small fix, real impact: <strong>it kept about 3,250 leads from getting matched to a company they don't actually work at.</strong></p>
+
+      <p>Same lesson, every section: measure before you build, don't pay for what you're not using. A plain HTTP request handles most of a niche for free. The rest is a real problem — worth solving, just not with your wallet first.</p>
+    </div>
+
+    <div class="cta-section">
+      <h2>Want this running on your own leads</h2>
+      <p>Message me, no pitch — just tell me what you're actually trying to do:</p>
+      <div class="cta-grid">
+        <div class="cta-card">
+          <span class="tag">Full DIY</span>
+          <p>Copy this whole post and hand it to your own coding agent — it'll figure most of it out. Takes a bit more time this way, but if you're enough of a technical degenerate to enjoy that, like me, go for it. No shame either way.</p>
+          <span class="cta-link" style="opacity:0.55; border-top-color: transparent;">You've got this</span>
+        </div>
+        <div class="cta-card">
+          <span class="tag">Your own infra</span>
+          <p>More technical, or you just want everything running on your own server instead of mine — happy to help you set up something similar on your own infra, if it's a good fit for both of us.</p>
+          <a class="cta-link" href="https://wa.me/628175755953?text=Hey%20Leo%20-%20read%20your%20free%20HTTP%20scraping%20post%2C%20want%20to%20talk%20about%20setting%20up%20something%20similar%20on%20my%20own%20server.">Talk it through →</a>
+        </div>
+        <div class="cta-card lead">
+          <span class="tag">Already built, already running</span>
+          <p>I run this as my own internal tool — email validation, scraping, enrichment, the whole pipeline. A couple friends already use it. Not turning it into a product yet, but I'm opening a few free beta spots to stress-test it before I do. If you'd rather skip building any of this, this is the shortcut.</p>
+          <a class="cta-link" href="https://wa.me/628175755953?text=Hey%20Leo%20-%20read%20your%20free%20HTTP%20scraping%20post%2C%20I%27d%20like%20a%20beta%20spot%20for%20your%20enrichment%20tool.">Ask about a beta spot →</a>
+        </div>
+      </div>
+      <div class="whatsapp-row">
+        <a class="whatsapp-btn" href="https://wa.me/628175755953?text=Hey%20Leo%20-%20read%20your%20free%20HTTP%20scraping%20post%2C%20got%20a%20question%20about%20it.">Message me on WhatsApp →</a>
+      </div>
+    </div>
+
+    <div id="read-next" class="read-next" hidden>
+      <div class="read-next-label">Read next</div>
+      <div id="read-next-grid" class="read-next-grid"></div>
+    </div>
+  </div>
+</main>
+
+<footer class="bottom">
+  <div><a href="https://systemhustle.com">systemhustle.com</a> — real numbers, nothing made up. · <a href="/blog/">all posts</a></div>
+</footer>
+
+<script src="/blog/posts-data.js"></script>
+<script>
+(function(){
+  try{
+    var mine = "how-to-scrape-10k-company-websites-in-15-minutes-for-free";
+    var posts = (window.BLOG_POSTS || []).filter(function(p){ return p.slug !== mine; });
+    if(!posts.length) return;
+    var grid = document.getElementById("read-next-grid");
+    posts.slice(0, 2).forEach(function(p){
+      var a = document.createElement("a");
+      a.className = "read-next-card";
+      a.href = "/blog/" + p.slug + "/";
+      a.innerHTML = '<span class="tag">' + p.tags[0] + '</span><h3>' + p.title + '</h3><p>' + p.excerpt + '</p>';
+      grid.appendChild(a);
+    });
+    document.getElementById("read-next").hidden = false;
+  }catch(e){}
+})();
+</script>
+</body>
+</html>

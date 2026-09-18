@@ -227,45 +227,6 @@
   .stat-tile .note{ font-size: 13.5px; color: var(--ink-2); }
   @media (max-width: 600px){ .stat-band{ grid-template-columns: 1fr; } }
 
-  .chart-card{
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: 12px; padding: 26px 22px 22px; margin: 40px 0;
-    box-shadow: var(--shadow);
-  }
-  .chart-head{ margin-bottom: 14px; }
-  .chart-title{ font-weight: 600; font-size: 15.5px; color: var(--ink); }
-  .chart-sub{ font-size: 13.5px; color: var(--ink-3); margin-top: 2px; }
-  .chart-svg-wrap{ overflow-x: auto; margin-top: 6px; }
-  .chart-svg-wrap svg{ display: block; min-width: 520px; width: 100%; height: auto; }
-  .chart-legend{
-    display: flex; gap: 20px; flex-wrap: wrap; margin-top: 14px;
-    font-family: "IBM Plex Mono", monospace; font-size: 12px; color: var(--ink-2);
-  }
-  .chart-legend .item{ display: flex; align-items: center; gap: 7px; }
-  .chart-legend .swatch{ width: 10px; height: 10px; border-radius: 2px; }
-  .bar-val{ font-family: "IBM Plex Mono", monospace; font-weight: 600; font-variant-numeric: tabular-nums; }
-  .bar-cat{ font-family: "IBM Plex Mono", monospace; }
-
-  .ptable{ width: 100%; border-collapse: collapse; font-size: 14px; }
-  .ptable-wrap{ overflow-x: auto; }
-  .ptable th{
-    text-align: left; font-family: "IBM Plex Mono", monospace; font-size: 11px;
-    letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-3);
-    font-weight: 600; padding: 0 12px 10px; border-bottom: 1px solid var(--border-strong);
-    white-space: nowrap;
-  }
-  .ptable td{
-    padding: 12px 12px; border-bottom: 1px solid var(--border);
-    color: var(--ink-2); vertical-align: top;
-  }
-  .ptable td:first-child{ color: var(--ink); font-weight: 600; white-space: nowrap; border-left: 3px solid transparent; }
-  .ptable td.num{ font-family: "IBM Plex Mono", monospace; font-variant-numeric: tabular-nums; white-space: nowrap; }
-  .ptable tr.flag-bad td:first-child{ border-left-color: var(--amber); }
-  .ptable tr.flag-warn td:first-child{ border-left-color: var(--amber-soft); }
-  .ptable tr.flag-good td:first-child{ border-left-color: var(--accent); }
-  .ptable tr.flag-good td{ color: var(--ink); }
-  .ptable tr:last-child td{ border-bottom: none; }
-
   .cta-section{
     background: var(--surface); border: 1px solid var(--border);
     border-radius: 16px; padding: 40px clamp(20px,4vw,44px); margin-top: 64px;
@@ -313,6 +274,37 @@
   .ptable tr.flag-good td:first-child{ border-left-color: var(--accent); }
   .ptable tr.flag-good td{ color: var(--ink); }
   .ptable tr:last-child td{ border-bottom: none; }
+  .waterfall{
+    margin: 34px 0; padding: 20px 22px;
+    border: 1px dashed var(--border-strong); border-radius: 10px;
+    background: var(--surface);
+    font-family: "IBM Plex Mono", monospace; font-size: 13.5px; color: var(--ink-2);
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .waterfall .step{ display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+  .waterfall .step .pct{ color: var(--accent); font-weight: 600; font-size: 16px; min-width: 52px; }
+  .waterfall .step.paid .pct{ color: var(--amber); }
+  @media (max-width: 640px){
+    .ptable thead{ display: none; }
+    .ptable, .ptable tbody, .ptable tr, .ptable td{ display: block; width: 100%; }
+    .ptable{ margin: 24px 0; }
+    .ptable tr{
+      margin-bottom: 16px; border: 1px solid var(--border); border-radius: 10px;
+      overflow: hidden; background: var(--surface);
+    }
+    .ptable td{
+      border-bottom: 1px solid var(--border); padding: 10px 14px;
+      white-space: normal; font-size: 14.5px;
+    }
+    .ptable td:first-child{ border-left: none; font-size: 15px; padding-top: 12px; }
+    .ptable tr:last-child, .ptable td:last-child{ border-bottom: none; }
+    .ptable td::before{
+      content: attr(data-label); display: block; font-family: "IBM Plex Mono", monospace;
+      font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase;
+      color: var(--ink-3); margin-bottom: 4px;
+    }
+    .ptable td:first-child::before{ content: none; }
+  }
   .whatsapp-row{
     margin-top: 28px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
   }
@@ -392,6 +384,14 @@
       </div>
 
       <p>Before the story — here's the honest comparison, just facts, no story attached. This is what I actually measured on my own domains, not vendor marketing pages.</p>
+
+      <p>This isn't a pick-one decision, it's a waterfall — each stage only picks up what the one before it couldn't reach:</p>
+
+      <div class="waterfall">
+        <div class="step"><span class="pct">100%</span> of a niche's domains, into the free HTTP scraper</div>
+        <div class="step"><span class="pct">76.1%</span> come back usable — done, $0, nothing escalates</div>
+        <div class="step paid"><span class="pct">23.9%</span> left over — JS-heavy, blocked, or dead — this slice is what the paid tools below are for</div>
+      </div>
     </div>
 
     <div class="ptable-wrap">
@@ -406,31 +406,84 @@
         </thead>
         <tbody>
           <tr class="flag-good">
-            <td>Own HTTP scraper</td>
-            <td>$0</td>
-            <td>662 dom/min</td>
-            <td>Multi-page, own page-selection logic, no browser needed — covers 76.1% of a niche alone</td>
+            <td data-label="Source">Own HTTP scraper</td>
+            <td data-label="Price">$0</td>
+            <td data-label="Speed (measured)">662 dom/min</td>
+            <td data-label="Flexibility">Multi-page, own page-selection logic, no browser needed — covers 76.1% of a niche alone</td>
           </tr>
           <tr>
-            <td>Firecrawl</td>
-            <td>$0 free tier → $16-599/mo paid (vendor tiers, paid throughput not live-tested)</td>
-            <td>5.5 dom/min free tier, measured live</td>
-            <td>Real headless browser — renders JS, LLM picks the links. The actual answer for JS-heavy sites</td>
+            <td data-label="Source">Firecrawl (free tier)</td>
+            <td data-label="Price">$0</td>
+            <td data-label="Speed (measured)">5.5 dom/min, measured live</td>
+            <td data-label="Flexibility">Real headless browser — renders JS, LLM picks the links. IP-limited, not account-limited</td>
           </tr>
           <tr>
-            <td>Exa <code>/contents</code></td>
-            <td>$1 per 1,000 pages, per content type</td>
-            <td>100 req/sec (fastest paid option tested)</td>
-            <td>Great for one page, summarized + structured. Doesn't reliably crawl a site: 0-1 of 8-10 requested subpages came back on 3 real test domains</td>
+            <td data-label="Source">Firecrawl (paid)</td>
+            <td data-label="Price">$16-599/mo, vendor plans</td>
+            <td data-label="Speed (measured)">not live-tested — vendor-published only</td>
+            <td data-label="Flexibility">Same engine as free tier, just a higher rate limit for the same JS-rendering job</td>
           </tr>
           <tr>
-            <td>Common Crawl</td>
-            <td>$0, public archive</td>
-            <td>~42 dom/min, links only — text is a separate fetch on top</td>
-            <td>Real and free, but only helped on 5% of the domains that actually needed help in testing — not worth building into a pipeline</td>
+            <td data-label="Source">Exa <code>/contents</code></td>
+            <td data-label="Price">$1 per 1,000 pages, per content type</td>
+            <td data-label="Speed (measured)">100 req/sec (fastest paid option tested)</td>
+            <td data-label="Flexibility">Great for one page, summarized + structured. Doesn't reliably crawl a site: 0-1 of 8-10 requested subpages came back on 3 real test domains</td>
+          </tr>
+          <tr>
+            <td data-label="Source">Common Crawl</td>
+            <td data-label="Price">$0, public archive</td>
+            <td data-label="Speed (measured)">~42 dom/min, links only — text is a separate fetch on top</td>
+            <td data-label="Flexibility">Real and free, but only helped on 5% of the domains that actually needed help in testing — not worth building into a pipeline</td>
           </tr>
         </tbody>
       </table>
+    </div>
+
+    <div class="prose">
+      <p>Numbers on a chart don't tell you what an actual run costs. So here's the same sources on one fixed job: <strong>10,000 domains, 5 pages each</strong> — the multi-page scrape from later in this post, not just homepages.</p>
+    </div>
+
+    <div class="ptable-wrap">
+      <table class="ptable">
+        <thead>
+          <tr>
+            <th>Source</th>
+            <th>Time for 10k × 5 pages</th>
+            <th>Cost</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="flag-good">
+            <td data-label="Source">Own HTTP scraper</td>
+            <td data-label="Time for 10k × 5 pages">~1.3 hours (estimate — 662/min was measured on a single-page pass, not benchmarked separately at 5 pages/domain)</td>
+            <td data-label="Cost">$0</td>
+          </tr>
+          <tr>
+            <td data-label="Source">Firecrawl (free tier)</td>
+            <td data-label="Time for 10k × 5 pages">~30 hours (measured 5.5 dom/min, IP-limited regardless of account count)</td>
+            <td data-label="Cost">$0</td>
+          </tr>
+          <tr>
+            <td data-label="Source">Firecrawl (paid, vendor-published)</td>
+            <td data-label="Time for 10k × 5 pages">not live-tested — vendor RPM implies roughly an hour</td>
+            <td data-label="Cost">$16-599/mo subscription, not a per-run price</td>
+          </tr>
+          <tr>
+            <td data-label="Source">Exa <code>/contents</code></td>
+            <td data-label="Time for 10k × 5 pages">~8 minutes if subpages resolved (they mostly don't — see above)</td>
+            <td data-label="Cost">~$50 in theory, one content type — not achievable in practice on small B2B sites</td>
+          </tr>
+          <tr>
+            <td data-label="Source">Common Crawl</td>
+            <td data-label="Time for 10k × 5 pages">hours, and only ~5% of the hard-to-reach domains have anything useful in it</td>
+            <td data-label="Cost">$0, but not worth building in</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="prose">
+      <p style="font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; color: var(--ink-3);">Own HTTP and Common Crawl times are estimates extrapolated from a single-page measurement, not separately benchmarked at 5 pages/domain — flagged as such, not dressed up as a live test.</p>
     </div>
 
     <div class="prose">

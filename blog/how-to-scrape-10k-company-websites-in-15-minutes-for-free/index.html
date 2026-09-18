@@ -392,19 +392,34 @@
             <td data-label="Time">~1.3 hours</td>
           </tr>
           <tr>
-            <td data-label="Source">Firecrawl (free tier)</td>
-            <td data-label="Cost">$0</td>
-            <td data-label="Time">~30 hours</td>
+            <td data-label="Source">Firecrawl Free</td>
+            <td data-label="Cost">$0 — but only 1,000 credits/mo, job needs 50,000</td>
+            <td data-label="Time">doesn't fit in a month at this tier</td>
           </tr>
           <tr>
-            <td data-label="Source">Firecrawl (paid)</td>
-            <td data-label="Cost">$16-599/mo (vendor)</td>
-            <td data-label="Time">~1 hour (vendor)</td>
+            <td data-label="Source">Firecrawl Hobby</td>
+            <td data-label="Cost">$19/mo — only 5,000 credits/mo, still short of 50,000</td>
+            <td data-label="Time">doesn't fit in a month at this tier</td>
+          </tr>
+          <tr>
+            <td data-label="Source">Firecrawl Standard</td>
+            <td data-label="Cost">$83/mo — 100,000 credits/mo, job fits with room to spare</td>
+            <td data-label="Time">~1.7 hours (vendor rate limit)</td>
+          </tr>
+          <tr>
+            <td data-label="Source">Firecrawl Growth</td>
+            <td data-label="Cost">$333/mo — 500,000 credits/mo</td>
+            <td data-label="Time">~10 min (vendor rate limit)</td>
+          </tr>
+          <tr>
+            <td data-label="Source">Firecrawl Scale</td>
+            <td data-label="Cost">$599/mo — 1,000,000 credits/mo</td>
+            <td data-label="Time">~5 min (vendor rate limit)</td>
           </tr>
           <tr>
             <td data-label="Source">Exa <code>/contents</code></td>
-            <td data-label="Cost">~$50 (vendor)</td>
-            <td data-label="Time">~8 min (vendor) — but subpages mostly don't resolve on small B2B, so this job doesn't actually run on Exa</td>
+            <td data-label="Cost">$50 minimum (vendor — one content type, per-page billing)</td>
+            <td data-label="Time">doesn't actually run this job — subpages don't resolve, measured 0-1 of 8-10 requested on real B2B domains</td>
           </tr>
           <tr>
             <td data-label="Source">Common Crawl</td>
@@ -413,6 +428,10 @@
           </tr>
         </tbody>
       </table>
+    </div>
+
+    <div class="prose">
+      <p>The one that jumps out: even Firecrawl's fastest paid tier, <strong>$599 a month</strong>, only beats the free scraper's time by about an hour. Everything below Standard doesn't even hold enough monthly credits to finish this job once. Exa's own numbers look great on paper — until you remember it can't actually complete a 5-page-per-domain job on small B2B sites, measured earlier in this post.</p>
     </div>
 
     <div class="prose">

@@ -1,0 +1,522 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>10,000 Leads for $5 — System Hustle</title>
+<meta name="description" content="How routing and concurrency settings on OpenRouter cut LLM enrichment cost from $34.50 to $5 per 10,000 domains — named providers, real numbers, nothing held back.">
+<meta property="og:title" content="10,000 Leads. $5. Less Time Than Your Coffee Break.">
+<meta property="og:description" content="How routing and concurrency settings on OpenRouter cut LLM enrichment cost from $34.50 to $5 per 10,000 domains — named providers, real numbers, nothing held back.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://systemhustle.com/blog/">
+<meta property="og:image" content="https://systemhustle.com/assets/leonid-avatar.png">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  :root{
+    color-scheme: light;
+    --bg: #f1eee6;
+    --surface: #faf8f2;
+    --surface-2: #ffffff;
+    --ink: #1c1811;
+    --ink-2: #57503f;
+    --ink-3: #8c8474;
+    --border: rgba(28,24,17,0.12);
+    --border-strong: rgba(28,24,17,0.22);
+    --accent: #0f9e8f;
+    --accent-ink: #ffffff;
+    --amber: #c05621;
+    --amber-soft: #b07a2e;
+    --chart-surface: #f7f4ee;
+    --chart-grid: #e3ddd0;
+    --chart-baseline: #c9c1af;
+    --chart-teal: #0f9e8f;
+    --chart-amber: #c05621;
+    --chart-ink: #1c1811;
+    --chart-ink-2: #8c8474;
+    --shadow: 0 1px 2px rgba(28,24,17,0.06), 0 8px 24px rgba(28,24,17,0.06);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      color-scheme: dark;
+      --bg: #16130f;
+      --surface: #1d1912;
+      --surface-2: #211c15;
+      --ink: #f3efe6;
+      --ink-2: #c7bfac;
+      --ink-3: #8c8474;
+      --border: rgba(243,239,230,0.12);
+      --border-strong: rgba(243,239,230,0.22);
+      --accent: #17b39f;
+      --accent-ink: #08211d;
+      --amber: #e08a4c;
+      --amber-soft: #c98a4a;
+      --chart-surface: #1d1912;
+      --chart-grid: #34302a;
+      --chart-baseline: #4a4438;
+      --chart-teal: #0fa592;
+      --chart-amber: #d9762f;
+      --chart-ink: #f3efe6;
+      --chart-ink-2: #948c78;
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 12px 32px rgba(0,0,0,0.35);
+    }
+  }
+  :root[data-theme="dark"]{
+    color-scheme: dark;
+    --bg: #16130f;
+    --surface: #1d1912;
+    --surface-2: #211c15;
+    --ink: #f3efe6;
+    --ink-2: #c7bfac;
+    --ink-3: #8c8474;
+    --border: rgba(243,239,230,0.12);
+    --border-strong: rgba(243,239,230,0.22);
+    --accent: #17b39f;
+    --accent-ink: #08211d;
+    --amber: #e08a4c;
+    --amber-soft: #c98a4a;
+    --chart-surface: #1d1912;
+    --chart-grid: #34302a;
+    --chart-baseline: #4a4438;
+    --chart-teal: #0fa592;
+    --chart-amber: #d9762f;
+    --chart-ink: #f3efe6;
+    --chart-ink-2: #948c78;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 12px 32px rgba(0,0,0,0.35);
+  }
+
+  * { box-sizing: border-box; }
+  html, body{ margin: 0; }
+  body{
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap{ max-width: 920px; margin: 0 auto; padding-inline: 20px; }
+  .prose{ max-width: 660px; margin-inline: auto; }
+
+  header.top{
+    position: sticky; top: env(safe-area-inset-top, 0px);
+    z-index: 5;
+    background: color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter: blur(6px);
+    border-bottom: 1px solid var(--border);
+  }
+  .top-inner{
+    max-width: 920px; margin: 0 auto; padding: 14px 20px;
+    display: flex; align-items: center; justify-content: space-between;
+    font-family: "IBM Plex Mono", monospace; font-size: 12.5px;
+    color: var(--ink-2); letter-spacing: 0.02em;
+  }
+  .top-inner a.mark{ color: var(--ink); font-weight: 600; text-decoration: none; }
+  .top-inner a.mark span{ color: var(--accent); }
+
+  main{ padding-block: 56px 90px; }
+
+  .eyebrow{
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--accent); font-weight: 600; margin: 0 0 18px;
+  }
+  h1.headline{
+    font-family: "Fraunces", Georgia, serif;
+    font-optical-sizing: auto;
+    font-weight: 600;
+    font-size: clamp(30px, 5vw, 46px);
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+    margin: 0 0 18px;
+  }
+  h1.headline .num{ color: var(--accent); }
+  .dek{
+    font-size: 19px; color: var(--ink-2); max-width: 48ch;
+    margin: 0 0 28px; text-wrap: balance;
+  }
+  .meta-row{
+    display: flex; gap: 18px; flex-wrap: wrap;
+    font-family: "IBM Plex Mono", monospace; font-size: 12.5px;
+    color: var(--ink-3); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+    padding-block: 12px; margin-bottom: 44px;
+  }
+  .meta-row b{ color: var(--ink-2); font-weight: 600; }
+
+  .prose p{ font-size: 17.5px; margin: 0 0 22px; color: var(--ink); }
+  .prose h2{
+    font-family: "Fraunces", Georgia, serif; font-weight: 600;
+    font-size: clamp(22px, 3vw, 27px); letter-spacing: -0.005em;
+    margin: 52px 0 18px; text-wrap: balance;
+  }
+  .prose strong{ color: var(--ink); font-weight: 600; }
+  .prose .accent{ color: var(--accent); }
+
+  .quickmath{
+    margin: 34px 0; padding: 20px 22px;
+    border: 1px dashed var(--border-strong); border-radius: 10px;
+    background: var(--surface);
+    font-family: "IBM Plex Mono", monospace; font-size: 14px; color: var(--ink-2);
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .quickmath .row{ display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .quickmath .arrow{ color: var(--ink-3); }
+  .quickmath b{ color: var(--ink); }
+
+  blockquote.pull{
+    margin: 34px 0; padding: 4px 0 4px 20px;
+    border-left: 3px solid var(--amber);
+    font-family: "Fraunces", Georgia, serif; font-style: italic; font-weight: 500;
+    font-size: 20px; line-height: 1.4; color: var(--ink);
+  }
+
+  .aside-box{
+    margin: 34px 0; padding: 22px 24px;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+  }
+  .aside-box .aside-label{
+    font-family: "IBM Plex Mono", monospace; font-size: 11px; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--ink-3); margin-bottom: 12px; font-weight: 600;
+  }
+  .aside-box p{ font-size: 15.5px; color: var(--ink-2); margin: 0 0 12px; }
+  .aside-box p:last-child{ margin-bottom: 0; }
+  .aside-box .figs{
+    display: flex; gap: 24px; flex-wrap: wrap; margin-top: 14px;
+    font-family: "IBM Plex Mono", monospace; font-size: 13px;
+  }
+  .aside-box .figs .fig b{ display: block; font-size: 17px; color: var(--ink); font-weight: 600; }
+  .aside-box .figs .fig span{ color: var(--ink-3); }
+
+  .stat-band{
+    display: grid; grid-template-columns: 1fr 1fr; gap: 2px;
+    background: var(--border); border: 1px solid var(--border);
+    border-radius: 10px; overflow: hidden;
+    margin: 40px 0;
+  }
+  .stat-tile{
+    background: var(--surface); padding: 26px 22px;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .stat-tile .label{
+    font-family: "IBM Plex Mono", monospace; font-size: 11.5px;
+    letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3);
+  }
+  .stat-tile .value{
+    font-family: "IBM Plex Mono", monospace; font-weight: 600;
+    font-size: clamp(22px, 3.4vw, 30px);
+    font-variant-numeric: tabular-nums;
+    display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap;
+  }
+  .stat-tile .value .from{ color: var(--ink-3); text-decoration: line-through; text-decoration-color: var(--border-strong); font-size: 0.72em; }
+  .stat-tile .value .to{ color: var(--accent); }
+  .stat-tile .note{ font-size: 13.5px; color: var(--ink-2); }
+  @media (max-width: 600px){ .stat-band{ grid-template-columns: 1fr; } }
+
+  .chart-card{
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 26px 22px 22px; margin: 40px 0;
+    box-shadow: var(--shadow);
+  }
+  .chart-head{ margin-bottom: 14px; }
+  .chart-title{ font-weight: 600; font-size: 15.5px; color: var(--ink); }
+  .chart-sub{ font-size: 13.5px; color: var(--ink-3); margin-top: 2px; }
+  .chart-svg-wrap{ overflow-x: auto; margin-top: 6px; }
+  .chart-svg-wrap svg{ display: block; min-width: 520px; width: 100%; height: auto; }
+  .chart-legend{
+    display: flex; gap: 20px; flex-wrap: wrap; margin-top: 14px;
+    font-family: "IBM Plex Mono", monospace; font-size: 12px; color: var(--ink-2);
+  }
+  .chart-legend .item{ display: flex; align-items: center; gap: 7px; }
+  .chart-legend .swatch{ width: 10px; height: 10px; border-radius: 2px; }
+  .bar-val{ font-family: "IBM Plex Mono", monospace; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .bar-cat{ font-family: "IBM Plex Mono", monospace; }
+
+  .ptable{ width: 100%; border-collapse: collapse; font-size: 14px; }
+  .ptable-wrap{ overflow-x: auto; }
+  .ptable th{
+    text-align: left; font-family: "IBM Plex Mono", monospace; font-size: 11px;
+    letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-3);
+    font-weight: 600; padding: 0 12px 10px; border-bottom: 1px solid var(--border-strong);
+    white-space: nowrap;
+  }
+  .ptable td{
+    padding: 12px 12px; border-bottom: 1px solid var(--border);
+    color: var(--ink-2); vertical-align: top;
+  }
+  .ptable td:first-child{ color: var(--ink); font-weight: 600; white-space: nowrap; border-left: 3px solid transparent; }
+  .ptable td.num{ font-family: "IBM Plex Mono", monospace; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .ptable tr.flag-bad td:first-child{ border-left-color: var(--amber); }
+  .ptable tr.flag-warn td:first-child{ border-left-color: var(--amber-soft); }
+  .ptable tr.flag-good td:first-child{ border-left-color: var(--accent); }
+  .ptable tr.flag-good td{ color: var(--ink); }
+  .ptable tr:last-child td{ border-bottom: none; }
+
+  .cta-section{
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 16px; padding: 40px clamp(20px,4vw,44px); margin-top: 64px;
+  }
+  .cta-section h2{
+    font-family: "Fraunces", Georgia, serif; font-weight: 600;
+    font-size: clamp(22px, 3vw, 27px); margin: 0 0 12px;
+  }
+  .cta-section > p{ color: var(--ink-2); font-size: 16px; max-width: 62ch; margin: 0 0 30px; }
+  .cta-grid{ display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  @media (max-width: 760px){ .cta-grid{ grid-template-columns: 1fr; } }
+  .cta-card{
+    background: var(--surface-2); border: 1px solid var(--border);
+    border-radius: 12px; padding: 20px 18px; display: flex; flex-direction: column; gap: 10px;
+  }
+  .cta-card.lead{ border-color: var(--border-strong); }
+  .cta-card .tag{
+    font-family: "IBM Plex Mono", monospace; font-size: 11px; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--accent); font-weight: 600;
+  }
+  .cta-card p{ font-size: 14.5px; color: var(--ink-2); margin: 0; flex: 1; }
+  .cta-card .cta-link{
+    font-family: "IBM Plex Mono", monospace; font-size: 13px; font-weight: 600;
+    color: var(--ink); text-decoration: none; display: inline-flex; align-items: center; gap: 6px;
+    border-top: 1px solid var(--border); padding-top: 12px; margin-top: 4px;
+  }
+  .cta-card .cta-link:hover{ color: var(--accent); }
+  .whatsapp-row{
+    margin-top: 28px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+  }
+  .whatsapp-btn{
+    background: var(--accent); color: var(--accent-ink); font-weight: 600;
+    font-size: 14.5px; padding: 12px 20px; border-radius: 8px; text-decoration: none;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+
+  footer.bottom{
+    max-width: 920px; margin: 70px auto 0; padding: 20px 20px 40px;
+    border-top: 1px solid var(--border);
+    font-family: "IBM Plex Mono", monospace; font-size: 12px; color: var(--ink-3);
+  }
+  footer.bottom a{ color: var(--ink-2); }
+</style>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;0,900;1,500&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<header class="top">
+  <div class="top-inner">
+    <a class="mark" href="https://systemhustle.com">systemhustle<span>.</span>blog</a>
+    <div>engineering notes</div>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <div class="prose">
+      <p class="eyebrow">Internal engineering log</p>
+      <h1 class="headline"><span class="num">10,000</span> Leads. <span class="num">$5</span>. Less Time Than Your Coffee Break.</h1>
+      <p class="dek">I run LLM calls on thousands of company websites at once. Here's every dumb wrong turn it took to get from $34.50 down to $5 per 10,000 domains — named providers included, nothing held back.</p>
+      <div class="meta-row">
+        <span><b>Leo</b></span>
+        <span>Lead gen infrastructure</span>
+        <span>~5 min read</span>
+      </div>
+
+      <p>Say you're running a cold email campaign and you actually want real volume — sending at least 1,000 emails a day. That math alone means you need a minimum of 10,000 fresh leads a month, every month, forever.</p>
+
+      <p>And if you don't want to do what everyone else does — generic "{{firstName}}, I saw your company" spam that gets zero replies — you need actual personalization. Which means pulling real variables per lead, summarizing what each company actually does, figuring out who's even worth emailing in the first place. That's not a copy-paste job. That's an AI job, at scale.</p>
+
+      <div class="quickmath">
+        <div class="row">1,000 emails/day <span class="arrow">→</span> <b>10,000+ fresh leads/month</b>, minimum</div>
+        <div class="row">generic "{{firstName}}" spam <span class="arrow">→</span> <b>real per-lead variables + AI summaries</b></div>
+        <div class="row">"how do I run this on 10k leads without going broke" <span class="arrow">→</span> <b>the part nobody actually answers</b></div>
+      </div>
+
+      <p>Everyone's heard of Claude Code by now. Some people still swear by n8n, which by this point is mostly a graveyard of broken workflows. But none of those, on their own, answer the real question. That took me a while — and a few embarrassing wrong turns — to figure out. Here's the whole thing, nothing skipped.</p>
+
+      <h2>Wrong tool first, and that's fine</h2>
+      <p>I actually started on my Claude Code subscription for this. Bad idea. It kept spinning up subagents on its own, burning through my usage limits fast, and then I'm sitting there for 5 hours waiting for the reset. That's when it clicked: Claude is the guy you bring in for the hard, judgment-heavy work — not the one you hire to process 10,000 rows of the same simple task. For that, you want cheap labor you can throw in bulk. So I moved to OpenRouter — one API, hundreds of models, pay per call, test anything.</p>
+
+      <h2>Attempt one: I picked a number out of thin air</h2>
+      <p>Default settings, basically no concurrency tuning — one request at a time. My prompt was big, so each call took close to a minute. Do the math on a few thousand leads and that's just not happening. So I bump concurrency up to 50 — 50 calls running at once instead of one. Better, but still slow on real volume. And in my head, at that point, 50 quietly became "the limit." Nobody told me that. I just stopped questioning it — which turned out to be the actual mistake, not the number itself.</p>
+
+      <h2>Attempt two: chase the fastest</h2>
+      <p>Next idea: OpenRouter has a "sort by fastest" option. I flip it on. It picks a provider called <strong>Cerebras</strong> and routes everything there. Speed's real — but the bill is insane, noticeably worse than before I touched anything.</p>
+
+      <h2>Attempt three: chase the cheapest</h2>
+      <p>Fine, I think, other direction — sort by cheapest. Lands on a provider called <strong>AkashML</strong>. And this is the one I'd actually tell as a story at a bar: I fire off a batch of just 30 domains, and it sits there for <strong>15 minutes straight with zero finished results</strong> before it finally times out. Not slow. Just... gone.</p>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-head">
+        <div class="chart-title">The provider pool — real names, real prices, real outcomes</div>
+        <div class="chart-sub">Same model (gpt-oss-120b), same prompt. Only the routing setting changes which provider actually gets the call.</div>
+      </div>
+      <div class="ptable-wrap">
+        <table class="ptable">
+          <thead><tr><th>Provider</th><th>in $/M tok</th><th>out $/M tok</th><th>What happened</th></tr></thead>
+          <tbody>
+            <tr class="flag-bad">
+              <td>Cerebras</td><td class="num">$0.35</td><td class="num">$0.75</td>
+              <td>"sort: fastest" landed here — 6.7x the cost of everything else in the pool</td>
+            </tr>
+            <tr class="flag-warn">
+              <td>AkashML</td><td class="num">$0.03</td><td class="num">$0.17</td>
+              <td>"sort: cheapest" landed here — 30 domains, 15+ minutes, zero results</td>
+            </tr>
+            <tr class="flag-good">
+              <td>CoreWeave</td><td class="num">$0.03</td><td class="num">$0.17</td>
+              <td>same price as AkashML — this is where the balanced setting landed instead, and it never stalled</td>
+            </tr>
+            <tr><td>DeepInfra</td><td class="num">$0.037</td><td class="num">$0.17</td><td>in the pool, wasn't picked in testing</td></tr>
+            <tr><td>Novita</td><td class="num">$0.05</td><td class="num">$0.25</td><td>in the pool, wasn't picked in testing</td></tr>
+            <tr><td>Google</td><td class="num">$0.09</td><td class="num">$0.36</td><td>in the pool, wasn't picked in testing</td></tr>
+            <tr><td>Groq</td><td class="num">$0.15</td><td class="num">$0.60</td><td>in the pool, wasn't picked in testing</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="prose">
+      <blockquote class="pull">Fastest was expensive. Cheapest didn't even finish. Neither one was the answer — I was just picking a side of the wrong tradeoff, twice.</blockquote>
+
+      <h2>The question I skipped the first time</h2>
+      <p>At this point I stopped guessing settings and asked a better question: who actually said 50 was the right concurrency? Where did that ceiling come from? So I ran a real stress test — ramped concurrency up step by step and tracked error rate and speed at every step, logged into my own database so I could see the real pattern instead of eyeballing a terminal scrolling by. Without real tracking this is just vibes. With it, I could see exactly where things broke.</p>
+
+      <div class="aside-box">
+        <div class="aside-label">Quick tangent — why a server at all</div>
+        <p>Why does this even need a server, why not just run it locally and dump results into a folder of files? For a one-off test, it doesn't. But I've been down that road: a handful of JSON or, worse, CSV files, half of them with commas in the data breaking the parsing, spending an evening debugging why row 4,312 came back mangled. Never again.</p>
+        <p>What a real database actually buys you instead: everything lands in one place you can query, not files you have to hunt through by hand. A crash mid-batch doesn't lose the work already done. A budget cap can actually stop a bad setting from quietly burning through your API spend. And a re-run skips what it already paid for instead of doing it twice.</p>
+      </div>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-head">
+        <div class="chart-title">Stress test — concurrent calls vs. throughput &amp; retries</div>
+        <div class="chart-sub">Same model, same prompt. Only concurrency changes between runs.</div>
+      </div>
+      <div class="chart-svg-wrap">
+        <svg viewBox="0 0 640 372" role="img" aria-label="Two-panel chart: throughput peaks at 400 concurrent calls then collapses at 800; retry rate stays low through 400 then triples at 800">
+          <rect x="0" y="0" width="640" height="372" fill="var(--chart-surface)"></rect>
+
+          <rect x="330" y="8" width="100" height="196" fill="var(--chart-teal)" opacity="0.08"></rect>
+          <text x="380" y="20" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="10.5" font-weight="600" fill="var(--chart-teal)">MEASURED CEILING</text>
+
+          <text x="40" y="34" font-family="IBM Plex Sans, sans-serif" font-size="12.5" font-weight="600" fill="var(--chart-ink)">Domains processed / sec</text>
+          <line x1="40" y1="164" x2="600" y2="164" stroke="var(--chart-baseline)" stroke-width="1"></line>
+          <line x1="40" y1="106" x2="600" y2="106" stroke="var(--chart-grid)" stroke-width="1" stroke-dasharray="3 3"></line>
+          <text x="34" y="109" text-anchor="end" font-family="IBM Plex Mono, monospace" font-size="10" fill="var(--chart-ink-2)">2.25</text>
+          <text x="34" y="168" text-anchor="end" font-family="IBM Plex Mono, monospace" font-size="10" fill="var(--chart-ink-2)">0</text>
+
+          <g>
+            <rect x="65" y="135.2" width="70" height="28.8" rx="3" fill="var(--chart-teal)"><title>50 concurrent — 1.08 domains/sec</title></rect>
+            <text x="100" y="128" text-anchor="middle" class="bar-val" font-size="12" fill="var(--chart-ink)">1.08</text>
+
+            <rect x="225" y="88.8" width="70" height="75.2" rx="3" fill="var(--chart-teal)"><title>200 concurrent — 2.82 domains/sec</title></rect>
+            <text x="260" y="82" text-anchor="middle" class="bar-val" font-size="12" fill="var(--chart-ink)">2.82</text>
+
+            <rect x="385" y="57.9" width="70" height="106.1" rx="3" fill="var(--chart-teal)"><title>400 concurrent — 3.98 domains/sec (measured ceiling)</title></rect>
+            <text x="420" y="51" text-anchor="middle" class="bar-val" font-size="12.5" font-weight="700" fill="var(--chart-teal)">3.98</text>
+
+            <rect x="545" y="124.8" width="70" height="39.2" rx="3" fill="var(--chart-teal)" opacity="0.55"><title>800 concurrent — 1.47 domains/sec (collapse)</title></rect>
+            <text x="580" y="118" text-anchor="middle" class="bar-val" font-size="12" fill="var(--chart-ink-2)">1.47</text>
+          </g>
+
+          <text x="40" y="210" font-family="IBM Plex Sans, sans-serif" font-size="12.5" font-weight="600" fill="var(--chart-ink)">Retry rate</text>
+          <line x1="40" y1="334" x2="600" y2="334" stroke="var(--chart-baseline)" stroke-width="1"></line>
+          <line x1="40" y1="276" x2="600" y2="276" stroke="var(--chart-grid)" stroke-width="1" stroke-dasharray="3 3"></line>
+          <text x="34" y="279" text-anchor="end" font-family="IBM Plex Mono, monospace" font-size="10" fill="var(--chart-ink-2)">17.5%</text>
+          <text x="34" y="338" text-anchor="end" font-family="IBM Plex Mono, monospace" font-size="10" fill="var(--chart-ink-2)">0</text>
+
+          <g>
+            <rect x="65" y="331.6" width="70" height="2.4" rx="1.5" fill="var(--chart-amber)"><title>50 concurrent — 0.7% retries</title></rect>
+            <text x="100" y="326" text-anchor="middle" class="bar-val" font-size="11.5" fill="var(--chart-ink-2)">0.7%</text>
+
+            <rect x="225" y="324.7" width="70" height="9.3" rx="2" fill="var(--chart-amber)"><title>200 concurrent — 2.7% retries</title></rect>
+            <text x="260" y="319" text-anchor="middle" class="bar-val" font-size="11.5" fill="var(--chart-ink-2)">2.7%</text>
+
+            <rect x="385" y="297.7" width="70" height="36.3" rx="3" fill="var(--chart-amber)"><title>400 concurrent — 10.6% retries</title></rect>
+            <text x="420" y="291" text-anchor="middle" class="bar-val" font-size="12" fill="var(--chart-ink)">10.6%</text>
+
+            <rect x="545" y="227.7" width="70" height="106.3" rx="3" fill="var(--chart-amber)"><title>800 concurrent — 31% retries (collapse)</title></rect>
+            <text x="580" y="221" text-anchor="middle" class="bar-val" font-size="12.5" font-weight="700" fill="var(--chart-amber)">31%</text>
+          </g>
+
+          <text x="100" y="356" text-anchor="middle" class="bar-cat" font-size="12" fill="var(--chart-ink-2)">50</text>
+          <text x="260" y="356" text-anchor="middle" class="bar-cat" font-size="12" fill="var(--chart-ink-2)">200</text>
+          <text x="420" y="356" text-anchor="middle" class="bar-cat" font-size="12.5" font-weight="700" fill="var(--chart-ink)">400</text>
+          <text x="580" y="356" text-anchor="middle" class="bar-cat" font-size="12" fill="var(--chart-ink-2)">800</text>
+          <text x="320" y="371" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="var(--chart-ink-3)">concurrent calls</text>
+        </svg>
+      </div>
+      <div class="chart-legend">
+        <span class="item"><span class="swatch" style="background:var(--chart-teal)"></span>throughput (domains/sec)</span>
+        <span class="item"><span class="swatch" style="background:var(--chart-amber)"></span>retry rate</span>
+      </div>
+    </div>
+
+    <div class="prose">
+      <p>Past 400, throughput doesn't plateau — it drops by two-thirds, and almost a third of all calls need a retry. That's not diminishing returns, that's the provider choking. There's a real ceiling, invisible until you actually measure it — going past it doesn't just stop helping, it actively hurts.</p>
+
+      <h2>The golden balance</h2>
+      <p>Last piece: I went back to the fastest-vs-cheapest tradeoff, except now I understood it. So instead of picking a side, I put a price ceiling on top of "fastest" — basically telling it "give me the fastest option, but only among the cheap ones." That's the setting that landed on CoreWeave — same price as AkashML, the one that stalled, but wired into a wider pool of fallback providers instead of betting everything on one. Fast <em>and</em> reliable <em>and</em> cheap, because it's never stuck with only one door.</p>
+
+      <div class="aside-box">
+        <div class="aside-label">A note on honesty</div>
+        <p>The $5/10k number below is real — but it's real for <em>my</em> prompt, and mine is heavy. It's not a one-line extraction. Each call reads the merged text of every scraped page on a site and, in one shot, writes a full prose company summary <em>plus</em> fills out a dozen-plus structured fields — buyer type, services, differentiator, credentials, geography, deal direction, and more.</p>
+        <p>A shorter, lighter prompt would stretch the same $5 further than mine does. I just haven't measured that number, so I'm not going to make one up and hand it to you.</p>
+        <div class="figs">
+          <div class="fig"><b>2–29 pages</b><span>of merged site text per call, average to worst-case</span></div>
+          <div class="fig"><b>12+ fields</b><span>extracted, plus a full prose summary, same call</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="stat-band">
+      <div class="stat-tile">
+        <span class="label">Cost per 10,000 domains</span>
+        <span class="value"><span class="from">$34.50</span> <span class="to">→ $5.00</span></span>
+        <span class="note">same model, same prompt, same output quality</span>
+      </div>
+      <div class="stat-tile">
+        <span class="label">Time to run 10,000 domains</span>
+        <span class="value"><span class="from">hours</span> <span class="to">→ 40 min</span></span>
+        <span class="note">no batch stalls, wide provider pool</span>
+      </div>
+    </div>
+
+    <div class="prose">
+      <p>Nothing here was a model upgrade or a clever prompt trick. It was three dumb-sounding questions asked in order: why is this slow, why is this expensive, and who told me that number was the limit. Worth asking all three before you assume the tool itself is the problem.</p>
+    </div>
+
+    <div class="cta-section">
+      <h2>Hope this saves you the embarrassing part</h2>
+      <p>If you've got questions or want to go deeper on the engineering side, message me — link's below. No pitch, just options depending on what you're actually after:</p>
+      <div class="cta-grid">
+        <div class="cta-card">
+          <span class="tag">Full DIY</span>
+          <p>Copy this whole post and hand it to your own coding agent — it'll figure most of it out. Takes longer this way, but if you're enough of a technical degenerate to enjoy that, like me, go for it. No shame either way.</p>
+          <span class="cta-link" style="opacity:0.55; border-top-color: transparent;">You've got this</span>
+        </div>
+        <div class="cta-card">
+          <span class="tag">Your own infra</span>
+          <p>More technical, or you just want everything running on your own server instead of mine — happy to help you set up something similar on your own infra, if it's a good fit for both of us.</p>
+          <a class="cta-link" href="https://wa.me/628175755953?text=Hey%20Leo%20-%20read%20your%20%245%20per%2010k%20leads%20post%2C%20want%20to%20talk%20about%20setting%20up%20something%20similar%20on%20my%20own%20server.">Talk it through →</a>
+        </div>
+        <div class="cta-card lead">
+          <span class="tag">Already built, already running</span>
+          <p>I run this as my own internal tool — email validation, scraping, enrichment, the whole pipeline. A couple friends already use it. Not turning it into a product yet, but I'm opening a few free beta spots to stress-test it before I do. If you'd rather skip building any of this, this is the shortcut.</p>
+          <a class="cta-link" href="https://wa.me/628175755953?text=Hey%20Leo%20-%20read%20your%20%245%20per%2010k%20leads%20post%2C%20I%27d%20like%20a%20beta%20spot%20for%20your%20enrichment%20tool.">Ask about a beta spot →</a>
+        </div>
+      </div>
+      <div class="whatsapp-row">
+        <a class="whatsapp-btn" href="https://wa.me/628175755953?text=Hey%20Leo%20-%20read%20your%20%245%20per%2010k%20leads%20post%2C%20got%20a%20question%20about%20it.">Message me on WhatsApp →</a>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer class="bottom">
+  <div><a href="https://systemhustle.com">systemhustle.com</a> — written by a human, tested on real domains, no lorem ipsum in the charts.</div>
+</footer>
+
+</body>
+</html>

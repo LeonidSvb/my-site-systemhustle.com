@@ -274,16 +274,6 @@
   .ptable tr.flag-good td:first-child{ border-left-color: var(--accent); }
   .ptable tr.flag-good td{ color: var(--ink); }
   .ptable tr:last-child td{ border-bottom: none; }
-  .waterfall{
-    margin: 34px 0; padding: 20px 22px;
-    border: 1px dashed var(--border-strong); border-radius: 10px;
-    background: var(--surface);
-    font-family: "IBM Plex Mono", monospace; font-size: 13.5px; color: var(--ink-2);
-    display: flex; flex-direction: column; gap: 8px;
-  }
-  .waterfall .step{ display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
-  .waterfall .step .pct{ color: var(--accent); font-weight: 600; font-size: 16px; min-width: 52px; }
-  .waterfall .step.paid .pct{ color: var(--amber); }
   @media (max-width: 640px){
     .ptable thead{ display: none; }
     .ptable, .ptable tbody, .ptable tr, .ptable td{ display: block; width: 100%; }
@@ -383,15 +373,7 @@
         <div class="row">why pay for what's free <span class="arrow">→</span> <b>this post</b></div>
       </div>
 
-      <p>Before the story — here's the honest comparison, just facts, no story attached. This is what I actually measured on my own domains, not vendor marketing pages.</p>
-
-      <p>This isn't a pick-one decision, it's a waterfall — each stage only picks up what the one before it couldn't reach:</p>
-
-      <div class="waterfall">
-        <div class="step"><span class="pct">100%</span> of a niche's domains, into the free HTTP scraper</div>
-        <div class="step"><span class="pct">76.1%</span> come back usable — done, $0, nothing escalates</div>
-        <div class="step paid"><span class="pct">23.9%</span> left over — JS-heavy, blocked, or dead — this slice is what the paid tools below are for</div>
-      </div>
+      <p>Before the story — here's the honest comparison, one example: <strong>10,000 domains, 5 pages each.</strong> Where I ran it live, that's the number. Where I didn't, it's a straight calculation off the vendor's own published rate, marked <em>(vendor)</em>.</p>
     </div>
 
     <div class="ptable-wrap">
@@ -399,91 +381,38 @@
         <thead>
           <tr>
             <th>Source</th>
-            <th>Price</th>
-            <th>Speed (measured)</th>
-            <th>Flexibility</th>
+            <th>Cost</th>
+            <th>Time</th>
           </tr>
         </thead>
         <tbody>
           <tr class="flag-good">
             <td data-label="Source">Own HTTP scraper</td>
-            <td data-label="Price">$0</td>
-            <td data-label="Speed (measured)">662 dom/min</td>
-            <td data-label="Flexibility">Multi-page, own page-selection logic, no browser needed — covers 76.1% of a niche alone</td>
+            <td data-label="Cost">$0</td>
+            <td data-label="Time">~1.3 hours</td>
           </tr>
           <tr>
             <td data-label="Source">Firecrawl (free tier)</td>
-            <td data-label="Price">$0</td>
-            <td data-label="Speed (measured)">5.5 dom/min, measured live</td>
-            <td data-label="Flexibility">Real headless browser — renders JS, LLM picks the links. IP-limited, not account-limited</td>
+            <td data-label="Cost">$0</td>
+            <td data-label="Time">~30 hours</td>
           </tr>
           <tr>
             <td data-label="Source">Firecrawl (paid)</td>
-            <td data-label="Price">$16-599/mo, vendor plans</td>
-            <td data-label="Speed (measured)">not live-tested — vendor-published only</td>
-            <td data-label="Flexibility">Same engine as free tier, just a higher rate limit for the same JS-rendering job</td>
+            <td data-label="Cost">$16-599/mo (vendor)</td>
+            <td data-label="Time">~1 hour (vendor)</td>
           </tr>
           <tr>
             <td data-label="Source">Exa <code>/contents</code></td>
-            <td data-label="Price">$1 per 1,000 pages, per content type</td>
-            <td data-label="Speed (measured)">100 req/sec (fastest paid option tested)</td>
-            <td data-label="Flexibility">Great for one page, summarized + structured. Doesn't reliably crawl a site: 0-1 of 8-10 requested subpages came back on 3 real test domains</td>
+            <td data-label="Cost">~$50 (vendor)</td>
+            <td data-label="Time">~8 min (vendor) — but subpages mostly don't resolve on small B2B, so this job doesn't actually run on Exa</td>
           </tr>
           <tr>
             <td data-label="Source">Common Crawl</td>
-            <td data-label="Price">$0, public archive</td>
-            <td data-label="Speed (measured)">~42 dom/min, links only — text is a separate fetch on top</td>
-            <td data-label="Flexibility">Real and free, but only helped on 5% of the domains that actually needed help in testing — not worth building into a pipeline</td>
+            <td data-label="Cost">$0</td>
+            <td data-label="Time">~4 hours, and only useful on 5% of the tail that needs it</td>
           </tr>
         </tbody>
       </table>
-    </div>
-
-    <div class="prose">
-      <p>Numbers on a chart don't tell you what an actual run costs. So here's the same sources on one fixed job: <strong>10,000 domains, 5 pages each</strong> — the multi-page scrape from later in this post, not just homepages.</p>
-    </div>
-
-    <div class="ptable-wrap">
-      <table class="ptable">
-        <thead>
-          <tr>
-            <th>Source</th>
-            <th>Time for 10k × 5 pages</th>
-            <th>Cost</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr class="flag-good">
-            <td data-label="Source">Own HTTP scraper</td>
-            <td data-label="Time for 10k × 5 pages">~1.3 hours (estimate — 662/min was measured on a single-page pass, not benchmarked separately at 5 pages/domain)</td>
-            <td data-label="Cost">$0</td>
-          </tr>
-          <tr>
-            <td data-label="Source">Firecrawl (free tier)</td>
-            <td data-label="Time for 10k × 5 pages">~30 hours (measured 5.5 dom/min, IP-limited regardless of account count)</td>
-            <td data-label="Cost">$0</td>
-          </tr>
-          <tr>
-            <td data-label="Source">Firecrawl (paid, vendor-published)</td>
-            <td data-label="Time for 10k × 5 pages">not live-tested — vendor RPM implies roughly an hour</td>
-            <td data-label="Cost">$16-599/mo subscription, not a per-run price</td>
-          </tr>
-          <tr>
-            <td data-label="Source">Exa <code>/contents</code></td>
-            <td data-label="Time for 10k × 5 pages">~8 minutes if subpages resolved (they mostly don't — see above)</td>
-            <td data-label="Cost">~$50 in theory, one content type — not achievable in practice on small B2B sites</td>
-          </tr>
-          <tr>
-            <td data-label="Source">Common Crawl</td>
-            <td data-label="Time for 10k × 5 pages">hours, and only ~5% of the hard-to-reach domains have anything useful in it</td>
-            <td data-label="Cost">$0, but not worth building in</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="prose">
-      <p style="font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; color: var(--ink-3);">Own HTTP and Common Crawl times are estimates extrapolated from a single-page measurement, not separately benchmarked at 5 pages/domain — flagged as such, not dressed up as a live test.</p>
     </div>
 
     <div class="prose">

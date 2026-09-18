@@ -293,6 +293,26 @@
     border-top: 1px solid var(--border); padding-top: 12px; margin-top: 4px;
   }
   .cta-card .cta-link:hover{ color: var(--accent); }
+  .cta-card .cta-link.copy-btn{
+    background: none; border-left: none; border-right: none; border-bottom: none;
+    cursor: pointer; width: 100%; text-align: left; font: inherit;
+  }
+  .cta-card .cta-link.copy-btn:hover{ color: var(--accent); }
+  .ptable{ width: 100%; border-collapse: collapse; font-size: 14px; margin: 32px 0; }
+  .ptable-wrap{ overflow-x: auto; margin: 32px 0; }
+  .ptable th{
+    text-align: left; font-family: "IBM Plex Mono", monospace; font-size: 11px;
+    letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-3);
+    font-weight: 600; padding: 0 12px 10px; border-bottom: 1px solid var(--border-strong);
+  }
+  .ptable td{
+    padding: 12px 12px; border-bottom: 1px solid var(--border);
+    color: var(--ink-2); vertical-align: top; font-size: 15px;
+  }
+  .ptable td:first-child{ color: var(--ink); font-weight: 600; white-space: nowrap; border-left: 3px solid transparent; }
+  .ptable tr.flag-good td:first-child{ border-left-color: var(--accent); }
+  .ptable tr.flag-good td{ color: var(--ink); }
+  .ptable tr:last-child td{ border-bottom: none; }
   .whatsapp-row{
     margin-top: 28px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
   }
@@ -371,6 +391,49 @@
         <div class="row">why pay for what's free <span class="arrow">→</span> <b>this post</b></div>
       </div>
 
+      <p>Before the story — here's the honest comparison, just facts, no story attached. This is what I actually measured on my own domains, not vendor marketing pages.</p>
+    </div>
+
+    <div class="ptable-wrap">
+      <table class="ptable">
+        <thead>
+          <tr>
+            <th>Source</th>
+            <th>Price</th>
+            <th>Speed (measured)</th>
+            <th>Flexibility</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="flag-good">
+            <td>Own HTTP scraper</td>
+            <td>$0</td>
+            <td>662 dom/min</td>
+            <td>Multi-page, own page-selection logic, no browser needed — covers 76.1% of a niche alone</td>
+          </tr>
+          <tr>
+            <td>Firecrawl</td>
+            <td>$0 free tier → $16-599/mo paid (vendor tiers, paid throughput not live-tested)</td>
+            <td>5.5 dom/min free tier, measured live</td>
+            <td>Real headless browser — renders JS, LLM picks the links. The actual answer for JS-heavy sites</td>
+          </tr>
+          <tr>
+            <td>Exa <code>/contents</code></td>
+            <td>$1 per 1,000 pages, per content type</td>
+            <td>100 req/sec (fastest paid option tested)</td>
+            <td>Great for one page, summarized + structured. Doesn't reliably crawl a site: 0-1 of 8-10 requested subpages came back on 3 real test domains</td>
+          </tr>
+          <tr>
+            <td>Common Crawl</td>
+            <td>$0, public archive</td>
+            <td>~42 dom/min, links only — text is a separate fetch on top</td>
+            <td>Real and free, but only helped on 5% of the domains that actually needed help in testing — not worth building into a pipeline</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="prose">
       <h2>The "free" promo that cost me hours, not dollars</h2>
       <p>First real attempt at this: Firecrawl, a paid scraping tool. I found a free promo — real credit, zero dollars charged. I had three accounts, so I grabbed it on all three. I figured that meant three times the speed.</p>
       <p>It didn't. <strong>They track you by IP, not by account</strong> — doesn't matter how many accounts you run, you're still stuck behind the same one door. What should've taken minutes took hours. Free wasn't free. It just charged me in time instead of money.</p>
@@ -532,7 +595,7 @@
         <div class="cta-card">
           <span class="tag">Full DIY</span>
           <p>Copy this whole post and hand it to your own coding agent — it'll figure most of it out. Takes a bit more time this way, but if you're enough of a technical degenerate to enjoy that, like me, go for it. No shame either way.</p>
-          <span class="cta-link" style="opacity:0.55; border-top-color: transparent;">You've got this</span>
+          <button type="button" class="cta-link copy-btn" id="copySkillBtn">Copy prompt for your agent →</button>
         </div>
         <div class="cta-card">
           <span class="tag">Your own infra</span>
@@ -578,6 +641,27 @@
     });
     document.getElementById("read-next").hidden = false;
   }catch(e){}
+})();
+</script>
+<script>
+(function(){
+  var btn = document.getElementById("copySkillBtn");
+  if(!btn) return;
+  var prompt = "Build me a free HTTP website scraper for bulk company-site scraping, following this skill file closely: https://raw.githubusercontent.com/LeonidSvb/systemhustle-skills/master/free-http-scraper/SKILL.md\n\nKey things to get right: a worker pool (~40 concurrent) that picks up the next domain immediately when a slot frees up, not fixed batching; a hard per-request timeout; accept expired/self-signed TLS certs; save results in small batches, not one row at a time; parse HTML properly instead of regex-stripping it; check for a sitemap before falling back to link-following for extra pages.";
+  var original = btn.textContent;
+  btn.addEventListener("click", function(){
+    function done(){
+      btn.textContent = "Copied — paste it to your agent";
+      setTimeout(function(){ btn.textContent = original; }, 2500);
+    }
+    try{
+      navigator.clipboard.writeText(prompt).then(done).catch(function(){
+        window.prompt("Copy this to your coding agent:", prompt);
+      });
+    }catch(e){
+      window.prompt("Copy this to your coding agent:", prompt);
+    }
+  });
 })();
 </script>
 </body>

@@ -424,6 +424,13 @@
       <p style="font-size: 15px; color: var(--ink-2);">*Free/Hobby credit pools (1,000 / 5,000 per month) don't even cover this 50,000-page job once — but that's not really the limit. Even someone who found free bonus credits, like I did, is still capped by their tier's rate limit, not their credit balance. I have free credits sitting in my own account right now and I'm still bound by whatever tier those credits live on.</p>
 
       <p>The one that jumps out: Firecrawl's cheapest tier that can actually run this job in one pass, Standard at <strong>$83/mo</strong>, still takes longer than the free scraper — for a monthly bill. Free and Hobby aren't even close: 83 and 8.3 hours against our 1.3. Exa's numbers look great on paper until you remember it can't actually complete a 5-page-per-domain job on small B2B sites, measured earlier in this post.</p>
+
+      <div class="aside-box">
+        <div class="aside-label">Why not just Common Crawl, since it's free too</div>
+        <p><strong>It's old.</strong> The snapshot on any given day is 29-42 days behind — a full crawl takes about two weeks to run, and indexes come out roughly monthly.</p>
+        <p><strong>It's less complete, even on the easy sites.</strong> I checked the domains my free scraper already handles fine — the ones where staleness isn't even the issue — and Common Crawl only had two or more usable pages on <strong>41%</strong> of them. It's not a superset of what own_http already gets for free; it's patchier, on the same easy domains.</p>
+        <p><strong>Staleness isn't free on every page.</strong> For a static About page, a month-old copy is fine. For something time-sensitive — a careers page, a "we're hiring" signal — a month is enough for the role to be filled or the person to have already left. If you're using a page as a live signal, not just background text, old data can point you at something that's no longer true.</p>
+      </div>
     </div>
 
     <div class="prose">

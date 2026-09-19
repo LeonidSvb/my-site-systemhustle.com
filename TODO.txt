@@ -1,5 +1,5 @@
 SYSTEM HUSTLE — WEBSITE + DECK
-Updated: 2026-07-14
+Updated: 2026-09-19
 Full history: CHANGELOG.md
 
 === DONE: REDESIGN (2026-07-14 session) ===
@@ -49,3 +49,53 @@ Full history: CHANGELOG.md
 
 Next session: confirm whether 14-16 are worth doing now, or whether this is
 considered done and the next work is something else entirely.
+
+=== DONE: BLOG SHARED CHROME + BASIC SEO + LOGISTICS NICHE PAGES (2026-09-19 session) ===
+
+[x] 19. blog/shared.js — header/footer/CTA/read-next now render from one
+         file instead of being duplicated per post. Per-post CTA copy +
+         WhatsApp deep-links (with the pre-filled per-post message, kept
+         for attribution) live in window.POST_CTA declared before the
+         shared script.
+[x] 20. sitemap.xml, robots.txt, llms.txt added at root; Article JSON-LD
+         on both blog posts. Basic hygiene only — see session notes,
+         real SEO traffic is a 6-12 month bet at 1-2 posts/week, not a
+         quarter-1 priority given the main channel is outbound.
+[x] 21. Logistics niche landing pages shipped: /for/packaging/,
+         /for/trucking/, /for/warehousing-3pl/, /for/freight-forwarding/.
+         Homepage stays the neutral, all-niches-equal version; each /for/
+         page leads with its own niche in "Who This Is For" (primary
+         card) and drops the rest to small trailing mentions. For sending
+         a clean on-brand link to a specific prospect during outreach,
+         not for organic discovery.
+[x] 22. assets/niche-page.css + assets/niche-page.js — homepage and every
+         /for/<niche>/ page shared identical <style>/<script> blocks;
+         pulled into one file each so a shared fix (font size, Cal.com
+         height) is a single edit. This directly replaces the reverted
+         2026-09-16 attempt (5 hand-rolled pages + heavy widgets — ticker,
+         signal carousel, ROI calculator — that "kept drifting on layout"
+         per that commit's own message). This round kept it to plain
+         HTML/CSS/JS, no React, no build step, and cut the widgets that
+         were decoration rather than what moved calls.
+[x] 23. Cal.com embed height: 700px -> 560px desktop, 620px -> 480px
+         mobile (Leo's review: was too large on the packaging preview).
+
+=== OPEN — NEXT: RECRUITING NICHE SITE ===
+
+[ ] 24. Build the same pattern for the recruiting vertical: a hub page
+         (neutral, all recruiting sub-niches listed — same shape as the
+         current logistics homepage's "Who This Is For") plus one
+         /for/<sub-niche>/ page per recruiting sub-niche, reusing
+         assets/niche-page.css + niche-page.js as-is. Sub-niches named so
+         far: technical recruiting, executive search, RPO, staffing —
+         confirm the full list and each one's specific pain-point framing
+         (mirrors how packaging/trucking/warehousing/freight-forwarding
+         each got their own callout + primary card) before building.
+         Recruiting was deliberately left off the current site's "Who
+         This Is For" list (see drafts/2026-09-15-logistics-rewrite/
+         05-about.txt: "you're circling back to that niche in ~2 months
+         and it'll get its own site then") — this is that.
+[ ] 25. Decide where the recruiting hub lives: its own path
+         (systemhustle.com/recruiting/) vs. its own subdomain
+         (recruiting.systemhustle.com) — same tradeoff discussed for
+         logistics sub-niches, revisit once the page count is known.

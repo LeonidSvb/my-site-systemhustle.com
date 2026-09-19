@@ -8,6 +8,51 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
 ## [Unreleased]
 
+### Added
+- Blog: `blog/shared.js` renders header, footer, per-post CTA block, and
+  "Read next" cross-links from mount points — was duplicated markup +
+  inline scripts in both post files, one fix now instead of two. Per-post
+  CTA copy/links (including the WhatsApp deep-links with per-post
+  pre-filled messages, kept intact for attribution) live in a small
+  `window.POST_CTA` config declared before the shared script runs.
+- `sitemap.xml`, `robots.txt`, `llms.txt` at the site root; `Article`
+  JSON-LD added to both blog posts. Basic crawl/AI-discovery hygiene, not
+  a dedicated SEO push (see notes below on why that's a later-stage bet,
+  not a now bet).
+- Logistics niche landing pages: `/for/packaging/`, `/for/trucking/`,
+  `/for/warehousing-3pl/`, `/for/freight-forwarding/` — same page as the
+  homepage (nav, how-it-works, pricing, about, FAQ, footer) with only the
+  hero tag/H1/subtitle, the "Who This Is For" callout + primary card +
+  trailing-mention order, and the About lead sentence swapped per niche.
+  For sending a clean on-brand link (`systemhustle.com/for/<niche>/`) to
+  a specific prospect during outreach instead of the generic homepage —
+  not for organic search.
+- `assets/niche-page.css` + `assets/niche-page.js` — the homepage and
+  every `/for/<niche>/` page shared byte-identical `<style>`/`<script>`
+  blocks (~470 lines each); pulled out so a shared fix (font size, the
+  Cal.com embed height) is one edit, not one per page. A new niche page
+  going forward = copy one file, edit ~6 marked spots, done.
+
+### Changed
+- Cal.com booking iframe: 700px → 560px desktop, 620px → 480px mobile —
+  was taking up too much of the viewport (Leo's review comment on the
+  packaging preview).
+- Photo/logo paths switched to root-relative (`/assets/photo.jpg`, `/`)
+  instead of relative (`../../`) — a page at any folder depth works
+  without recomputing the relative path, so a copy-pasted new niche page
+  can't silently break its own asset links.
+
+### Reverted (superseded by the above)
+- 2026-09-16 attempt at hand-rolled niche pages (`for/<niche>/index.html`
+  × 5 + `assets/niche.js`/`niche.css`, full interactive widgets: job-title
+  ticker, signal carousel, ROI calculator, animated route line) — reverted
+  same day, diagnosis was "needs real components, not copy-pasted static
+  HTML, revisit as React when there's time." This round deliberately did
+  NOT rebuild that: cut the heavy widgets (they were decoration, not what
+  moved calls) and reused the shared-CSS/JS pattern already proven on
+  `blog/shared.js` instead of introducing React/a build step. See
+  TODO.txt for the recruiting-site follow-up this sets up.
+
 ## [1.0.0] - 2026-07-14
 
 Full redesign: dark SaaS-style site replaced with a boutique/editorial style

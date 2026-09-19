@@ -12,6 +12,19 @@
 <meta property="og:image" content="https://systemhustle.com/assets/leonid-avatar.png">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="canonical" href="https://systemhustle.com/blog/how-to-process-10k-leads-with-an-llm-for-5-usd/">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "How to Process 10,000 Leads With an LLM for $5",
+  "description": "How routing and concurrency settings on OpenRouter cut LLM enrichment cost from $34.50 to $5 per 10,000 domains — named providers, real numbers, nothing held back.",
+  "datePublished": "2026-09-18",
+  "author": { "@type": "Person", "name": "Leo" },
+  "publisher": { "@type": "Organization", "name": "System Hustle" },
+  "image": "https://systemhustle.com/assets/leonid-avatar.png",
+  "mainEntityOfPage": "https://systemhustle.com/blog/how-to-process-10k-leads-with-an-llm-for-5-usd/"
+}
+</script>
 <style>
   :root{
     color-scheme: light;
@@ -323,12 +336,7 @@
 </head>
 <body>
 
-<header class="top">
-  <div class="top-inner">
-    <a class="mark" href="/blog/">systemhustle<span>.</span>blog</a>
-    <a href="https://systemhustle.com" style="color: var(--ink-3); text-decoration: none;">systemhustle.com ↗</a>
-  </div>
-</header>
+<div id="site-header"></div>
 
 <main>
   <div class="wrap">
@@ -507,30 +515,7 @@
       <p>Nothing here was a model upgrade or a clever prompt trick. It was three dumb-sounding questions asked in order: why is this slow, why is this expensive, and who told me that number was the limit. Worth asking all three before you assume the tool itself is the problem.</p>
     </div>
 
-    <div class="cta-section">
-      <h2>Hope this saves you the embarrassing part</h2>
-      <p>If you've got questions or want to go deeper on the engineering side, message me — link's below. No pitch, just options depending on what you're actually after:</p>
-      <div class="cta-grid">
-        <div class="cta-card">
-          <span class="tag">Full DIY</span>
-          <p>Copy this whole post and hand it to your own coding agent — it'll figure most of it out. Takes longer this way, but if you're enough of a technical degenerate to enjoy that, like me, go for it. No shame either way.</p>
-          <span class="cta-link" style="opacity:0.55; border-top-color: transparent;">You've got this</span>
-        </div>
-        <div class="cta-card">
-          <span class="tag">Your own infra</span>
-          <p>More technical, or you just want everything running on your own server instead of mine — happy to help you set up something similar on your own infra, if it's a good fit for both of us.</p>
-          <a class="cta-link" href="https://wa.me/628175755953?text=Hey%20Leo%20-%20read%20your%20%245%20per%2010k%20leads%20post%2C%20want%20to%20talk%20about%20setting%20up%20something%20similar%20on%20my%20own%20server.">Talk it through →</a>
-        </div>
-        <div class="cta-card lead">
-          <span class="tag">Already built, already running</span>
-          <p>I run this as my own internal tool — email validation, scraping, enrichment, the whole pipeline. A couple friends already use it. Not turning it into a product yet, but I'm opening a few free beta spots to stress-test it before I do. If you'd rather skip building any of this, this is the shortcut.</p>
-          <a class="cta-link" href="https://wa.me/628175755953?text=Hey%20Leo%20-%20read%20your%20%245%20per%2010k%20leads%20post%2C%20I%27d%20like%20a%20beta%20spot%20for%20your%20enrichment%20tool.">Ask about a beta spot →</a>
-        </div>
-      </div>
-      <div class="whatsapp-row">
-        <a class="whatsapp-btn" href="https://wa.me/628175755953?text=Hey%20Leo%20-%20read%20your%20%245%20per%2010k%20leads%20post%2C%20got%20a%20question%20about%20it.">Message me on WhatsApp →</a>
-      </div>
-    </div>
+    <div id="post-cta"></div>
 
     <div id="read-next" class="read-next" hidden>
       <div class="read-next-label">Read next</div>
@@ -539,28 +524,37 @@
   </div>
 </main>
 
-<footer class="bottom">
-  <div><a href="https://systemhustle.com">systemhustle.com</a> — real numbers, nothing made up. · <a href="/blog/">all posts</a></div>
-</footer>
+<div id="site-footer"></div>
 
-<script src="/blog/posts-data.js"></script>
 <script>
-(function(){
-  try{
-    var mine = "how-to-process-10k-leads-with-an-llm-for-5-usd";
-    var posts = (window.BLOG_POSTS || []).filter(function(p){ return p.slug !== mine; });
-    if(!posts.length) return;
-    var grid = document.getElementById("read-next-grid");
-    posts.slice(0, 2).forEach(function(p){
-      var a = document.createElement("a");
-      a.className = "read-next-card";
-      a.href = "/blog/" + p.slug + "/";
-      a.innerHTML = '<span class="tag">' + p.tags[0] + '</span><h3>' + p.title + '</h3><p>' + p.excerpt + '</p>';
-      grid.appendChild(a);
-    });
-    document.getElementById("read-next").hidden = false;
-  }catch(e){}
-})();
+  window.BLOG_POST_SLUG = "how-to-process-10k-leads-with-an-llm-for-5-usd";
+  window.POST_CTA = {
+    heading: "Hope this saves you the embarrassing part",
+    intro: "If you've got questions or want to go deeper on the engineering side, message me — link's below. No pitch, just options depending on what you're actually after:",
+    whatsappHref: "https://wa.me/628175755953?text=Hey%20Leo%20-%20read%20your%20%245%20per%2010k%20leads%20post%2C%20got%20a%20question%20about%20it.",
+    cards: [
+      {
+        tag: "Full DIY",
+        text: "Copy this whole post and hand it to your own coding agent — it'll figure most of it out. Takes longer this way, but if you're enough of a technical degenerate to enjoy that, like me, go for it. No shame either way.",
+        linkText: "You've got this"
+      },
+      {
+        tag: "Your own infra",
+        text: "More technical, or you just want everything running on your own server instead of mine — happy to help you set up something similar on your own infra, if it's a good fit for both of us.",
+        href: "https://wa.me/628175755953?text=Hey%20Leo%20-%20read%20your%20%245%20per%2010k%20leads%20post%2C%20want%20to%20talk%20about%20setting%20up%20something%20similar%20on%20my%20own%20server.",
+        linkText: "Talk it through →"
+      },
+      {
+        tag: "Already built, already running",
+        text: "I run this as my own internal tool — email validation, scraping, enrichment, the whole pipeline. A couple friends already use it. Not turning it into a product yet, but I'm opening a few free beta spots to stress-test it before I do. If you'd rather skip building any of this, this is the shortcut.",
+        href: "https://wa.me/628175755953?text=Hey%20Leo%20-%20read%20your%20%245%20per%2010k%20leads%20post%2C%20I%27d%20like%20a%20beta%20spot%20for%20your%20enrichment%20tool.",
+        linkText: "Ask about a beta spot →",
+        lead: true
+      }
+    ]
+  };
 </script>
+<script src="/blog/posts-data.js"></script>
+<script src="/blog/shared.js"></script>
 </body>
 </html>

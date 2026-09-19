@@ -1,0 +1,10 @@
+# System Hustle
+
+> B2B connector agency. Warm intros and signal-based outreach for B2B companies with $500k+ annual revenue — quality over volume, retainer-based, no revenue share.
+
+Run by Leo. Site: https://systemhustle.com
+
+## Blog
+
+- [How to Scrape 10,000 Company Websites in 15 Minutes for Free](https://systemhustle.com/blog/how-to-scrape-10k-company-websites-in-15-minutes-for-free/): A free HTTP scraper that covers 76% of a niche — worker pools, rate limits, real numbers against paid scraping APIs.
+- [How to Process 10,000 Leads With an LLM for $5](https://systemhustle.com/blog/how-to-process-10k-leads-with-an-llm-for-5-usd/): Routing and concurrency settings on OpenRouter that cut LLM enrichment cost from $34.50 to $5 per 10,000 domains.

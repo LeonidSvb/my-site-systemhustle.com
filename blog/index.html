@@ -136,12 +136,7 @@
 </head>
 <body>
 
-<header class="top">
-  <div class="top-inner">
-    <a class="mark" href="/blog/">systemhustle<span>.</span>blog</a>
-    <a href="https://systemhustle.com">systemhustle.com ↗</a>
-  </div>
-</header>
+<div id="site-header"></div>
 
 <main>
   <div class="wrap">
@@ -154,11 +149,10 @@
   </div>
 </main>
 
-<footer class="bottom">
-  <div><a href="https://systemhustle.com">systemhustle.com</a></div>
-</footer>
+<div id="site-footer"></div>
 
 <script src="/blog/posts-data.js"></script>
+<script src="/blog/shared.js"></script>
 <script>
 (function(){
   var posts = (window.BLOG_POSTS || []).slice().sort(function(a,b){ return b.date.localeCompare(a.date); });

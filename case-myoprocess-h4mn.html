@@ -74,10 +74,9 @@
     color: var(--accent-strong);
     margin: 0 0 10px;
   }
-  h1, h2, h3 { font-family: 'Fraunces', Georgia, serif; text-wrap: balance; margin: 0; }
+  h1, h2 { font-family: 'Fraunces', Georgia, serif; text-wrap: balance; margin: 0; }
   h1 { font-size: clamp(28px, 5vw, 40px); font-weight: 700; }
   h2 { font-size: clamp(20px, 3.2vw, 25px); font-weight: 600; }
-  h3 { font-size: 17px; font-weight: 600; }
   p { margin: 0; color: var(--ink); }
   .lede { color: var(--muted); font-size: 15px; margin-top: 6px; }
 
@@ -110,58 +109,67 @@
   section { margin-bottom: 40px; }
   section > p { margin-top: 12px; }
 
-  .exhibits { display: flex; flex-direction: column; gap: 16px; margin-top: 16px; }
-  .exhibit {
+  .accordion { display: flex; flex-direction: column; gap: 10px; margin-top: 16px; }
+  .acc-item {
     border: 1px solid var(--line-strong);
     background: var(--card);
     border-radius: 10px;
     overflow: hidden;
     box-shadow: var(--shadow);
   }
-  .exhibit .strip {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 6px;
-    padding: 10px 16px;
-    border-bottom: 1px solid var(--line);
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--muted);
-  }
-  .exhibit .strip .tag { color: var(--ink); font-weight: 600; }
-  .exhibit .strip .result { color: var(--accent-strong); font-weight: 700; }
-  .exhibit .body { padding: 16px 20px 18px; }
-  .exhibit .caption { font-size: 13.5px; color: var(--ink); }
-  .exhibit .why { font-size: 12.5px; color: var(--muted); margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--line); }
-  .exhibit .why b { color: var(--accent-strong); font-weight: 600; }
-
-  table {
+  .acc-head {
     width: 100%;
-    border-collapse: collapse;
-    margin-top: 16px;
-    font-size: 13.5px;
-  }
-  .table-wrap { overflow-x: auto; }
-  th, td {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 18px;
+    background: none;
+    border: none;
+    cursor: pointer;
     text-align: left;
-    padding: 10px 12px;
-    border-bottom: 1px solid var(--line);
-    font-variant-numeric: tabular-nums;
+    font: inherit;
+    color: inherit;
   }
-  th {
+  .acc-head .niche {
     font-family: 'IBM Plex Mono', monospace;
     font-size: 10.5px;
     letter-spacing: 0.06em;
     text-transform: uppercase;
     color: var(--faint);
-    font-weight: 500;
+    flex: 0 0 auto;
+    min-width: 150px;
   }
-  td.num { font-weight: 600; white-space: nowrap; }
-  tr:last-child td { border-bottom: none; }
+  .acc-head .client { font-weight: 600; flex: 1 1 auto; }
+  .acc-head .result {
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 700;
+    color: var(--accent-strong);
+    font-size: 14.5px;
+    flex: 0 0 auto;
+    text-align: right;
+  }
+  .acc-head .chev {
+    flex: 0 0 auto;
+    color: var(--faint);
+    font-size: 12px;
+    transition: transform 0.15s ease;
+  }
+  .acc-item.open .acc-head .chev { transform: rotate(180deg); }
+  .acc-body {
+    padding: 0 18px 16px;
+    font-size: 13.5px;
+    color: var(--muted);
+    border-top: 1px solid var(--line);
+    margin-top: 2px;
+    padding-top: 12px;
+  }
+  .acc-body .more {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--faint);
+    margin-top: 8px;
+    display: block;
+  }
 
   footer {
     margin-top: 48px;
@@ -177,9 +185,12 @@
   footer .role { font-size: 12.5px; color: var(--muted); }
   footer a { color: var(--accent-strong); }
 
-  @media (max-width: 480px) {
+  @media (max-width: 560px) {
     header.case { padding: 20px 18px; }
     .meta-grid { grid-template-columns: 1fr 1fr; }
+    .acc-head { flex-wrap: wrap; }
+    .acc-head .niche { min-width: 0; }
+    .acc-head .result { flex: 1 1 100%; text-align: left; }
   }
 </style>
 </head>
@@ -199,50 +210,163 @@
   </header>
 
   <section>
-    <p class="eyebrow">Closest to industrial &amp; manufacturing buyers</p>
-    <h2>Two engagements in the same buyer profile</h2>
-    <div class="exhibits">
+    <p class="eyebrow">12 engagements</p>
+    <h2>Click one to expand</h2>
+    <div class="accordion" id="accordion">
 
-      <div class="exhibit">
-        <div class="strip"><span>Clean-Seas West Virginia — <span class="tag">Industrial plastic conversion</span></span><span class="result">6 intros / 120 days</span></div>
-        <div class="body">
-          <p class="caption">A plastic-conversion facility in Belle, WV needed qualified industrial relationships around feedstock, offtake and logistics — not a volume lead list. The market was slow and conservative: every introduction had to survive the question "can this party actually supply, buy, route, or finance the project?" Over 120 days, the route produced 6 qualified introductions.</p>
-          <p class="why"><b>Why it's relevant here:</b> the same buyer profile as trade-compliance decision-makers — conservative, high qualification bar, one right introduction worth more than a hundred generic replies.</p>
+      <div class="acc-item">
+        <button class="acc-head">
+          <span class="niche">Industrial plastic conversion</span>
+          <span class="client">Clean-Seas West Virginia</span>
+          <span class="result">6 intros / 120 days</span>
+          <span class="chev">&#9662;</span>
+        </button>
+        <div class="acc-body" hidden>
+          A plastic-conversion facility in Belle, WV needed qualified industrial relationships around feedstock, offtake and logistics &mdash; not a volume lead list. The market was slow and conservative: every introduction had to survive the question "can this party actually supply, buy, route, or finance the project?" Over 120 days, the route produced 6 qualified introductions.
         </div>
       </div>
 
-      <div class="exhibit">
-        <div class="strip"><span>Vention — <span class="tag">Manufacturing automation</span></span><span class="result">+$85K / quarter</span></div>
-        <div class="body">
-          <p class="caption">Vention's platform helps manufacturers design, order and assemble custom industrial equipment. The team wasn't reaching decision-makers in manufacturing and automation consistently, and was burning budget on PPC that didn't fix the underlying targeting problem. A targeted, pain-point-driven outreach system replaced that spend and added $85K in new revenue in one quarter.</p>
-          <p class="why"><b>Why it's relevant here:</b> the exact job titles you sell drawback programs into — plastics, chemicals, aerospace, automotive manufacturers.</p>
+      <div class="acc-item">
+        <button class="acc-head">
+          <span class="niche">Manufacturing automation</span>
+          <span class="client">Vention</span>
+          <span class="result">+$85K / quarter</span>
+          <span class="chev">&#9662;</span>
+        </button>
+        <div class="acc-body" hidden>
+          Vention's platform helps manufacturers design, order and assemble custom industrial equipment. The team wasn't reaching decision-makers in manufacturing and automation consistently, and was burning budget on PPC that didn't fix the underlying targeting problem. A targeted, pain-point-driven outreach system replaced that spend and added $85K in new revenue in one quarter.
         </div>
       </div>
 
-    </div>
-  </section>
+      <div class="acc-item">
+        <button class="acc-head">
+          <span class="niche">Nanofiber / advanced materials</span>
+          <span class="client">RESPILON</span>
+          <span class="result">3 intros / ~43 days</span>
+          <span class="chev">&#9662;</span>
+        </button>
+        <div class="acc-body" hidden>
+          RESPILON's nanofiber technology spans filtration, protective materials, health, pharma and defence &mdash; a wide surface where a broad list would just create noise. The route filtered for real commercial relevance (category fit, use case, R&amp;D activity) instead of running volume. Result: 3 qualified introductions on the demand side in roughly 43 days.
+        </div>
+      </div>
 
-  <section>
-    <p class="eyebrow">Other engagements</p>
-    <h2>Same model, different niches</h2>
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr><th>Niche</th><th>Client</th><th>Result</th></tr>
-        </thead>
-        <tbody>
-          <tr><td>Recruitment</td><td>Connect Group</td><td class="num">+$105K / quarter</td></tr>
-          <tr><td>Recruitment</td><td>Crawford Thomas Recruiting</td><td class="num">+$100K / 6 months</td></tr>
-          <tr><td>Recruitment</td><td>Elate Staffing</td><td class="num">20 placements / 55 days</td></tr>
-          <tr><td>E-Sports</td><td>ForPlayers</td><td class="num">+€70K / 3 months</td></tr>
-          <tr><td>Healthcare IT (Microsoft affiliate)</td><td>HelpCare AI</td><td class="num">4 key clients secured</td></tr>
-          <tr><td>Healthcare</td><td>Hippocratic AI</td><td class="num">2 new partners / 60 days</td></tr>
-          <tr><td>SaaS</td><td>FabuLingua</td><td class="num">5 new clients / 48 days</td></tr>
-          <tr><td>Wealth Management</td><td>RP Wealth Advisors</td><td class="num">6 intros / 46 days</td></tr>
-          <tr><td>Nanofiber / advanced materials</td><td>RESPILON</td><td class="num">3 intros / ~43 days</td></tr>
-          <tr><td>Corporate &amp; event video</td><td>Lasting Blueprint Productions</td><td class="num">4 intros / 78 days</td></tr>
-        </tbody>
-      </table>
+      <div class="acc-item">
+        <button class="acc-head">
+          <span class="niche">Recruitment</span>
+          <span class="client">Connect Group</span>
+          <span class="result">+$105K / quarter</span>
+          <span class="chev">&#9662;</span>
+        </button>
+        <div class="acc-body" hidden>
+          Scaling AI talent placements with a sales system built for the recruitment sales cycle.
+          <span class="more">Full case document available on request.</span>
+        </div>
+      </div>
+
+      <div class="acc-item">
+        <button class="acc-head">
+          <span class="niche">Recruitment</span>
+          <span class="client">Crawford Thomas Recruiting</span>
+          <span class="result">+$100K / 6 months</span>
+          <span class="chev">&#9662;</span>
+        </button>
+        <div class="acc-body" hidden>
+          Turned an initially skeptical client around with a system built specifically for their placement model.
+          <span class="more">Full case document available on request.</span>
+        </div>
+      </div>
+
+      <div class="acc-item">
+        <button class="acc-head">
+          <span class="niche">Recruitment</span>
+          <span class="client">Elate Staffing</span>
+          <span class="result">20 placements / 55 days</span>
+          <span class="chev">&#9662;</span>
+        </button>
+        <div class="acc-body" hidden>
+          Recruitment efficiency built on the same sales-systems approach used across the other placement engagements.
+          <span class="more">Full case document available on request.</span>
+        </div>
+      </div>
+
+      <div class="acc-item">
+        <button class="acc-head">
+          <span class="niche">E-Sports</span>
+          <span class="client">ForPlayers</span>
+          <span class="result">+&euro;70K / 3 months</span>
+          <span class="chev">&#9662;</span>
+        </button>
+        <div class="acc-body" hidden>
+          Targeted lead generation accelerating growth in the esports niche.
+          <span class="more">Full case document available on request.</span>
+        </div>
+      </div>
+
+      <div class="acc-item">
+        <button class="acc-head">
+          <span class="niche">Healthcare IT (Microsoft affiliate)</span>
+          <span class="client">HelpCare AI</span>
+          <span class="result">4 key clients secured</span>
+          <span class="chev">&#9662;</span>
+        </button>
+        <div class="acc-body" hidden>
+          Securing 4 key healthcare "dream clients" through a Microsoft-affiliate channel.
+          <span class="more">Full case document available on request.</span>
+        </div>
+      </div>
+
+      <div class="acc-item">
+        <button class="acc-head">
+          <span class="niche">Healthcare</span>
+          <span class="client">Hippocratic AI</span>
+          <span class="result">2 new partners / 60 days</span>
+          <span class="chev">&#9662;</span>
+        </button>
+        <div class="acc-body" hidden>
+          2 new healthcare partnerships secured in 60 days.
+          <span class="more">Full case document available on request.</span>
+        </div>
+      </div>
+
+      <div class="acc-item">
+        <button class="acc-head">
+          <span class="niche">SaaS</span>
+          <span class="client">FabuLingua</span>
+          <span class="result">5 new clients / 48 days</span>
+          <span class="chev">&#9662;</span>
+        </button>
+        <div class="acc-body" hidden>
+          5 new clients in 48 days.
+          <span class="more">Full case document available on request.</span>
+        </div>
+      </div>
+
+      <div class="acc-item">
+        <button class="acc-head">
+          <span class="niche">Wealth Management</span>
+          <span class="client">RP Wealth Advisors</span>
+          <span class="result">6 intros / 46 days</span>
+          <span class="chev">&#9662;</span>
+        </button>
+        <div class="acc-body" hidden>
+          6 introductions routed in 46 days.
+          <span class="more">Full case document available on request.</span>
+        </div>
+      </div>
+
+      <div class="acc-item">
+        <button class="acc-head">
+          <span class="niche">Corporate &amp; event video</span>
+          <span class="client">Lasting Blueprint Productions</span>
+          <span class="result">4 intros / 78 days</span>
+          <span class="chev">&#9662;</span>
+        </button>
+        <div class="acc-body" hidden>
+          4 qualified introductions routed for an Orlando/Central Florida video production company in 78 days.
+          <span class="more">Full case document available on request.</span>
+        </div>
+      </div>
+
     </div>
   </section>
 
@@ -255,6 +379,18 @@
   </footer>
 
 </div>
+
+<script>
+  document.getElementById('accordion').addEventListener('click', function (e) {
+    var head = e.target.closest('.acc-head');
+    if (!head) return;
+    var item = head.closest('.acc-item');
+    var body = item.querySelector('.acc-body');
+    var open = !body.hidden;
+    body.hidden = open;
+    item.classList.toggle('open', !open);
+  });
+</script>
 
 </body>
 </html>

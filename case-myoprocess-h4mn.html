@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>myoProcess Case Studies — SystemHustle</title>
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Source+Sans+3:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+  :root {
+    --paper: #F6F2E9;
+    --paper-sunken: #ECE5D4;
+    --card: #FFFDF7;
+    --ink: #1D1B15;
+    --muted: #6C6353;
+    --faint: #9B9280;
+    --line: rgba(29,27,21,0.14);
+    --line-strong: rgba(29,27,21,0.28);
+    --accent: #3B6B4E;
+    --accent-strong: #294E37;
+    --accent-bg: rgba(59,107,78,0.10);
+    --shadow: 0 1px 2px rgba(29,27,21,0.05), 0 10px 28px -16px rgba(29,27,21,0.22);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #15140F;
+      --paper-sunken: #1C1A13;
+      --card: #1F1D15;
+      --ink: #EEE7D6;
+      --muted: #AA9F8A;
+      --faint: #6F6656;
+      --line: rgba(238,231,214,0.14);
+      --line-strong: rgba(238,231,214,0.28);
+      --accent: #74AE8B;
+      --accent-strong: #98CBAB;
+      --accent-bg: rgba(116,174,139,0.14);
+      --shadow: 0 1px 2px rgba(0,0,0,0.35), 0 10px 28px -16px rgba(0,0,0,0.6);
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #15140F;
+    --paper-sunken: #1C1A13;
+    --card: #1F1D15;
+    --ink: #EEE7D6;
+    --muted: #AA9F8A;
+    --faint: #6F6656;
+    --line: rgba(238,231,214,0.14);
+    --line-strong: rgba(238,231,214,0.28);
+    --accent: #74AE8B;
+    --accent-strong: #98CBAB;
+    --accent-bg: rgba(116,174,139,0.14);
+    --shadow: 0 1px 2px rgba(0,0,0,0.35), 0 10px 28px -16px rgba(0,0,0,0.6);
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Source Sans 3', system-ui, sans-serif;
+    padding-inline: 20px;
+    padding-block: 40px;
+    line-height: 1.55;
+    margin: 0;
+  }
+  .sheet { max-width: 720px; margin: 0 auto; }
+  .eyebrow {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent-strong);
+    margin: 0 0 10px;
+  }
+  h1, h2, h3 { font-family: 'Fraunces', Georgia, serif; text-wrap: balance; margin: 0; }
+  h1 { font-size: clamp(28px, 5vw, 40px); font-weight: 700; }
+  h2 { font-size: clamp(20px, 3.2vw, 25px); font-weight: 600; }
+  h3 { font-size: 17px; font-weight: 600; }
+  p { margin: 0; color: var(--ink); }
+  .lede { color: var(--muted); font-size: 15px; margin-top: 6px; }
+
+  header.case {
+    border: 1px solid var(--line-strong);
+    background: var(--card);
+    border-radius: 10px;
+    padding: 26px 26px 22px;
+    box-shadow: var(--shadow);
+    margin-bottom: 34px;
+  }
+  .meta-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 14px;
+    margin-top: 20px;
+    padding-top: 18px;
+    border-top: 1px solid var(--line);
+  }
+  .meta-item .k {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--faint);
+    margin-bottom: 4px;
+  }
+  .meta-item .v { font-size: 13.5px; font-weight: 600; }
+
+  section { margin-bottom: 40px; }
+  section > p { margin-top: 12px; }
+
+  .exhibits { display: flex; flex-direction: column; gap: 16px; margin-top: 16px; }
+  .exhibit {
+    border: 1px solid var(--line-strong);
+    background: var(--card);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+  .exhibit .strip {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--line);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .exhibit .strip .tag { color: var(--ink); font-weight: 600; }
+  .exhibit .strip .result { color: var(--accent-strong); font-weight: 700; }
+  .exhibit .body { padding: 16px 20px 18px; }
+  .exhibit .caption { font-size: 13.5px; color: var(--ink); }
+  .exhibit .why { font-size: 12.5px; color: var(--muted); margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--line); }
+  .exhibit .why b { color: var(--accent-strong); font-weight: 600; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 16px;
+    font-size: 13.5px;
+  }
+  .table-wrap { overflow-x: auto; }
+  th, td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--line);
+    font-variant-numeric: tabular-nums;
+  }
+  th {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--faint);
+    font-weight: 500;
+  }
+  td.num { font-weight: 600; white-space: nowrap; }
+  tr:last-child td { border-bottom: none; }
+
+  footer {
+    margin-top: 48px;
+    padding-top: 20px;
+    border-top: 1px solid var(--line);
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  footer .name { font-family: 'Fraunces', Georgia, serif; font-size: 17px; font-weight: 600; }
+  footer .role { font-size: 12.5px; color: var(--muted); }
+  footer a { color: var(--accent-strong); }
+
+  @media (max-width: 480px) {
+    header.case { padding: 20px 18px; }
+    .meta-grid { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="sheet">
+
+  <header class="case">
+    <p class="eyebrow">Team work, before SystemHustle</p>
+    <h1>Sourcing &amp; Outreach — myoProcess</h1>
+    <p class="lede">Client results from engagements I worked sourcing and outreach on as part of the myoProcess team, before going independent and founding SystemHustle.</p>
+    <div class="meta-grid">
+      <div class="meta-item"><div class="k">Role</div><div class="v">Sourcing &amp; outreach</div></div>
+      <div class="meta-item"><div class="k">Team</div><div class="v">myoProcess</div></div>
+      <div class="meta-item"><div class="k">Today</div><div class="v">Independent — SystemHustle</div></div>
+    </div>
+  </header>
+
+  <section>
+    <p class="eyebrow">Closest to industrial &amp; manufacturing buyers</p>
+    <h2>Two engagements in the same buyer profile</h2>
+    <div class="exhibits">
+
+      <div class="exhibit">
+        <div class="strip"><span>Clean-Seas West Virginia — <span class="tag">Industrial plastic conversion</span></span><span class="result">6 intros / 120 days</span></div>
+        <div class="body">
+          <p class="caption">A plastic-conversion facility in Belle, WV needed qualified industrial relationships around feedstock, offtake and logistics — not a volume lead list. The market was slow and conservative: every introduction had to survive the question "can this party actually supply, buy, route, or finance the project?" Over 120 days, the route produced 6 qualified introductions.</p>
+          <p class="why"><b>Why it's relevant here:</b> the same buyer profile as trade-compliance decision-makers — conservative, high qualification bar, one right introduction worth more than a hundred generic replies.</p>
+        </div>
+      </div>
+
+      <div class="exhibit">
+        <div class="strip"><span>Vention — <span class="tag">Manufacturing automation</span></span><span class="result">+$85K / quarter</span></div>
+        <div class="body">
+          <p class="caption">Vention's platform helps manufacturers design, order and assemble custom industrial equipment. The team wasn't reaching decision-makers in manufacturing and automation consistently, and was burning budget on PPC that didn't fix the underlying targeting problem. A targeted, pain-point-driven outreach system replaced that spend and added $85K in new revenue in one quarter.</p>
+          <p class="why"><b>Why it's relevant here:</b> the exact job titles you sell drawback programs into — plastics, chemicals, aerospace, automotive manufacturers.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section>
+    <p class="eyebrow">Other engagements</p>
+    <h2>Same model, different niches</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Niche</th><th>Client</th><th>Result</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Recruitment</td><td>Connect Group</td><td class="num">+$105K / quarter</td></tr>
+          <tr><td>Recruitment</td><td>Crawford Thomas Recruiting</td><td class="num">+$100K / 6 months</td></tr>
+          <tr><td>Recruitment</td><td>Elate Staffing</td><td class="num">20 placements / 55 days</td></tr>
+          <tr><td>E-Sports</td><td>ForPlayers</td><td class="num">+€70K / 3 months</td></tr>
+          <tr><td>Healthcare IT (Microsoft affiliate)</td><td>HelpCare AI</td><td class="num">4 key clients secured</td></tr>
+          <tr><td>Healthcare</td><td>Hippocratic AI</td><td class="num">2 new partners / 60 days</td></tr>
+          <tr><td>SaaS</td><td>FabuLingua</td><td class="num">5 new clients / 48 days</td></tr>
+          <tr><td>Wealth Management</td><td>RP Wealth Advisors</td><td class="num">6 intros / 46 days</td></tr>
+          <tr><td>Nanofiber / advanced materials</td><td>RESPILON</td><td class="num">3 intros / ~43 days</td></tr>
+          <tr><td>Corporate &amp; event video</td><td>Lasting Blueprint Productions</td><td class="num">4 intros / 78 days</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer>
+    <div>
+      <div class="name">Leonid Shvorob</div>
+      <div class="role">SystemHustle — signal-based client introductions</div>
+    </div>
+    <a href="mailto:leo@systemhustle.com">leo@systemhustle.com</a>
+  </footer>
+
+</div>
+
+</body>
+</html>

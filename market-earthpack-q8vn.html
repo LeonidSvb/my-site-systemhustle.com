@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Market Map — EARTHPACK</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<style>
+  :root {
+    --bg: #f2f1ea;
+    --surface: #fbfaf5;
+    --ink: #1c1c1a;
+    --muted: #6b6b63;
+    --faint: #9a998f;
+    --accent: #a8762f;
+    --accent-soft: #d0a45c;
+    --dark: #23261f;
+    --line: #dcdace;
+    --radius-fill: rgba(35, 38, 31, 0.035);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); }
+  body { font-family: 'Source Sans 3', -apple-system, 'Segoe UI', Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+  .mono { font-family: 'IBM Plex Mono', 'Courier New', monospace; }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 44px 32px 56px; }
+
+  .eyebrow { display: flex; justify-content: space-between; gap: 16px; font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+  .eyebrow b { color: var(--accent); font-weight: 600; }
+  h1 { font-size: clamp(30px, 4.4vw, 46px); line-height: 1.05; letter-spacing: -0.02em; font-weight: 800; margin: 18px 0 12px; max-width: 16ch; }
+  .sub { font-size: 18px; line-height: 1.5; color: var(--muted); max-width: 62ch; margin: 0; }
+
+  .kpis { display: grid; grid-template-columns: repeat(4, 1fr); border: 1px solid var(--line); background: var(--surface); margin: 32px 0 28px; }
+  .kpi { padding: 18px 20px 20px; border-right: 1px solid var(--line); }
+  .kpi:last-child { border-right: none; }
+  .kpi .num { font-size: 34px; font-weight: 800; letter-spacing: -0.02em; color: var(--accent); font-variant-numeric: tabular-nums; line-height: 1.1; }
+  .kpi .num.dark { color: var(--dark); }
+  .kpi .lbl { font-size: 13.5px; line-height: 1.4; color: var(--muted); margin-top: 6px; }
+
+  .main { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 20px; align-items: stretch; }
+  .mapcard { position: relative; border: 1px solid var(--line); background: var(--surface); min-height: 640px; }
+  #map { position: absolute; inset: 0; background: #ebe9df; }
+  .leaflet-container { font-family: 'Source Sans 3', sans-serif; }
+  .leaflet-tile-pane { filter: grayscale(1) sepia(0.22) contrast(0.86) brightness(1.07); }
+  .toggle { position: absolute; z-index: 500; top: 14px; left: 14px; display: flex; background: var(--surface); border: 1px solid var(--line); box-shadow: 0 2px 10px rgba(28,28,26,0.08); }
+  .toggle button { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; border: 0; background: transparent; color: var(--muted); padding: 9px 13px; cursor: pointer; }
+  .toggle button + button { border-left: 1px solid var(--line); }
+  .toggle button.on { background: var(--dark); color: #f2f1ea; }
+  .toggle.zoomto { top: auto; bottom: 40px; left: 14px; }
+  .mapnote { position: absolute; z-index: 500; bottom: 12px; left: 14px; font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.04em; color: var(--muted); background: rgba(251,250,245,0.92); border: 1px solid var(--line); padding: 5px 9px; }
+
+  .side { display: flex; flex-direction: column; gap: 20px; }
+  .panel { border: 1px solid var(--line); background: var(--surface); padding: 18px 18px 14px; }
+  .panel h3 { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); font-weight: 600; margin: 0 0 12px; display: flex; justify-content: space-between; align-items: baseline; }
+  .panel h3 span { color: var(--faint); letter-spacing: 0.04em; text-transform: none; font-weight: 400; }
+  .cat { display: grid; grid-template-columns: 12px 1fr auto; gap: 10px; align-items: center; padding: 7px 4px; cursor: pointer; border-radius: 2px; user-select: none; }
+  .cat:hover { background: rgba(168,118,47,0.07); }
+  .cat .sw { width: 12px; height: 12px; border-radius: 50%; box-shadow: 0 0 0 2px var(--surface), 0 0 0 3px currentColor; }
+  .cat .nm { font-size: 14.5px; line-height: 1.25; }
+  .cat .ct { font-weight: 700; font-variant-numeric: tabular-nums; font-size: 14.5px; }
+  .cat .bar { grid-column: 2 / 4; height: 3px; background: var(--line); margin-top: -2px; }
+  .cat .bar i { display: block; height: 100%; }
+  .cat.off .nm, .cat.off .ct { color: var(--faint); }
+  .cat.off .sw { opacity: 0.25; }
+  .cat.off .bar i { opacity: 0.25; }
+  .hint { font-size: 12.5px; color: var(--faint); margin: 8px 4px 0; }
+
+  .spot { display: grid; grid-template-columns: 30px 1fr; gap: 12px; padding: 12px 4px; border-top: 1px solid var(--line); cursor: pointer; }
+  .spot:first-of-type { border-top: none; padding-top: 2px; }
+  .spot:hover .sh { color: var(--accent); }
+  .spot .n { width: 28px; height: 28px; border-radius: 50%; background: var(--accent); color: #fff; font-weight: 800; font-size: 14px; display: flex; align-items: center; justify-content: center; }
+  .spot .ar { font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--faint); }
+  .spot .sh { font-weight: 700; font-size: 14.5px; line-height: 1.3; margin: 3px 0 5px; transition: color .15s; }
+  .spot .ev { font-size: 13.5px; line-height: 1.45; color: var(--muted); }
+  .spot .co { font-weight: 800; font-size: 15.5px; line-height: 1.25; margin: 3px 0 2px; }
+  .spot .co + .sh { font-weight: 500; color: var(--muted); font-size: 13.5px; margin-top: 0; }
+  .spot .ct2 { font-size: 13px; line-height: 1.5; margin-top: 8px; color: var(--muted); }
+  .spot .ct2 a, .pp-l a { color: var(--accent); text-decoration: none; border-bottom: 1px dotted var(--accent); font-weight: 600; }
+  .spot .ct2 a.tel, .pp-l a.tel { color: var(--ink); border-bottom-color: var(--faint); }
+  .pp-l { margin-top: 8px; font-size: 13px; color: var(--muted); }
+
+  .lower { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px; align-items: start; }
+  .comp p { font-size: 15px; line-height: 1.5; margin: 0 0 12px; }
+  .comp ul { list-style: none; margin: 0; padding: 0; }
+  .comp li { padding: 9px 0; border-top: 1px solid var(--line); font-size: 14.5px; line-height: 1.4; }
+  .comp li b { font-weight: 700; }
+  .comp li span { color: var(--muted); }
+  .next { background: var(--dark); color: #e8e7de; padding: 22px 24px; }
+  .next h3 { color: var(--accent-soft); }
+  .next p { font-size: 15.5px; line-height: 1.55; margin: 0 0 14px; }
+  .next .terms { display: flex; flex-wrap: wrap; gap: 8px; }
+  .next .terms span { font-family: 'IBM Plex Mono', monospace; font-size: 12px; border: 1px solid rgba(208,164,92,0.5); color: #f2f1ea; padding: 6px 10px; }
+
+  footer { margin-top: 28px; padding-top: 16px; border-top: 1px solid var(--line); display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; font-size: 13px; color: var(--muted); }
+  footer b { color: var(--ink); }
+
+  .leaflet-popup-content-wrapper { border-radius: 2px; box-shadow: 0 6px 24px rgba(28,28,26,0.16); background: var(--surface); }
+  .leaflet-popup-tip { background: var(--surface); }
+  .leaflet-popup-content { margin: 12px 14px; font-size: 13.5px; line-height: 1.45; color: var(--ink); }
+  .pp-k { font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--faint); }
+  .pp-t { font-weight: 700; font-size: 14.5px; margin: 2px 0 4px; }
+  .pp-n { color: var(--muted); font-size: 12.5px; }
+  .pp-e { color: var(--ink); margin-top: 4px; }
+
+  .spin { position: relative; width: 30px; height: 30px; }
+  .spin .core { position: absolute; inset: 0; border-radius: 50%; background: var(--accent); color: #fff; font: 800 14px 'Source Sans 3', sans-serif; display: flex; align-items: center; justify-content: center; border: 2px solid #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.25); }
+  .spin .ring { position: absolute; inset: -9px; border-radius: 50%; border: 2px solid var(--accent); opacity: 0; animation: pulse 2.4s ease-out infinite; }
+  @keyframes pulse { 0% { transform: scale(0.55); opacity: 0.8; } 100% { transform: scale(1.45); opacity: 0; } }
+  .shop { width: 16px; height: 16px; background: var(--dark); border: 2px solid #fff; box-shadow: 0 1px 6px rgba(0,0,0,0.3); transform: rotate(45deg); }
+  .shoplbl { font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; background: var(--dark); color: #f2f1ea; border: none; border-radius: 0; box-shadow: none; padding: 3px 7px; }
+  .shoplbl::before { display: none; }
+
+  .lmk { width: 12px; height: 12px; border-radius: 50%; background: #fff; border: 3px solid var(--dark); box-shadow: 0 1px 5px rgba(0,0,0,0.3); }
+  .lmklbl { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; background: var(--surface); color: var(--ink); border: 1px solid var(--line); border-radius: 0; box-shadow: none; padding: 2px 6px; }
+  .lmklbl::before { display: none; }
+  .arr { width: 14px; height: 14px; background: var(--accent); border: 2px solid #fff; transform: rotate(45deg); box-shadow: 0 0 0 3px rgba(168,118,47,0.25), 0 1px 6px rgba(0,0,0,0.3); }
+
+  .smp { margin-top: 20px; display: grid; grid-template-columns: 300px minmax(0, 1fr); gap: 28px; border: 1px solid var(--line); background: var(--surface); padding: 26px 28px; align-items: start; }
+  .smp h3 { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); font-weight: 600; margin: 0 0 10px; }
+  .smp-l p { font-size: 15px; line-height: 1.55; color: var(--muted); margin: 0; }
+  .mail { border: 1px solid var(--line); background: #fff; box-shadow: 0 6px 22px rgba(28,28,26,0.07); }
+  .mail-h { border-bottom: 1px solid var(--line); padding: 12px 18px; font-size: 14px; line-height: 1.7; }
+  .mail-h span { display: inline-block; width: 64px; font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--faint); }
+  .mail-b { padding: 16px 18px 6px; font-size: 15px; line-height: 1.6; }
+  .mail-b p { margin: 0 0 12px; }
+  .prop { margin-top: 20px; border: 1px solid var(--line); background: var(--surface); padding: 28px 28px 26px; }
+  .prop h2 { font-size: clamp(24px, 3vw, 32px); line-height: 1.1; letter-spacing: -0.015em; font-weight: 800; margin: 14px 0 8px; }
+  .prop .sub { font-size: 16.5px; }
+  .prop-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; margin-top: 24px; }
+  .prop-b h3, .prop-tl-h { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); font-weight: 600; margin: 0 0 10px; }
+  .prop-b ul { list-style: none; margin: 0; padding: 0; }
+  .prop-b li { position: relative; padding: 9px 0 9px 22px; border-top: 1px solid var(--line); font-size: 15px; line-height: 1.5; }
+  .prop-b li::before { content: '→'; position: absolute; left: 0; top: 9px; color: var(--accent); font-weight: 700; }
+  .prop-terms { display: grid; grid-template-columns: repeat(4, 1fr); margin-top: 26px; background: var(--dark); }
+  .pt { padding: 16px 18px 18px; border-right: 1px solid rgba(208,164,92,0.25); }
+  .pt:last-child { border-right: none; }
+  .pt-k { font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent-soft); }
+  .pt-v { color: #f2f1ea; font-size: 15px; line-height: 1.45; margin-top: 6px; }
+  .prop-tl { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; margin-top: 22px; border-top: 2px solid var(--dark); }
+  .tl { padding: 12px 14px 0 0; position: relative; }
+  .tl::before { content: ''; position: absolute; top: -7px; left: 0; width: 12px; height: 12px; border-radius: 50%; background: var(--accent); border: 2px solid var(--surface); }
+  .tl-d { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-top: 6px; }
+  .tl-t { font-size: 14px; line-height: 1.45; color: var(--muted); margin-top: 4px; }
+
+  @media (max-width: 960px) {
+    .prop-cols { grid-template-columns: 1fr; gap: 18px; }
+    .smp { grid-template-columns: 1fr; gap: 16px; padding: 20px 16px; }
+    .prop-terms, .prop-tl { grid-template-columns: 1fr 1fr; }
+    .pt:nth-child(2) { border-right: none; }
+    .pt:nth-child(-n+2) { border-bottom: 1px solid rgba(208,164,92,0.25); }
+    .tl { padding-bottom: 14px; }
+    .main { grid-template-columns: 1fr; }
+    .lower { grid-template-columns: 1fr; }
+    .mapcard { min-height: 520px; }
+  }
+  @media (max-width: 640px) {
+    .wrap { padding: 28px 16px 40px; }
+    .eyebrow > span:last-child { display: none; }
+    .sub { font-size: 16px; }
+    .kpis { grid-template-columns: 1fr 1fr; margin: 24px 0 20px; }
+    .kpi { padding: 14px 14px 16px; }
+    .kpi:nth-child(2) { border-right: none; }
+    .kpi:nth-child(-n+2) { border-bottom: 1px solid var(--line); }
+    .kpi .num { font-size: 27px; }
+    .kpi .lbl { font-size: 12.5px; }
+    .mapcard { min-height: 440px; }
+    .toggle button { padding: 8px 10px; font-size: 10.5px; }
+    .prop { padding: 20px 16px; }
+    .lmklbl { display: none; }
+    .prop-terms, .prop-tl { grid-template-columns: 1fr; }
+    .pt { border-right: none; border-bottom: 1px solid rgba(208,164,92,0.25); }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow"><span><b>Market map</b> &nbsp;&middot;&nbsp; <span id="e-client"></span></span><span>Confidential</span></div>
+  <h1 id="h-title"></h1>
+  <p class="sub" id="h-sub"></p>
+
+  <div class="kpis" id="kpis"></div>
+
+  <div class="main">
+    <div class="mapcard">
+      <div id="map" role="img" aria-label="Map of businesses in the service radius"></div>
+      <div class="toggle" id="toggle">
+        <button data-mode="targets" class="on" id="t-targets">First 100</button>
+        <button data-mode="density">Density</button>
+        <button data-mode="both">Both</button>
+      </div>
+      <div class="mapnote" id="mapnote"></div>
+    </div>
+    <div class="side">
+      <div class="panel">
+        <h3 id="p-cats">In your radius</h3>
+        <div id="cats"></div>
+      </div>
+      <div class="panel">
+        <h3 id="p-spots">Hiring right now</h3>
+        <div id="spots"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="lower">
+    <div class="panel comp" id="comp"></div>
+    <div class="next" id="next"></div>
+  </div>
+
+  <div id="sample"></div>
+
+  <div id="proposal"></div>
+
+  <footer>
+    <div id="f-src"></div>
+    <div><b>Leonid Shvorob</b> &middot; leo@systemhustle.com</div>
+  </footer>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.heat/0.2.0/leaflet-heat.js"></script>
+<script id="market-data" type="application/json">{"client": {"company": "EARTHPACK", "person": "Colby Bock", "center": {"lat": 33.7007925, "lng": -117.8439419, "label": "Irvine"}, "radius_mi": 28, "circles": [{"lat": 33.6846, "lng": -117.8265, "radius_mi": 28, "label": "Orange County"}, {"lat": 34.0522, "lng": -118.2437, "radius_mi": 28, "label": "Los Angeles"}, {"lat": 32.7157, "lng": -117.1611, "radius_mi": 28, "label": "San Diego"}], "shops": [{"label": "Irvine warehouse", "tag": "EARTHPACK", "lat": 33.7007925, "lng": -117.8439419, "dir": "right"}]}, "generated": "September 26, 2026", "totals": {"targets": 114, "sampled": 1318}, "buckets": [{"key": "surf", "label": "Surf shops", "count": 403, "color": "#2f5d8a"}, {"key": "skate", "label": "Skate shops", "count": 195, "color": "#b8902f"}, {"key": "golf", "label": "Golf shops", "count": 177, "color": "#5b8c3a"}, {"key": "cannabis", "label": "Cannabis dispensaries", "count": 543, "color": "#7a5a8c"}], "targets": [{"lat": 33.4653, "lng": -117.6852, "bucket": "surf", "kind": "Surf shop \u00b7 local chain of 8 stores", "town": "Dana Point"}, {"lat": 33.818, "lng": -118.0723, "bucket": "cannabis", "kind": "Cannabis store \u00b7 local chain of 8 stores", "town": "Long Beach"}, {"lat": 33.9022, "lng": -118.3631, "bucket": "cannabis", "kind": "Cannabis store \u00b7 local chain of 8 stores", "town": "Hawthorne"}, {"lat": 32.77, "lng": -117.2516, "bucket": "surf", "kind": "Surf shop \u00b7 local chain of 6 stores", "town": "San Diego"}, {"lat": 33.6573, "lng": -118.0015, "bucket": "surf", "kind": "Surf shop \u00b7 local chain of 3 stores", "town": "Huntington Beach"}, {"lat": 33.6058, "lng": -117.8752, "bucket": "surf", "kind": "Surf shop \u00b7 local chain of 8 stores", "town": "Newport Beach"}, {"lat": 32.7463, "lng": -117.019, "bucket": "cannabis", "kind": "Cannabis store \u00b7 local chain of 7 stores", "town": "Lemon Grove"}, {"lat": 32.8887, "lng": -117.2086, "bucket": "cannabis", "kind": "Cannabis store \u00b7 local chain of 5 stores", "town": "San Diego"}, {"lat": 34.2199, "lng": -118.553, "bucket": "cannabis", "kind": "Cannabis store \u00b7 local chain of 4 stores", "town": "Reseda"}, {"lat": 33.8749, "lng": -118.1597, "bucket": "cannabis", "kind": "Cannabis store \u00b7 local chain of 8 stores", "town": "Long Beach"}, {"lat": 34.0265, "lng": -118.2387, "bucket": "cannabis", "kind": "Cannabis store \u00b7 local chain of 5 stores", "town": "Los Angeles"}, {"lat": 32.7674, "lng": -117.2023, "bucket": "cannabis", "kind": "Cannabis store \u00b7 local chain of 3 stores", "town": "San Diego"}, {"lat": 34.0985, "lng": -118.3298, "bucket": "cannabis", "kind": "Cannabis store \u00b7 local chain of 3 stores", "town": "Los Angeles"}, {"lat": 33.7057, "lng": -117.8556, "bucket": "cannabis", "kind": "Cannabis store \u00b7 local chain of 3 stores", "town": "Santa Ana"}, {"lat": 32.769, "lng": -117.1365, "bucket": "cannabis", "kind": "Cannabis store \u00b7 local chain of 7 stores", "town": "San Diego"}, {"lat": 32.7399, "lng": -117.0507, "bucket": "cannabis", "kind": "Cannabis store \u00b7 local chain of 9 stores", "town": "Lemon Grove"}, {"lat": 33.9776, "lng": -118.1636, "bucket": "cannabis", "kind": "Cannabis store \u00b7 local chain of 7 stores", "town": "Bell Gardens"}, {"lat": 33.4497, "lng": -117.5919, "bucket": "surf", "kind": "Surf shop \u00b7 local chain of 5 stores", "town": "San Clemente"}, {"lat": 33.675, "lng": -117.9202, "bucket": "cannabis", "kind": "Cannabis store \u00b7 local chain of 7 stores", "town": "Costa Mesa"}, {"lat": 32.6302, "lng": -117.0913, "bucket": "cannabis", "kind": "Cannabis store \u00b7 local chain of 3 stores", "town": "Chula Vista"}, {"lat": 32.7682, "lng": -117.0387, "bucket": "cannabis", "kind": "Cannabis store \u00b7 local chain of 3 stores", "town": "La Mesa"}, {"lat": 34.0522, "lng": -118.3089, "bucket": "skate", "kind": "Skateboard shop \u00b7 local chain of 5 stores", "town": "Los Angeles"}, {"lat": 33.9596, "lng": -118.3937, "bucket": "cannabis", "kind": "Cannabis store \u00b7 local chain of 3 stores", "town": "Los Angeles"}, {"lat": 32.7649, "lng": -117.1519, "bucket": "cannabis", "kind": "Cannabis store \u00b7 local chain of 5 stores", "town": "San Diego"}, {"lat": 32.8213, "lng": -117.15, "bucket": "cannabis", "kind": "Cannabis store \u00b7 local chain of 9 stores", "town": "San Diego"}, {"lat": 33.7918, "lng": -118.1852, "bucket": "cannabis", "kind": "Cannabis store \u00b7 local chain of 3 stores", "town": "Long Beach"}, {"lat": 33.7719, "lng": -118.1522, "bucket": "cannabis", "kind": "Cannabis store \u00b7 local chain of 8 stores", "town": "Long Beach"}, {"lat": 33.7074, "lng": -117.8551, "bucket": "cannabis", "kind": "Cannabis store \u00b7 local chain of 7 stores", "town": "Santa Ana"}, {"lat": 32.7751, "lng": -117.0448, "bucket": "cannabis", "kind": "Cannabis store \u00b7 local chain of 9 stores", "town": "La Mesa"}, {"lat": 33.72, "lng": -117.849, "bucket": "cannabis", "kind": "Cannabis store \u00b7 local chain of 7 stores", "town": "Santa Ana"}, {"lat": 34.135, "lng": -118.0507, "bucket": "skate", "kind": "Skateboard shop \u00b7 local chain of 6 stores", "town": "Arcadia"}, {"lat": 33.0706, "lng": -117.0658, "bucket": "surf", "kind": "Surf shop \u00b7 local chain of 6 stores", "town": "Escondido"}, {"lat": 33.6553, "lng": -117.9042, "bucket": "cannabis", "kind": "Cannabis store \u00b7 local chain of 7 stores", "town": "Costa Mesa"}, {"lat": 33.7123, "lng": -118.0626, "bucket": "surf", "kind": "Surf shop \u00b7 local chain of 3 stores", "town": "Huntington Beach"}, {"lat": 33.9897, "lng": -117.8912, "bucket": "golf", "kind": "Golf shop \u00b7 local chain of 3 stores", "town": "Rowland Heights"}, {"lat": 33.4394, "lng": -117.6272, "bucket": "skate", "kind": "Surf shop \u00b7 local chain of 6 stores", "town": "San Clemente"}, {"lat": 32.7603, "lng": -117.0341, "bucket": "cannabis", "kind": "Cannabis store \u00b7 local chain of 7 stores", "town": "La Mesa"}, {"lat": 34.1418, "lng": -118.388, "bucket": "cannabis", "kind": "Cannabis store \u00b7 local chain of 3 stores", "town": "Studio City"}, {"lat": 32.7471, "lng": -117.2516, "bucket": "surf", "kind": "Surf shop \u00b7 local chain of 5 stores", "town": "San Diego"}, {"lat": 33.6577, "lng": -118.0018, "bucket": "surf", "kind": "Surf shop \u00b7 local chain of 8 stores", "town": "Huntington Beach"}, {"lat": 34.0113, "lng": -118.4824, "bucket": "surf", "kind": "Surf shop \u00b7 local chain of 8 stores", "town": "Santa Monica"}, {"lat": 32.9625, "lng": -117.0922, "bucket": "cannabis", "kind": "Cannabis store \u00b7 local chain of 4 stores", "town": "San Diego"}, {"lat": 33.867, "lng": -118.3935, "bucket": "surf", "kind": "Surf shop \u00b7 local chain of 8 stores", "town": "Hermosa Beach"}, {"lat": 34.0361, "lng": -118.6849, "bucket": "surf", "kind": "Surf shop \u00b7 local chain of 5 stores", "town": "Malibu"}, {"lat": 32.8705, "lng": -117.2114, "bucket": "surf", "kind": "Surf shop \u00b7 local chain of 6 stores", "town": "San Diego"}, {"lat": 33.8506, "lng": -118.1398, "bucket": "skate", "kind": "Skateboard shop \u00b7 local chain of 5 stores", "town": "Lakewood"}, {"lat": 34.0256, "lng": -118.2328, "bucket": "cannabis", "kind": "Cannabis store \u00b7 local chain of 3 stores", "town": "Los Angeles"}, {"lat": 32.8361, "lng": -117.0219, "bucket": "cannabis", "kind": "Cannabis store \u00b7 local chain of 7 stores", "town": "Santee"}, {"lat": 33.4664, "lng": -117.6973, "bucket": "surf", "kind": "Surf shop \u00b7 local chain of 3 stores", "town": "Dana Point"}, {"lat": 32.7287, "lng": -117.0987, "bucket": "cannabis", "kind": "Cannabis store \u00b7 local chain of 3 stores", "town": "San Diego"}, {"lat": 33.8793, "lng": -117.606, "bucket": "cannabis", "kind": "Cannabis store \u00b7 local chain of 8 stores", "town": "Corona"}, {"lat": 34.0835, "lng": -118.2947, "bucket": "cannabis", "kind": "Cannabis store \u00b7 local chain of 5 stores", "town": "Los Angeles"}, {"lat": 33.7252, "lng": -117.9995, "bucket": "surf", "kind": "Surf shop \u00b7 local chain of 8 stores", "town": "Huntington Beach"}, {"lat": 32.7553, "lng": -117.0435, "bucket": "cannabis", "kind": "Cannabis store \u00b7 local chain of 9 stores", "town": "La Mesa"}, {"lat": 33.9448, "lng": -118.2735, "bucket": "cannabis", "kind": "Cannabis store \u00b7 local chain of 5 stores", "town": "Los Angeles"}, {"lat": 33.6419, "lng": -117.9174, "bucket": "cannabis", "kind": "Cannabis store \u00b7 local chain of 7 stores", "town": "Costa Mesa"}, {"lat": 32.8988, "lng": -117.2204, "bucket": "cannabis", "kind": "Cannabis store \u00b7 local chain of 7 stores", "town": "San Diego"}, {"lat": 33.4262, "lng": -117.6152, "bucket": "surf", "kind": "Surf shop \u00b7 local chain of 8 stores", "town": "San Clemente"}, {"lat": 34.0489, "lng": -118.3376, "bucket": "cannabis", "kind": "Cannabis store \u00b7 local chain of 3 stores", "town": "Los Angeles"}, {"lat": 33.8468, "lng": -118.1265, "bucket": "cannabis", "kind": "Cannabis store \u00b7 local chain of 8 stores", "town": "Long Beach"}, {"lat": 34.0494, "lng": -118.3595, "bucket": "cannabis", "kind": "Cannabis store \u00b7 local chain of 5 stores", "town": "Los Angeles"}, {"lat": 33.4617, "lng": -117.6955, "bucket": "surf", "kind": "Surf shop \u00b7 local chain of 3 stores", "town": "Dana Point"}, {"lat": 32.5937, "lng": -117.0168, "bucket": "cannabis", "kind": "Cannabis store \u00b7 local chain of 7 stores", "town": "Chula Vista"}, {"lat": 33.7748, "lng": -117.8696, "bucket": "skate", "kind": "Skateboard shop \u00b7 local chain of 5 stores", "town": "Santa Ana"}, {"lat": 34.1912, "lng": -118.6043, "bucket": "skate", "kind": "Skateboard shop \u00b7 local chain of 6 stores", "town": "Canoga Park"}, {"lat": 32.7475, "lng": -117.2507, "bucket": "surf", "kind": "Surf shop \u00b7 local chain of 5 stores", "town": "San Diego"}, {"lat": 34.0225, "lng": -118.2389, "bucket": "cannabis", "kind": "Cannabis store \u00b7 local chain of 3 stores", "town": "Los Angeles"}, {"lat": 33.7822, "lng": -118.1892, "bucket": "cannabis", "kind": "Cannabis store \u00b7 local chain of 8 stores", "town": "Long Beach"}, {"lat": 32.7976, "lng": -117.2564, "bucket": "surf", "kind": "Surf shop \u00b7 local chain of 5 stores", "town": "San Diego"}, {"lat": 33.7644, "lng": -118.1483, "bucket": "cannabis", "kind": "Cannabis store \u00b7 local chain of 4 stores", "town": "Long Beach"}, {"lat": 33.0428, "lng": -117.2931, "bucket": "surf", "kind": "Surf shop \u00b7 local chain of 5 stores", "town": "Encinitas"}, {"lat": 33.6371, "lng": -117.9189, "bucket": "cannabis", "kind": "Cannabis store \u00b7 local chain of 7 stores", "town": "Costa Mesa"}, {"lat": 33.4996, "lng": -117.6655, "bucket": "surf", "kind": "Clothing store \u00b7 local chain of 3 stores", "town": "San Juan Capistrano"}, {"lat": 34.0357, "lng": -118.0851, "bucket": "skate", "kind": "Skateboard shop \u00b7 local chain of 6 stores", "town": "Montebello"}, {"lat": 33.9883, "lng": -118.1948, "bucket": "cannabis", "kind": "Cannabis store \u00b7 local chain of 8 stores", "town": "Maywood"}, {"lat": 32.77, "lng": -117.1329, "bucket": "cannabis", "kind": "Cannabis store \u00b7 local chain of 4 stores", "town": "San Diego"}, {"lat": 34.0708, "lng": -117.9323, "bucket": "skate", "kind": "Skateboard shop \u00b7 local chain of 6 stores", "town": "West Covina"}, {"lat": 33.985, "lng": -118.3951, "bucket": "skate", "kind": "Skateboard shop \u00b7 local chain of 5 stores", "town": "Culver City"}, {"lat": 33.8328, "lng": -118.3503, "bucket": "skate", "kind": "Skateboard shop \u00b7 local chain of 5 stores", "town": "Torrance"}, {"lat": 32.7472, "lng": -117.2519, "bucket": "surf", "kind": "Surf shop \u00b7 local chain of 5 stores", "town": "San Diego"}, {"lat": 34.1436, "lng": -118.2584, "bucket": "skate", "kind": "Skateboard shop \u00b7 local chain of 6 stores", "town": "Glendale"}, {"lat": 32.6058, "lng": -117.0811, "bucket": "cannabis", "kind": "Cannabis store \u00b7 local chain of 9 stores", "town": "Chula Vista"}, {"lat": 34.1561, "lng": -118.3699, "bucket": "cannabis", "kind": "Cannabis store \u00b7 local chain of 3 stores", "town": "North Hollywood"}, {"lat": 32.5467, "lng": -117.0334, "bucket": "cannabis", "kind": "Cannabis store \u00b7 local chain of 3 stores", "town": "San Diego"}, {"lat": 32.7777, "lng": -117.1151, "bucket": "cannabis", "kind": "Cannabis store \u00b7 local chain of 9 stores", "town": "San Diego"}, {"lat": 32.6363, "lng": -117.0237, "bucket": "cannabis", "kind": "Cannabis store \u00b7 local chain of 3 stores", "town": "Chula Vista"}, {"lat": 33.6123, "lng": -117.9299, "bucket": "skate", "kind": "Surf shop \u00b7 local chain of 8 stores", "town": "Newport Beach"}, {"lat": 34.0528, "lng": -118.2964, "bucket": "golf", "kind": "Golf shop \u00b7 local chain of 3 stores", "town": "Los Angeles"}, {"lat": 34.2381, "lng": -118.5569, "bucket": "skate", "kind": "Skateboard shop \u00b7 local chain of 6 stores", "town": "Northridge"}, {"lat": 32.808, "lng": -117.2176, "bucket": "cannabis", "kind": "Cannabis shop \u00b7 local chain of 9 stores", "town": "San Diego"}, {"lat": 32.6698, "lng": -117.1139, "bucket": "cannabis", "kind": "Cannabis store \u00b7 local chain of 7 stores", "town": "National City"}, {"lat": 32.7682, "lng": -117.1669, "bucket": "surf", "kind": "Surf shop \u00b7 local chain of 6 stores", "town": "San Diego"}, {"lat": 34.0549, "lng": -118.4416, "bucket": "cannabis", "kind": "Cannabis store \u00b7 local chain of 3 stores", "town": "Los Angeles"}, {"lat": 34.0349, "lng": -118.2236, "bucket": "cannabis", "kind": "Cannabis store \u00b7 local chain of 5 stores", "town": "Los Angeles"}, {"lat": 32.7763, "lng": -117.0218, "bucket": "cannabis", "kind": "Cannabis store \u00b7 local chain of 3 stores", "town": "La Mesa"}, {"lat": 32.5845, "lng": -117.1163, "bucket": "cannabis", "kind": "Cannabis store \u00b7 local chain of 4 stores", "town": "Imperial Beach"}, {"lat": 34.1461, "lng": -118.1333, "bucket": "cannabis", "kind": "Cannabis store \u00b7 local chain of 3 stores", "town": "Pasadena"}, {"lat": 33.8827, "lng": -117.5177, "bucket": "cannabis", "kind": "Cannabis store \u00b7 local chain of 5 stores", "town": "Corona"}, {"lat": 32.7267, "lng": -117.1018, "bucket": "cannabis", "kind": "Cannabis store \u00b7 local chain of 9 stores", "town": "San Diego"}, {"lat": 33.0504, "lng": -117.2598, "bucket": "cannabis", "kind": "Cannabis store \u00b7 local chain of 9 stores", "town": "Encinitas"}, {"lat": 33.7324, "lng": -117.9926, "bucket": "surf", "kind": "Surf shop \u00b7 local chain of 3 stores", "town": "Huntington Beach"}, {"lat": 32.6259, "lng": -117.031, "bucket": "cannabis", "kind": "Cannabis store \u00b7 local chain of 4 stores", "town": "Chula Vista"}, {"lat": 32.7563, "lng": -117.2083, "bucket": "cannabis", "kind": "Cannabis store \u00b7 local chain of 5 stores", "town": "San Diego"}, {"lat": 34.1853, "lng": -118.623, "bucket": "cannabis", "kind": "Cannabis store \u00b7 local chain of 4 stores", "town": "Woodland Hills"}, {"lat": 33.9889, "lng": -118.2329, "bucket": "cannabis", "kind": "Cannabis store \u00b7 local chain of 4 stores", "town": "Huntington Park"}, {"lat": 33.88, "lng": -117.9628, "bucket": "golf", "kind": "Sporting goods store \u00b7 local chain of 3 stores", "town": "Fullerton"}, {"lat": 32.7961, "lng": -117.2567, "bucket": "surf", "kind": "Surf shop \u00b7 local chain of 5 stores", "town": "San Diego"}, {"lat": 33.4657, "lng": -117.7, "bucket": "surf", "kind": "Surf shop \u00b7 local chain of 3 stores", "town": "Dana Point"}, {"lat": 33.427, "lng": -117.6139, "bucket": "surf", "kind": "Surf shop \u00b7 local chain of 5 stores", "town": "San Clemente"}, {"lat": 33.0449, "lng": -117.2934, "bucket": "cannabis", "kind": "Cannabis store \u00b7 local chain of 5 stores", "town": "Encinitas"}, {"lat": 33.5423, "lng": -117.7837, "bucket": "surf", "kind": "Clothing store \u00b7 local chain of 3 stores", "town": "Laguna Beach"}, {"lat": 32.8012, "lng": -117.2397, "bucket": "surf", "kind": "Clothing store \u00b7 local chain of 6 stores", "town": "San Diego"}, {"lat": 33.6516, "lng": -117.9908, "bucket": "surf", "kind": "Clothing store \u00b7 local chain of 3 stores", "town": "Huntington Beach"}, {"lat": 33.5474, "lng": -117.7982, "bucket": "surf", "kind": "Surf shop \u00b7 local chain of 5 stores", "town": "Laguna Beach"}], "heat": [[33.8707, -117.9625], [33.7074, -117.9938], [34.1437, -118.2589], [33.9354, -118.1197], [33.8515, -118.1401], [34.0709, -117.932], [33.8327, -118.3507], [33.9855, -118.3936], [34.1908, -118.6027], [33.915, -117.8866], [33.7471, -118.0121], [33.863, -118.0949], [34.2382, -118.5562], [33.871, -118.3554], [34.1568, -118.4365], [34.0357, -118.0844], [34.1837, -118.3129], [33.7831, -117.8925], [34.1356, -118.0503], [33.4395, -117.6271], [33.6935, -117.992], [33.7759, -117.87], [33.9106, -117.4581], [33.5585, -117.6689], [33.6505, -117.7454], [33.0722, -117.0668], [32.7684, -117.149], [32.8059, -116.9679], [32.8698, -117.2116], [32.6547, -117.0651], [32.5432, -117.0401], [32.6236, -116.9675], [34.0768, -118.258], [33.808, -118.0971], [34.1344, -118.2153], [34.0993, -118.3294], [33.7375, -118.0371], [34.1912, -118.6043], [34.1436, -118.2584], [34.135, -118.0507], [34.0357, -118.0851], [34.0708, -117.9323], [34.2381, -118.5569], [33.8506, -118.1398], [33.985, -118.3951], [33.8328, -118.3503], [34.0522, -118.3089], [33.7748, -117.8696], [34.0735, -118.2146], [33.7897, -118.156], [33.7338, -118.0364], [34.0459, -118.2414], [33.8259, -118.3688], [33.961, -118.4206], [34.0838, -118.352], [33.9587, -118.3941], [34.0483, -118.2569], [33.9456, -118.2172], [34.0335, -118.467], [34.2233, -118.3983], [33.8484, -117.9972], [33.8569, -118.0817], [34.05, -118.241], [33.8745, -117.8873], [33.7396, -118.0369], [33.9799, -118.465], [33.9936, -118.4419], [33.862, -117.9086], [34.1682, -118.607], [34.1292, -117.8312], [34.0304, -118.2913], [33.9704, -118.1906], [34.0344, -118.4733], [33.7861, -118.2006], [33.9459, -118.3589], [33.8328, -118.3148], [33.9155, -118.0304], [33.9797, -118.4652], [33.8713, -117.9239], [34.0396, -118.5006], [34.1155, -118.1567], [34.1482, -118.0001], [34.0848, -118.2215], [33.9841, -118.2249], [33.7209, -117.9997], [34.2906, -118.431], [33.7973, -118.3408], [33.7091, -117.9975], [33.7721, -118.1676], [33.9403, -118.134], [34.2949, -118.416], [33.9124, -118.2857], [34.2649, -118.5028], [34.0047, -118.3312], [33.8471, -118.0042], [34.0503, -118.2422], [34.0737, -118.252], [33.9095, -118.2986], [34.1795, -118.542], [33.8118, -117.9038], [34.2575, -118.6052], [34.0324, -118.3366], [33.9502, -118.0261], [33.8839, -118.1251], [33.7752, -118.1549], [33.7751, -118.1548], [34.0981, -118.2481], [33.8316, -118.3149], [33.8795, -118.3349], [34.0795, -118.3617], [34.0873, -117.89], [34.0611, -117.7497], [33.7716, -118.1649], [34.0219, -118.1628], [33.7085, -117.9975], [33.8521, -118.3029], [33.7984, -118.3117], [33.7386, -118.2841], [34.0775, -118.1674], [33.9994, -118.4827], [33.7834, -117.9065], [33.8475, -118.3913], [33.9801, -118.0376], [33.9945, -118.4802], [34.024, -118.2773], [34.2591, -118.3037], [33.9799, -118.465], [34.1652, -118.6252], [34.1581, -118.405], [34.223, -118.4495], [34.091, -118.3073], [33.9639, -118.2562], [34.0619, -118.3086], [34.0062, -118.4297], [33.7151, -117.9809], [34.0258, -118.3608], [33.8984, -118.2744], [33.9865, -117.9032], [34.0717, -118.3645], [33.9242, -117.9508], [33.9597, -118.381], [34.0836, -118.3644], [34.0562, -118.2914], [34.0443, -117.9251], [34.0579, -118.3033], [34.2092, -118.363], [33.9911, -118.4461], [34.1102, -118.2873], [33.9593, -118.3802], [34.0986, -118.3569], [34.0954, -117.9156], [33.9897, -118.2038], [33.9556, -118.3092], [33.7892, -118.3001], [34.1237, -118.2177], [33.9611, -118.1854], [34.0898, -118.375], [34.166, -118.4485], [33.8747, -118.0829], [32.8844, -117.1582], [32.5437, -117.0367], [32.6631, -117.1115], [32.7437, -117.0388], [33.884, -117.5922], [33.6574, -117.902], [33.6737, -117.9198], [33.9758, -118.1648], [33.8644, -118.1852], [34.0402, -118.2587], [34.0549, -118.4416], [34.1461, -118.1333], [34.1418, -118.388], [34.075, -118.1667], [34.2653, -118.467], [34.0838, -118.3071], [34.0838, -118.3549], [34.0734, -118.1638], [34.0977, -118.286], [33.724, -118.2878], [34.0816, -118.2599], [34.1099, -118.0146], [34.1173, -118.2612], [34.0835, -118.2947], [34.0265, -118.2387], [33.9448, -118.2735], [34.0494, -118.3595], [34.0349, -118.2236], [34.1501, -118.3799], [34.2326, -118.4389], [33.9872, -118.3004], [34.1416, -118.3721], [33.7785, -118.2607], [34.1725, -118.3639], [34.0985, -118.3298], [34.1561, -118.3699], [33.7918, -118.1852], [34.0335, -118.1867], [33.9605, -118.2691], [34.0906, -118.3602], [34.0344, -118.2644], [34.1896, -118.3798], [34.0446, -118.3525], [33.8195, -118.1887], [33.7546, -118.2926], [33.9698, -118.0604], [33.9864, -118.4731], [34.0528, -118.3744], [34.0886, -118.3446], [34.0238, -118.493], [34.075, -118.3836], [33.7658, -118.1592], [34.0445, -118.2543], [32.8988, -117.2205], [33.7175, -117.8467], [34.2199, -118.553], [34.1853, -118.623], [33.9889, -118.2329], [33.7644, -118.1483], [34.0761, -118.3022], [33.8468, -118.1265], [33.9022, -118.3631], [33.8749, -118.1597], [33.7822, -118.1892], [33.9883, -118.1948], [33.818, -118.0723], [33.8793, -117.606], [33.7719, -118.1522], [33.9917, -118.4216], [33.9596, -118.3937], [34.0489, -118.3376], [34.0256, -118.2328], [34.1135, -118.3964], [34.0832, -118.31], [34.1525, -118.3651], [34.0241, -118.193], [34.1978, -118.598], [33.9806, -118.1725], [33.9187, -118.2093], [33.716, -118.0231], [34.091, -118.3572], [34.0677, -118.0261], [34.0599, -118.2158], [34.0371, -117.9792], [34.1839, -118.3856], [33.8588, -118.0837], [33.7901, -118.276], [33.9157, -118.3268], [34.1051, -117.876], [34.0439, -118.3086], [34.0522, -118.2321], [32.6536, -117.1013], [33.0667, -117.3032], [34.062, -117.7769], [33.9223, -118.1867], [33.8748, -117.5421], [33.6715, -117.9185], [33.682, -117.8844], [33.7868, -118.3068], [34.1508, -118.4496], [33.9418, -118.2654], [34.146, -118.4177], [34.2279, -118.4504], [33.9759, -117.9093], [34.0424, -118.4308], [34.2024, -118.5953], [34.2542, -118.41], [34.0395, -118.6719], [34.1466, -118.0822], [34.2248, -118.5366], [34.2322, -118.5629], [34.2342, -118.3734], [34.0485, -118.0977], [33.9385, -118.3443], [33.8186, -118.3058], [34.1531, -118.4688], [34.1661, -118.6239], [34.1658, -118.6228], [34.1801, -118.4397], [33.9878, -117.9016], [33.7792, -118.1663], [33.8055, -117.9907], [33.9306, -118.1828], [33.7603, -118.1343], [33.815, -118.1666], [32.8352, -117.1522], [33.6362, -117.9194], [34.0623, -117.7425], [33.7052, -117.8602], [33.8744, -118.1416], [33.715, -117.8444], [33.7715, -118.1587], [33.7724, -118.1928], [34.2227, -118.4978], [34.0982, -118.3648], [34.0005, -118.4665], [34.0115, -117.9674], [33.7945, -118.3197], [34.1888, -118.6415], [34.0503, -118.4377], [33.9597, -118.3249], [34.2079, -118.5708], [33.9395, -118.046], [34.1095, -118.2706], [33.7584, -118.0166], [34.0039, -118.3093], [34.0109, -118.2796], [34.0519, -118.0015], [33.8602, -117.8858], [34.0289, -118.3926], [33.987, -118.4441], [34.0023, -118.4692], [34.228, -118.4847], [33.9759, -117.9093], [34.0671, -118.3439], [34.0414, -118.2534], [34.0789, -118.1657], [33.9625, -118.3517], [34.2204, -118.5889], [32.7531, -117.0089], [34.2577, -118.601], [34.0132, -118.126], [33.7055, -117.9896], [34.0004, -118.2172], [34.0726, -118.174], [33.9616, -118.2787], [33.8133, -118.2975], [34.0725, -118.367], [33.8467, -118.1686], [34.0924, -118.3443], [34.1016, -118.3041], [34.2081, -118.3883], [33.8569, -118.3905], [34.2073, -118.2336], [33.8748, -118.1712], [34.1051, -118.2916], [34.1186, -118.1909], [34.0411, -118.3504], [33.986, -118.248], [33.9689, -118.0569], [34.0758, -118.3744], [34.307, -118.4701], [34.1101, -118.0134], [33.7432, -118.2877], [34.0626, -118.1854], [33.87, -117.949], [34.0341, -118.2645], [34.1796, -118.4577], [34.2032, -118.4666], [34.0908, -118.3467], [34.1003, -118.3293], [34.0189, -118.2546], [34.0136, -118.1437], [34.143, -118.4042], [34.0768, -118.469], [34.1562, -118.606], [33.9543, -118.2779], [33.9794, -118.3005], [34.0072, -118.3352], [34.1019, -118.3317], [34.1459, -118.0746], [34.0044, -118.2726], [34.0667, -117.9819], [34.1663, -118.5927], [33.9209, -118.3903], [34.2643, -118.502], [34.0377, -118.3883], [33.8816, -118.1627], [33.8604, -118.1781], [34.0734, -117.828], [33.894, -118.3435], [34.0331, -118.1546], [34.0725, -118.367], [33.9886, -118.3332], [34.0564, -118.4262], [34.2412, -118.3904], [34.0775, -118.3616], [34.0225, -118.2389], [32.7763, -117.0218], [33.7057, -117.8556], [34.0399, -118.6656], [34.14, -117.958], [33.9776, -118.1636], [33.6371, -117.9189], [33.72, -117.849], [33.7074, -117.8551], [33.6553, -117.9042], [33.6419, -117.9174], [33.675, -117.9202], [34.0444, -117.9265], [33.9744, -118.3239], [34.0695, -118.4054], [34.1075, -117.9193], [34.2021, -118.3914], [34.0254, -118.3438], [33.9991, -117.8869], [33.8603, -117.9064], [34.0008, -118.4662], [34.0506, -118.2631], [33.8693, -118.1406], [33.9986, -118.4805], [34.0394, -118.2678], [34.2484, -118.5861], [34.0172, -118.2435], [34.0214, -118.1568], [33.7741, -117.9782], [33.9251, -118.0211], [34.2482, -118.2844], [34.0456, -118.2508], [33.7514, -117.9715], [34.2214, -118.5012], [34.0896, -118.309], [34.2016, -118.372], [34.0314, -118.3088], [33.8027, -117.9768], [33.9829, -118.186], [34.043, -118.4401], [34.2221, -118.3601], [34.1645, -118.6283], [33.7898, -118.3084], [34.046, -118.259], [33.925, -118.0213], [33.7832, -118.152], [33.9076, -118.3617], [34.2595, -118.3102], [33.9931, -117.8912], [34.2544, -118.4678], [33.7443, -117.961], [34.0497, -118.2147], [33.9748, -118.3035], [34.1231, -118.074], [34.0498, -117.9963], [34.0984, -118.2996], [33.9998, -118.464], [34.0545, -118.3439], [34.1364, -118.3622], [33.9457, -118.2926], [34.0645, -118.2715], [33.9833, -118.3146], [34.0787, -117.8875], [33.7803, -118.2524], [33.9737, -118.2255], [34.0928, -118.2804], [33.9768, -118.3763], [33.7793, -118.1663], [33.8586, -118.2953], [34.1724, -118.3625], [34.0564, -118.4262], [34.162, -118.3731], [33.9864, -117.9024], [33.9847, -118.2643], [34.0189, -118.4977], [33.8102, -118.1168], [33.9307, -118.361], [33.6005, -117.7164], [34.0906, -118.2898], [34.0818, -118.2843], [33.8962, -118.3269], [33.8751, -118.1306], [34.0545, -118.3438], [33.942, -118.3088], [34.1224, -118.2107], [34.2651, -118.5205], [34.0825, -118.2721], [33.7276, -118.2878], [34.1751, -118.3805], [33.7847, -118.2777], [34.0584, -118.2914], [34.0298, -118.2465], [34.1403, -118.3838], [34.1397, -118.2049], [34.1606, -118.37], [34.0714, -117.8766], [33.9978, -118.4748], [34.0401, -118.3768], [34.1456, -118.1316], [34.0476, -118.293], [33.854, -118.1959], [34.2496, -118.6067], [34.0274, -118.3716], [33.795, -118.2982], [34.0846, -118.3383], [34.0388, -118.2575], [34.0738, -118.3093], [34.1725, -118.3825], [33.9559, -118.2476], [33.918, -118.0471], [34.0909, -118.3095], [34.047, -118.3193], [34.1074, -117.838], [33.7463, -118.0031], [34.0113, -118.4824], [33.7252, -117.9995], [33.867, -118.3935], [33.6123, -117.9299], [33.4653, -117.6852], [33.6577, -118.0018], [33.4262, -117.6152], [33.6058, -117.8752], [33.9858, -118.3928], [33.861, -118.0928], [33.8275, -118.0876], [34.1536, -118.0807], [34.0705, -117.9324], [34.0148, -118.4956], [34.1903, -118.3293], [34.1162, -117.8369], [33.9364, -118.1207], [33.7818, -117.892], [34.2772, -118.5651], [34.1909, -118.6037], [34.1438, -118.2585], [33.9131, -117.8708], [33.8327, -118.3503], [34.239, -118.5558], [33.8717, -118.3561], [34.0074, -118.1539], [33.8019, -118.0133], [33.7592, -118.1331], [33.7921, -118.3307], [34.136, -118.3553], [33.9618, -118.0319], [33.8569, -117.9262], [32.5438, -117.0433], [32.9147, -117.119], [32.6548, -117.0652], [32.8056, -116.9666], [32.9516, -117.2326], [33.112, -117.0981], [32.7688, -117.148], [33.0713, -117.2668], [32.8418, -116.9805], [33.5626, -117.6278], [33.69, -117.8932], [33.9968, -117.7203], [33.6503, -117.7424], [33.8681, -117.7484], [33.5684, -117.713], [33.9111, -117.4578], [33.9784, -117.5514], [33.6935, -117.9909], [33.8269, -117.5137], [33.641, -117.5966], [33.7258, -117.7917], [33.4397, -117.6266], [33.9973, -118.4786], [33.7452, -118.0031], [34.0628, -118.3619], [33.8176, -118.3079], [33.8641, -118.3982], [33.8641, -118.3982], [33.5357, -117.7785], [33.8622, -118.4013], [33.7602, -118.1482], [33.7521, -118.0188], [33.8846, -118.4104], [34.0102, -118.4938], [33.817, -118.3078], [33.9878, -118.4718], [34.0148, -118.4948], [34.0341, -118.6914], [33.7444, -118.1034], [32.7666, -117.1955], [32.7934, -117.2543], [33.4493, -117.5931], [33.3988, -117.5942], [33.658, -118.0027], [33.6798, -117.8614], [33.4493, -117.5931], [33.7314, -117.8364], [33.4662, -117.7025], [33.5342, -117.7773], [33.4035, -117.5965], [33.7522, -118.0162], [33.7436, -118.1029], [34.0361, -118.6849], [33.0428, -117.2931], [33.5474, -117.7982], [33.4497, -117.5919], [33.427, -117.6139], [33.7363, -118.033], [33.8624, -118.4006], [33.872, -118.3954], [33.8815, -118.2881], [33.9993, -118.4415], [33.7259, -118.0798], [33.8571, -117.8828], [34.0394, -118.6718], [33.744, -118.1033], [33.8034, -118.3768], [33.7896, -118.1554], [34.0957, -118.0999], [33.7452, -118.0031], [33.7386, -118.2852], [33.8591, -118.3953], [33.839, -118.2989], [34.0086, -118.4976], [33.737, -118.0265], [33.817, -118.3078], [33.7324, -117.9926], [33.7123, -118.0626], [33.6573, -118.0015], [33.7707, -118.3726], [33.7716, -118.1651], [33.7363, -118.033], [34.0386, -118.5848], [33.7418, -118.0307], [33.8475, -118.3913], [33.8511, -117.8538], [33.9016, -118.3155], [34.0375, -118.6376], [33.7522, -118.0189], [33.7379, -117.9977], [33.7989, -118.3204], [34.1859, -118.5634], [33.7096, -117.9975], [33.9587, -118.4492], [33.9018, -118.418], [34.2051, -118.2279], [33.818, -118.3079], [34.0452, -118.2332], [34.0361, -118.6844], [33.7304, -118.0169], [33.838, -118.3742], [33.8341, -118.2246], [33.7363, -118.033], [33.7452, -118.0031], [33.8245, -118.3122], [33.7522, -118.0162], [33.8777, -118.258], [33.8591, -118.3952], [33.984, -118.4532], [33.8595, -118.3952], [34.0347, -118.2477], [34.0004, -118.4862], [33.8645, -117.8356], [33.7426, -118.0994], [33.8091, -118.0716], [33.7409, -118.0964], [33.8326, -118.3493], [34.034, -118.6934], [32.8706, -117.2128], [32.7918, -117.2543], [33.863, -118.3913], [33.7522, -118.0162], [34.1124, -118.1873], [33.8341, -118.2246], [34.0352, -118.6851], [33.818, -118.3079], [33.9099, -118.3097], [34.0549, -118.3231], [33.9932, -118.4362], [34.039, -118.5547], [33.7304, -118.017], [34.2183, -118.6006], [32.7592, -117.2388], [34.0381, -118.4681], [33.7223, -118.2734], [34.0449, -118.2485], [33.859, -118.3953], [32.7958, -117.1924], [32.729, -117.1731], [32.8335, -117.1537], [32.9169, -117.2354], [32.7325, -117.2043], [33.6589, -117.7445], [33.8059, -118.3304], [32.7649, -117.1524], [33.0348, -117.2835], [32.976, -117.2535], [33.9045, -117.4583], [33.5542, -117.6716], [33.7606, -118.0788], [33.73, -117.8348], [34.1347, -117.9874], [34.1697, -118.3779], [34.0356, -118.4581], [34.1888, -118.6], [33.0466, -117.2573], [32.9597, -117.1131], [32.8223, -117.102], [32.6392, -117.0478], [33.1092, -117.0972], [32.7517, -117.2117], [32.8068, -116.9684], [32.9811, -117.0808], [33.0676, -117.2669], [33.6162, -117.8741], [33.6017, -117.6933], [34.0738, -117.8852], [33.5571, -117.6687], [33.9143, -117.8872], [34.0019, -117.7163], [33.727, -117.7942], [33.729, -117.9968], [33.8718, -117.7339], [33.9783, -117.5533], [33.8607, -118.0938], [33.9065, -118.392], [34.2371, -118.5557], [34.1529, -118.0817], [33.8298, -118.3504], [34.1466, -118.2573], [32.6591, -117.0108], [33.092, -117.2642], [33.0339, -117.0593], [32.9528, -117.2348], [33.0355, -117.2383], [32.7349, -116.9811], [32.7989, -117.2341], [33.0242, -117.2751], [33.096, -117.2872], [32.7691, -117.2019], [32.7521, -117.2123], [34.1509, -118.0747], [32.8794, -117.1639], [32.6251, -116.9929], [32.9558, -117.0232], [32.8006, -117.2131], [33.9057, -118.3846], [32.9045, -117.1717], [32.9044, -117.2454], [32.9045, -117.1717], [32.6489, -117.1481], [32.7656, -117.1616], [32.8713, -117.21], [33.6188, -117.9284], [32.9413, -117.1991], [34.0669, -118.4051], [32.8473, -116.8722], [32.8079, -116.9376], [32.8545, -116.9837], [33.0599, -117.3035], [33.0571, -117.2989], [32.8537, -117.2543], [32.6826, -117.1779], [33.021, -117.2822], [33.0171, -117.2735], [32.8084, -117.2597], [32.3427, -117.0579], [32.7659, -117.204], [32.5434, -117.0378], [33.7002, -117.3504], [32.794, -117.2549], [32.9964, -117.2735], [32.8394, -117.2765], [32.7568, -117.0877], [32.8892, -117.2405], [32.981, -117.0813], [32.7475, -117.2507], [32.7471, -117.2516], [32.7961, -117.2567], [32.7976, -117.2564], [32.7472, -117.2519], [33.1057, -117.2234], [32.6855, -117.1148], [33.0692, -117.3042], [32.8141, -117.2183], [32.7579, -117.21], [32.7578, -117.2101], [32.7464, -117.2499], [32.8802, -117.167], [32.7457, -117.2476], [32.6584, -117.1048], [33.0272, -117.2667], [32.7682, -117.1669], [32.8705, -117.2114], [32.77, -117.2516], [32.8012, -117.2397], [33.0706, -117.0658], [33.4394, -117.6272], [33.0478, -117.28], [32.8329, -117.2765], [33.046, -117.2772], [32.7989, -117.2442], [32.7681, -117.2004], [32.749, -117.2517], [32.854, -117.255], [33.0466, -117.2947], [32.7525, -117.2487], [33.1057, -117.2234], [32.6845, -117.1798], [32.7506, -117.2448], [33.0457, -117.2951], [32.4174, -117.0948], [32.8128, -117.2682], [32.7553, -117.207], [32.8542, -117.257], [32.7474, -117.2523], [32.7981, -117.2411], [32.5831, -117.1319], [32.6553, -117.1021], [33.066, -117.303], [33.0521, -117.2794], [32.7471, -117.2518], [32.7215, -117.2314], [32.8975, -117.2215], [32.7509, -117.2427], [33.04, -117.2933], [32.7958, -117.2558], [32.768, -117.199], [32.8459, -117.274], [32.7648, -117.199], [32.7681, -117.1989], [32.5934, -117.0543], [32.8859, -117.1569], [32.711, -117.1702], [32.8146, -117.2703], [32.9593, -117.2661], [32.7462, -117.2498], [32.82, -117.2258], [33.0501, -117.2942], [32.7964, -117.2551], [32.7475, -117.2509], [32.3502, -117.0602], [32.7938, -117.2552], [32.768, -117.1986], [32.6931, -117.1271], [33.0637, -117.3024], [32.9956, -117.273], [33.0974, -117.3154], [33.0764, -117.3065], [32.7914, -117.2444], [32.6531, -116.9675], [33.0689, -117.3041], [32.8483, -117.2733], [32.7583, -117.2098], [32.9963, -117.2737], [33.069, -117.3043], [33.0364, -117.2617], [33.0654, -117.3029], [32.8196, -117.1737], [32.7659, -117.204], [32.3501, -117.0602], [32.7585, -117.2099], [32.3359, -117.0544], [32.768, -117.1988], [33.0658, -117.303], [33.0379, -117.2925], [32.6553, -117.1021], [32.7199, -117.2298], [32.7437, -117.2459], [32.8588, -117.1996], [33.0466, -117.2573], [32.7659, -117.204], [32.5087, -117.1191], [32.7465, -117.2513], [33.7611, -118.2945], [33.678, -117.8873], [33.9367, -118.0722], [33.9958, -117.6922], [33.6516, -117.9324], [33.6665, -117.6644], [33.6593, -117.8809], [33.9905, -117.891], [33.706, -117.9994], [33.5629, -117.6749], [33.9709, -117.6983], [33.8091, -118.066], [33.692, -117.8409], [33.5998, -117.8725], [33.927, -117.935], [33.7845, -118.0082], [33.8121, -118.1143], [33.6783, -117.8881], [33.9732, -117.8587], [33.9972, -117.8682], [33.6242, -117.7182], [33.8967, -117.9859], [33.8886, -117.9787], [33.9496, -118.0694], [33.6667, -117.7485], [33.8849, -117.9979], [34.0138, -117.9507], [33.8075, -118.1652], [33.6807, -117.876], [33.709, -117.9544], [33.937, -118.0722], [33.7107, -117.8457], [33.5965, -117.6473], [33.6986, -117.9374], [33.8135, -117.8629], [33.677, -117.7706], [33.833, -117.5312], [33.9897, -117.8912], [33.88, -117.9628], [34.0528, -118.2964], [33.726, -118.035], [34.0402, -117.6397], [33.8633, -117.8087], [33.8625, -117.8331], [33.8559, -117.8459], [33.8389, -118.197], [33.6926, -117.8272], [33.6203, -117.9222], [33.6863, -117.3407], [33.6406, -117.7161], [33.5019, -117.6628], [33.9732, -117.8587], [33.7951, -118.0354], [33.6717, -117.9901], [33.925, -117.9224], [33.932, -117.9526], [34.004, -117.9184], [33.9152, -117.9704], [33.8918, -117.5697], [34.2845, -118.5445], [34.0792, -118.1047], [34.1768, -118.4656], [34.0159, -118.2673], [34.1194, -118.1112], [33.8067, -118.3013], [34.0498, -118.2591], [34.0651, -118.2596], [33.761, -118.3241], [33.8587, -118.2957], [34.1933, -118.3091], [34.0607, -118.3063], [34.0607, -118.3063], [34.0494, -118.2061], [34.0633, -118.3088], [34.1571, -118.5915], [33.856, -118.3001], [34.1447, -118.129], [34.0575, -118.3093], [33.8835, -118.3641], [34.096, -118.3284], [34.164, -118.3392], [33.9726, -118.2058], [34.0594, -118.1619], [34.0607, -118.3063], [33.8887, -118.3607], [34.0323, -118.2508], [34.1441, -118.2893], [34.1694, -118.2925], [34.1142, -118.2446], [34.0597, -118.1621], [34.0706, -118.4011], [34.0632, -118.2987], [34.0655, -118.2369], [33.8692, -118.2749], [34.0365, -118.256], [33.7893, -118.3156], [34.2565, -118.5364], [34.0149, -118.4942], [34.0978, -118.1191], [33.8086, -118.3284], [34.1519, -118.0845], [34.0258, -118.2436], [34.068, -118.3756], [34.0013, -118.1504], [34.0619, -117.7501], [33.9145, -117.4619], [33.567, -117.6693], [33.7002, -117.9364], [34.0002, -117.706], [33.8546, -117.5634], [34.0005, -117.7312], [33.811, -117.8354], [34.0379, -117.6412], [33.6593, -118.0015], [33.7881, -117.8226], [33.6522, -117.9716], [33.4653, -117.7041], [33.5932, -117.6987], [33.6015, -117.8999], [33.6596, -117.9993], [34.05, -117.625], [33.5547, -117.7115], [33.4936, -117.6622], [33.8917, -117.5185], [33.5011, -117.6562], [33.4345, -117.6241], [34.0008, -117.6704], [32.8982, -117.2219], [32.7399, -117.0507], [32.7267, -117.1018], [32.6058, -117.0811], [33.0504, -117.2598], [32.808, -117.2176], [32.7553, -117.0435], [32.7777, -117.1151], [32.8213, -117.15], [32.7751, -117.0448], [32.7463, -117.019], [32.8361, -117.0219], [32.6698, -117.1139], [32.5937, -117.0168], [32.8988, -117.2204], [32.7603, -117.0341], [32.769, -117.1365], [32.5556, -117.0511], [32.4621, -116.9824], [32.7287, -117.0987], [32.6302, -117.0913], [32.6363, -117.0237], [32.5348, -117.0425], [32.8194, -117.1375], [32.7747, -117.0042], [32.7205, -117.1104], [32.8888, -117.2086], [32.7649, -117.1519], [32.7773, -117.0196], [32.5558, -116.937], [32.6364, -117.0281], [32.5372, -116.9306], [32.6277, -117.0751], [32.7674, -117.2023], [32.7682, -117.0387], [32.5467, -117.0334], [33.0449, -117.2934], [32.8887, -117.2086], [32.7649, -117.1519], [32.7563, -117.2083], [33.8827, -117.5177], [32.7704, -117.0093], [32.7482, -117.2497], [32.7315, -117.1739], [32.6538, -117.0883], [32.3994, -116.9403], [32.5952, -117.0205], [33.0386, -117.2932], [32.7743, -117.0113], [32.7615, -117.0311], [32.7692, -117.0261], [32.7158, -117.025], [32.77, -117.1329], [32.9625, -117.0922], [32.6259, -117.031], [32.5845, -117.1163], [32.6058, -117.0802], [32.7154, -117.1409], [32.7728, -117.0188], [33.0433, -116.9051], [32.5937, -117.0169], [32.8923, -117.1949], [32.8982, -117.1788], [32.6923, -117.1392], [32.5568, -117.0496], [32.3896, -116.9353], [32.7128, -117.1595], [32.7716, -117.0216], [32.8308, -116.9697], [32.4931, -116.9015], [33.0432, -116.9054], [32.4008, -116.9409], [32.6594, -117.1089], [32.4609, -116.9271], [32.709, -117.1702], [32.7738, -117.1555], [32.8323, -117.1473], [32.7465, -117.25], [32.7114, -117.1372], [32.7433, -117.1883], [32.714, -117.1213], [32.7503, -117.1161], [32.8484, -117.2716], [32.7292, -117.0635], [32.7998, -117.2412], [32.7324, -117.059], [32.8343, -117.1524], [33.4996, -117.6655], [33.5423, -117.7837], [33.6516, -117.9908], [33.6389, -117.9322], [33.6582, -118.0011], [33.7029, -117.9958], [33.4339, -117.6241], [33.6313, -117.9358], [33.4269, -117.6133], [33.7092, -117.871], [33.6792, -117.9902], [33.5564, -117.6736], [34.0011, -117.6888], [33.4487, -117.6068], [33.6785, -117.9022], [33.4291, -117.6153], [33.4281, -117.614], [33.629, -117.9532], [33.6068, -117.9208], [33.5436, -117.7826], [33.4994, -117.6654], [33.4259, -117.6147], [33.4849, -117.6714], [33.4674, -117.6988], [33.6801, -117.8455], [33.4301, -117.6183], [33.4331, -117.6249], [33.4629, -117.5977], [33.4145, -117.6013], [33.6103, -117.9291], [33.4651, -117.7036], [33.6352, -117.6068], [33.6343, -117.9183], [33.4345, -117.6241], [33.7349, -117.8527], [33.6366, -117.9311], [33.6424, -117.824], [33.6572, -118.0032], [33.4617, -117.6955], [33.4664, -117.6973], [33.4657, -117.7], [33.6336, -117.9325], [33.4549, -117.6008], [33.4343, -117.6247], [33.6969, -118.001], [33.4267, -117.6116], [33.6595, -117.7074], [33.6389, -117.9322], [33.672, -117.8817], [33.4834, -117.6752], [33.4485, -117.5894], [33.4818, -117.6719], [33.4922, -117.7335], [33.6389, -117.9322], [33.639, -117.9323], [33.4298, -117.6185], [33.6595, -117.8691], [33.4343, -117.6247], [34.0379, -117.6412], [33.4326, -117.6232], [33.6843, -117.9694], [33.4503, -117.6051], [33.5368, -117.7772], [33.6595, -117.7074], [33.538, -117.78], [33.6146, -117.9317], [33.6064, -117.921], [33.4331, -117.6301], [33.4344, -117.6242], [33.4511, -117.606], [33.4818, -117.6719], [33.6509, -117.7461], [33.6566, -117.9029], [33.433, -117.6301], [33.4329, -117.624], [33.6498, -117.9792], [33.4332, -117.6261], [33.708, -117.8651], [33.4663, -117.6998], [33.6501, -117.9783], [33.4332, -117.6248], [33.6593, -118.0006], [33.6592, -117.7068], [33.7092, -117.871], [33.4328, -117.6252], [33.6676, -118.0092], [33.6063, -117.89], [33.4543, -117.5999], [33.4659, -117.698], [33.6395, -117.9328], [33.6373, -117.9252], [33.6327, -117.9343], [33.6395, -117.9328], [33.4504, -117.6047], [33.6413, -117.9416], [33.6492, -117.7417], [33.6373, -117.9251], [33.6592, -117.9996], [33.4585, -117.5898], [33.609, -117.9293], [33.6329, -117.9308], [33.4333, -117.6253], [33.6374, -117.924], [33.4284, -117.6132], [33.6374, -117.9237], [33.427, -117.6123], [33.433, -117.6322], [33.6389, -117.9322], [33.6602, -117.9994], [33.4163, -117.6019], [33.6717, -117.9968], [33.5379, -117.7801], [33.6085, -117.9267], [33.5344, -117.777], [34.0011, -117.6888], [34.0018, -117.6884], [33.5357, -117.7784], [33.6821, -117.8698], [33.639, -117.9325], [33.6335, -117.9147], [32.7565, -117.0926], [32.7974, -117.2511], [32.7974, -117.2529], [32.8157, -117.2201], [32.6716, -117.0967], [32.7665, -117.058], [32.6981, -117.0201], [32.8158, -117.2202], [32.6894, -117.1205], [32.676, -117.1049], [32.7498, -117.1423], [32.8358, -116.766], [32.3508, -117.059], [32.8272, -117.2297], [32.7479, -117.13], [32.7562, -117.0925], [32.6373, -117.0781], [32.63, -117.092], [32.7117, -117.1577], [32.4867, -116.9454], [32.5322, -117.0352], [32.745, -117.2497], [32.771, -117.2521], [32.7171, -117.1718], [32.5761, -117.0793], [32.7482, -117.1243], [32.6051, -117.084], [32.3896, -117.0475], [32.7496, -117.1135], [32.8892, -117.1888], [32.6434, -117.0804], [32.7991, -117.2522], [32.6739, -117.0969], [33.0489, -117.2605], [32.7105, -117.17], [33.725, -117.8456], [33.8914, -117.5023], [33.6473, -117.914], [33.625, -117.6778], [33.426, -117.6107], [33.7132, -117.871], [33.6764, -117.8516], [33.6697, -117.8654], [33.7121, -117.8409], [33.7825, -117.4894], [33.4663, -117.7008], [33.6885, -117.341], [33.8846, -117.5872], [33.8859, -117.5977], [33.5524, -117.6714], [33.7232, -117.8525], [33.8838, -117.5593], [33.7035, -117.8609], [33.6405, -117.8561], [33.7129, -117.841], [33.6472, -117.9194], [33.6817, -117.8449], [33.6223, -117.7252], [33.5561, -117.6737], [33.8014, -117.8354], [33.706, -117.9174], [34.0576, -117.7952], [33.539, -117.7804], [33.6643, -117.8949], [33.7188, -117.9166], [33.7056, -117.8665], [33.7192, -117.8428], [33.6442, -117.9193], [33.439, -117.6274], [33.8665, -117.9086], [33.8704, -117.951], [33.8736, -117.9643], [33.791, -118.2504], [33.9262, -118.027], [33.9883, -117.8824], [33.7047, -117.8481], [33.8691, -117.7415], [33.8051, -117.989], [33.7182, -117.9134], [33.9698, -118.0603], [33.854, -118.1961], [33.7928, -118.194], [33.6152, -117.6799], [33.925, -118.0212], [33.9437, -117.4552], [33.7855, -118.2158], [33.7263, -117.8516], [33.6906, -117.3425], [33.7828, -118.1619], [34.0297, -117.9682], [33.8595, -118.0261], [33.9283, -118.0067], [33.8604, -118.159], [33.9257, -117.9302], [33.6468, -117.9187], [33.7134, -117.8731], [33.7232, -117.8524], [33.925, -118.0213], [33.7199, -117.8527], [33.9042, -118.1936], [33.7169, -118.0093], [33.7286, -118.2926], [33.7264, -117.8527], [33.7747, -118.1223], [33.875, -117.5427], [33.7755, -118.1702], [33.744, -118.2919], [33.9651, -118.0702], [33.8749, -117.5469], [33.7104, -117.8506], [33.8743, -118.1648], [33.883, -117.5867], [33.8891, -118.1939], [33.8666, -117.9086], [33.7032, -117.9897], [33.9052, -117.4737], [33.623, -117.6835], [33.7913, -118.2674], [33.9041, -118.1936], [33.8646, -117.9072], [33.6906, -117.3443], [33.8747, -118.1194], [33.8923, -118.193], [33.7199, -117.8468], [33.8114, -118.1593], [33.7131, -117.8709], [33.9875, -117.8872], [34.0527, -117.6888], [34.0855, -117.8905], [33.9044, -117.4767], [33.8707, -117.9628], [33.7811, -118.2696], [33.8602, -117.8869], [33.6534, -117.9079], [33.7892, -118.1394], [33.631, -117.7151], [33.9189, -117.9294], [33.7477, -117.9666]], "spotlights": [{"lat": 32.7649403, "lng": -117.1518577, "bucket": "cannabis", "area": "San Diego", "name": "The Cake House", "address": "1299 Camino del Rio S, San Diego, CA 92108", "phone": "+16199065546", "phone_label": "(619) 906-5546", "headline": "Local dispensary chain opening three more San Diego stores", "evidence": "Headline: \"The Cake House Opening Three New San Diego Sites.\" Their newest stores in Mission Valley and Sorrento Valley have 65 and 22 Google reviews, next to 2,533 at their Point Loma store.", "link": "https://whatnow.com/san-diego/retail/the-cake-house-opening-three-new-san-diego-sites/", "link_label": "WhatNow San Diego \u2192"}, {"lat": 33.9910709, "lng": -118.4460845, "bucket": "cannabis", "area": "Marina del Rey", "name": "Xzibit's West Coast Cannabis", "address": "13452 Washington Blvd, Marina Del Rey, CA 90292", "phone": "+13105744000", "phone_label": "(310) 574-4000", "headline": "Opened store #3 in April: a lounge-style flagship", "evidence": "Bel Air in 2024, then Chatsworth, then the Marina del Rey flagship on April 18, 2026, built around \"a lounge-style space blending cannabis, art and culture.\"", "link": "https://hightimes.com/dispensaries/two-legends-two-dispensaries-snoop-dogg-and-xzibit-expand-their-cannabis-brands-in-california", "link_label": "High Times, Apr 16, 2026 \u2192"}, {"lat": 33.1959, "lng": -117.3795, "bucket": "cannabis", "area": "Oceanside", "name": "Embarc", "headline": "One of three companies cleared to chase Oceanside's new store licenses", "evidence": "Oceanside's council voted 3-2 in August to open two more retail licenses; Embarc is one of the three applicants moving forward. None of Oceanside's dispensaries has opened yet, so every one of them starts from zero on packaging.", "link": "https://www.sandiegouniontribune.com/2026/08/21/oceanside-creates-openings-for-two-more-cannabis-retail-licenses/", "link_label": "San Diego Union-Tribune, Aug 21, 2026 \u2192"}], "competitors": [{"name": "SB 54", "detail": "California's permanent packaging rules took effect May 1, 2026, and Circular Action Alliance published the fees producers will pay"}, {"name": "On", "detail": "four new California stores, including San Diego and Los Angeles"}, {"name": "Timberland", "detail": "new store at Irvine Spectrum Center, a few miles from your warehouse"}, {"name": "Carolina Herrera", "detail": "new store in La Jolla"}], "sample": {"title": "The email they get", "note": "What each chain on this map receives the week we catch its signal, in EARTHPACK's name and only with your OK. Short, about their store, one question.", "to": "Owner, local surf shop chain (5 stores)", "subject": "bags for store #6", "body": ["Hi {first name},", "Saw you're opening in {city}, congrats. A new store usually means a rush order on bags, boxes and tissue, and under SB 54 every one of them has to be recyclable or compostable by 2032.", "EARTHPACK in Irvine has made custom eco packaging for surf and skate shops for 37 years. We print your logo and hold the stock here, so you're not buying a year of it up front.", "Worth 10 minutes before the opening order goes out?", "Colby"]}, "copy": {"title": "Your next 24 chains, mapped.", "sub": "Every surf, skate, golf and cannabis storefront across Orange County, LA and San Diego, and the local chains with 3 to 10 stores that close in your ~100-day window.", "kpis": [["24", "local chains running 3-10 stores: your 100-day sweet spot", ""], ["1,318", "surf, skate, golf and cannabis storefronts across OC, LA and SD", "dark"], ["10,000+", "clothing and boutique storefronts in the same three metros", ""], ["2032", "every single-use package sold in California must be recyclable or compostable (SB 54)", "dark"]], "toggle_targets": "Chains 3-10", "panel_cats": "Storefronts by niche", "panel_spots": "Opening right now", "hint": "Every storefront in the niche inside the three circles. Dots are the 114 stores of the 24 local chains; big national chains and brand stores left out.", "withheld": "Chain name shared once the pilot starts.", "mapnote": {"targets": "114 stores of 24 local chains \u00b7 names withheld", "density": "All 1,318 storefronts", "both": "Local chains over all storefronts"}, "comp_title": "Retail is opening, and the rules just changed", "comp_intro": "New stores are going up across your three metros, and every one of them now buys packaging under SB 54.", "next_text": "We watch these chains for the moment they open a store, launch a line or rebrand, and reach out that week. You only get the ones that are in-market, with budget and timing checked.", "next_terms": ["$1K pilot", "3-5 qualified meetings", "2 months", "local chains, 3-10 stores"], "footer": "Sources: Google Maps business listings, public news and California SB 54 regulations, pulled {generated}. Chain names withheld; the full list comes with the pilot."}}</script>
+<script>
+(function () {
+  const D = JSON.parse(document.getElementById('market-data').textContent);
+  const fmt = n => (n == null ? '' : n.toLocaleString('en-US'));
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const bucketBy = Object.fromEntries(D.buckets.map(b => [b.key, b]));
+  const miles = D.client.radius_mi;
+
+  const CP = D.copy || {};
+  const pick = (k, dflt) => (CP[k] !== undefined ? CP[k] : dflt);
+  document.title = 'Market Map — ' + D.client.company;
+  document.getElementById('e-client').textContent = 'Prepared for ' + D.client.person;
+  document.getElementById('h-title').textContent = pick('title', 'Your ' + miles + '-mile radius, mapped.');
+  document.getElementById('h-sub').textContent = pick('sub', 'Every business around ' + D.client.center.label + ' that runs trucks or heavy equipment — and the first 100 I’d go after for ' + D.client.company.replace(/ of .*/, '') + '.');
+  if (CP.toggle_targets) document.getElementById('t-targets').textContent = CP.toggle_targets;
+  if (CP.panel_cats) document.getElementById('p-cats').textContent = CP.panel_cats;
+  if (CP.panel_spots) document.getElementById('p-spots').textContent = CP.panel_spots;
+
+  const k = D.totals;
+  document.getElementById('kpis').innerHTML = pick('kpis', [
+    [fmt(k.core), 'businesses running trucks or heavy equipment in your radius', ''],
+    ['+' + fmt(k.extra), 'more in towing, propane, septic and equipment rental', 'dark'],
+    [fmt(k.hiring), 'local fleets posting for a diesel or fleet mechanic right now', ''],
+    [fmt(k.targets), 'first-wave targets on the map, picked by fleet signals', 'dark']
+  ]).map(([n, l, c]) => '<div class="kpi"><div class="num ' + c + '">' + n + '</div><div class="lbl">' + l + '</div></div>').join('');
+
+  const map = L.map('map', { zoomControl: false, scrollWheelZoom: false, attributionControl: true, zoomSnap: 0.1, zoomDelta: 0.5 });
+  L.control.zoom({ position: 'topright' }).addTo(map);
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 18,
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+  }).addTo(map);
+  map.on('click', () => map.scrollWheelZoom.enable());
+
+  const c = D.client.center;
+  // One circle around the client's center, or several (client.circles) when they serve separate metros.
+  const circles = D.client.circles || [{ lat: c.lat, lng: c.lng, radius_mi: miles }];
+  let radiusBounds = null;
+  circles.forEach(ci => {
+    const b = L.latLng(ci.lat, ci.lng).toBounds(ci.radius_mi * 1609.34 * 2);
+    radiusBounds = radiusBounds ? radiusBounds.extend(b) : b;
+    L.circle([ci.lat, ci.lng], { radius: ci.radius_mi * 1609.34, color: '#23261f', weight: 1.5, dashArray: '6 7', fillColor: '#23261f', fillOpacity: 0.035, interactive: false }).addTo(map);
+    if (ci.label) L.marker([ci.lat + ci.radius_mi / 69 * 0.93, ci.lng], { icon: L.divIcon({ className: '', html: '', iconSize: [0, 0] }), interactive: false })
+      .bindTooltip(ci.label, { permanent: true, direction: 'top', className: 'lmklbl' }).addTo(map);
+  });
+  // Several circles far apart (Winnipeg + Brandon) leave the map mostly empty, so add one button per circle and
+  // let the data pick which view opens first (client.default_view: circle index; omitted = all circles).
+  const circleBounds = circles.map(ci => L.latLng(ci.lat, ci.lng).toBounds(ci.radius_mi * 1609.34 * 2));
+  let view = D.client.default_view != null ? circleBounds[D.client.default_view] : radiusBounds;
+  const fitView = () => map.fitBounds(view, { padding: [6, 6] });
+  fitView();
+  new ResizeObserver(() => { map.invalidateSize(); fitView(); }).observe(document.querySelector('.mapcard'));
+  if (circles.length > 1 && circles.every(ci => ci.label)) {
+    const zb = document.createElement('div'); zb.className = 'toggle zoomto';
+    zb.innerHTML = '<button data-v="all">All</button>' + circles.map((ci, i) => '<button data-v="' + i + '">' + esc(ci.label) + '</button>').join('');
+    document.querySelector('.mapcard').appendChild(zb);
+    const mark = () => zb.querySelectorAll('button').forEach(b => b.classList.toggle('on', (b.dataset.v === 'all' ? radiusBounds : circleBounds[+b.dataset.v]) === view));
+    zb.querySelectorAll('button').forEach(b => b.addEventListener('click', () => { view = b.dataset.v === 'all' ? radiusBounds : circleBounds[+b.dataset.v]; map.flyToBounds(view, { padding: [6, 6], duration: 0.8 }); mark(); }));
+    mark();
+  }
+
+  const heat = L.heatLayer(D.heat, {
+    radius: 16, blur: 20, maxZoom: 12, minOpacity: 0.25,
+    gradient: { 0.15: '#efe3c6', 0.4: '#e0bd7c', 0.65: '#c48d3c', 0.85: '#9a5f22', 1: '#5e3410' }
+  });
+
+  const targetLayer = L.layerGroup().addTo(map);
+  const markers = D.targets.map(t => {
+    const b = bucketBy[t.bucket];
+    const m = L.circleMarker([t.lat, t.lng], { radius: 6.5, weight: 1.6, color: '#ffffff', fillColor: b.color, fillOpacity: 0.95 });
+    m.bindPopup('<div class="pp-k">' + esc(b.label) + '</div><div class="pp-t">' + esc(t.kind) + (t.town ? ' · ' + esc(t.town) : '') + '</div><div class="pp-n">' + esc(pick('withheld', 'Name shared once the pilot starts.')) + '</div>', { closeButton: false, maxWidth: 240 });
+    m._bucket = t.bucket;
+    return m;
+  });
+  const active = new Set(D.buckets.map(b => b.key));
+  function drawTargets() {
+    targetLayer.clearLayers();
+    markers.forEach(m => { if (active.has(m._bucket)) targetLayer.addLayer(m); });
+  }
+  drawTargets();
+
+  (D.client.shops || []).forEach(s => {
+    L.marker([s.lat, s.lng], { icon: L.divIcon({ className: '', html: '<div class="shop"></div>', iconSize: [16, 16], iconAnchor: [8, 8] }), zIndexOffset: 900, keyboard: false })
+      .bindTooltip(s.tag ? s.tag : (window.innerWidth < 640 ? 'Your shop' : 'Your shop \u00b7 ' + s.label.replace(/ shop$/i, '').replace('North ', 'N. ')), { permanent: true, direction: s.dir || (s.lng > c.lng ? 'right' : 'left'), offset: [(s.dir || (s.lng > c.lng ? 'right' : 'left')) === 'right' ? 10 : -10, 0], className: 'shoplbl' })
+      .addTo(map);
+  });
+
+  (D.landmarks || []).forEach(s => {
+    L.marker([s.lat, s.lng], { icon: L.divIcon({ className: '', html: '<div class="lmk"></div>', iconSize: [12, 12], iconAnchor: [6, 6] }), zIndexOffset: 800, keyboard: false })
+      .bindTooltip(s.label, { permanent: true, direction: s.dir || 'right', offset: [s.dir === 'left' ? -8 : 8, 0], className: 'lmklbl' })
+      .addTo(map);
+  });
+
+  (D.arrivals || []).forEach(a => {
+    L.marker([a.lat, a.lng], { icon: L.divIcon({ className: '', html: '<div class="arr"></div>', iconSize: [14, 14], iconAnchor: [7, 7] }), zIndexOffset: 950 })
+      .bindPopup('<div class="pp-k">' + esc(a.kicker) + '</div><div class="pp-t">' + esc(a.name) + '</div><div class="pp-e">' + esc(a.evidence) + '</div>' + (a.link ? '<div class="pp-l"><a href="' + esc(a.link) + '" target="_blank" rel="noopener">' + esc(a.link_label || 'Read the announcement →') + '</a></div>' : ''), { maxWidth: 290 })
+      .addTo(map);
+  });
+
+  function contactHtml(s, cls) {
+    const parts = [];
+    if (s.phone) parts.push('<a class="tel" href="tel:' + esc(s.phone) + '">' + esc(s.phone_label || s.phone) + '</a>');
+    if (s.link) parts.push('<a href="' + esc(s.link) + '" target="_blank" rel="noopener">' + esc(s.link_label || 'View the job posting →') + '</a>');
+    const addr = s.address ? esc(s.address) + '<br>' : '';
+    return parts.length || addr ? '<div class="' + cls + '">' + addr + parts.join(' &nbsp;·&nbsp; ') + '</div>' : '';
+  }
+
+  const spotMarkers = D.spotlights.map((s, i) => {
+    const b = bucketBy[s.bucket];
+    const icon = L.divIcon({ className: '', html: '<div class="spin"><div class="ring"></div><div class="core">' + (i + 1) + '</div></div>', iconSize: [30, 30], iconAnchor: [15, 15] });
+    return L.marker([s.lat, s.lng], { icon, zIndexOffset: 1000 })
+      .bindPopup('<div class="pp-k">' + esc(b.label) + ' · ' + esc(s.area) + '</div><div class="pp-t">' + esc(s.name || s.headline) + '</div>' + (s.name ? '<div class="pp-n">' + esc(s.headline) + '</div>' : '') + '<div class="pp-e">' + esc(s.evidence) + '</div>' + contactHtml(s, 'pp-l'), { maxWidth: 290 })
+      .addTo(map);
+  });
+
+  const maxCount = Math.max(...D.buckets.map(b => b.count));
+  const catsEl = document.getElementById('cats');
+  catsEl.innerHTML = D.buckets.map(b =>
+    '<div class="cat" data-k="' + b.key + '" style="color:' + b.color + '"><span class="sw" style="background:' + b.color + '"></span>' +
+    '<span class="nm" style="color:var(--ink)">' + esc(b.label) + '</span><span class="ct" style="color:var(--ink)">' + fmt(b.count) + '</span>' +
+    '<span class="bar"><i style="width:' + (b.count / maxCount * 100).toFixed(1) + '%;background:' + b.color + '"></i></span></div>'
+  ).join('') + '<p class="hint">' + esc(pick('hint', 'Counts are every business in the category within ' + miles + ' miles. Dots are the first 100 to contact.')) + '</p>';
+  catsEl.querySelectorAll('.cat').forEach(el => el.addEventListener('click', () => {
+    const key = el.dataset.k;
+    if (active.size === D.buckets.length) { active.clear(); active.add(key); }
+    else if (active.has(key) && active.size === 1) { D.buckets.forEach(b => active.add(b.key)); }
+    else if (active.has(key)) active.delete(key);
+    else active.add(key);
+    catsEl.querySelectorAll('.cat').forEach(x => x.classList.toggle('off', !active.has(x.dataset.k)));
+    drawTargets();
+  }));
+
+  const spotsEl = document.getElementById('spots');
+  spotsEl.innerHTML = D.spotlights.map((s, i) =>
+    '<div class="spot" data-i="' + i + '"><div class="n">' + (i + 1) + '</div><div><div class="ar">' + esc(bucketBy[s.bucket].label) + ' · ' + esc(s.area) + '</div>' +
+    (s.name ? '<div class="co">' + esc(s.name) + '</div>' : '') + '<div class="sh">' + esc(s.headline) + '</div><div class="ev">' + esc(s.evidence) + '</div>' + contactHtml(s, 'ct2') + '</div></div>'
+  ).join('');
+  spotsEl.querySelectorAll('.spot').forEach(el => el.addEventListener('click', (ev) => {
+    if (ev.target.closest('a')) return;
+    const m = spotMarkers[+el.dataset.i];
+    map.flyTo(m.getLatLng(), 11, { duration: 0.8 });
+    setTimeout(() => m.openPopup(), 850);
+    if (window.innerWidth < 960) document.getElementById('map').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }));
+
+  const note = document.getElementById('mapnote');
+  function setMode(mode) {
+    document.querySelectorAll('#toggle button').forEach(b => b.classList.toggle('on', b.dataset.mode === mode));
+    if (mode === 'targets' || mode === 'both') { if (!map.hasLayer(targetLayer)) targetLayer.addTo(map); } else map.removeLayer(targetLayer);
+    if (mode === 'density' || mode === 'both') { if (!map.hasLayer(heat)) heat.addTo(map); } else map.removeLayer(heat);
+    const MN = pick('mapnote', {});
+    note.textContent = mode === 'targets' ? (MN.targets || D.totals.targets + ' first-wave targets · names withheld')
+      : mode === 'density' ? (MN.density || 'Density of ' + fmt(D.totals.sampled) + ' mapped listings')
+      : (MN.both || 'First 100 over market density');
+  }
+  document.querySelectorAll('#toggle button').forEach(b => b.addEventListener('click', () => setMode(b.dataset.mode)));
+  setMode('targets');
+
+  document.getElementById('comp').innerHTML = '<h3>' + esc(pick('comp_title', 'The market is moving')) + '</h3>' +
+    '<p>' + esc(pick('comp_intro', 'Mobile fleet maintenance outfits are staffing up in ' + c.label + ' this month — the demand is there, and they know it.')) + '</p>' +
+    '<ul>' + D.competitors.map(x => '<li><b>' + esc(x.name) + '</b> <span>— ' + esc(x.detail) + '</span></li>').join('') + '</ul>';
+
+  document.getElementById('next').innerHTML = '<h3 class="mono" style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;margin:0 0 12px;font-weight:600">What happens next</h3>' +
+    '<p>' + esc(pick('next_text', 'These 100 are wave one. Each gets looked at and a personal message — the moment one says yes, you get their name and number and call them yourself.')) + '</p>' +
+    '<div class="terms">' + pick('next_terms', ['$1,500 pilot', '5 qualified intros', '1–2 months', 'money-back']).map(t => '<span>' + esc(t) + '</span>').join('') + '</div>';
+
+  const SM = D.sample;
+  if (SM) {
+    document.getElementById('sample').innerHTML = '<section class="smp"><div class="smp-l"><h3>' + esc(SM.title) + '</h3><p>' + esc(SM.note) + '</p></div>' +
+      '<div class="mail"><div class="mail-h"><div><span>To</span>' + esc(SM.to) + '</div><div><span>Subject</span><b>' + esc(SM.subject) + '</b></div></div>' +
+      '<div class="mail-b">' + SM.body.map(x => '<p>' + esc(x) + '</p>').join('') + '</div></div></section>';
+  }
+
+  const PR = D.proposal;
+  if (PR) {
+    document.getElementById('proposal').innerHTML = '<section class="prop">' +
+      '<div class="prop-h"><div class="eyebrow"><span><b>Proposal</b></span><span>' + esc(PR.eyebrow || '') + '</span></div><h2>' + esc(PR.title) + '</h2>' + (PR.lead ? '<p class="sub">' + esc(PR.lead) + '</p>' : '') + '</div>' +
+      '<div class="prop-cols">' + PR.blocks.map(b => '<div class="prop-b"><h3>' + esc(b.title) + '</h3><ul>' + b.items.map(x => '<li>' + esc(x) + '</li>').join('') + '</ul></div>').join('') + '</div>' +
+      '<div class="prop-terms">' + PR.terms.map(([t, v]) => '<div class="pt"><div class="pt-k">' + esc(t) + '</div><div class="pt-v">' + esc(v) + '</div></div>').join('') + '</div>' +
+      (PR.timeline ? '<div class="prop-tl">' + PR.timeline.map(([d, t]) => '<div class="tl"><div class="tl-d">' + esc(d) + '</div><div class="tl-t">' + esc(t) + '</div></div>').join('') + '</div>' : '') +
+      '</section>';
+  }
+
+  document.getElementById('f-src').textContent = pick('footer', 'Sources: Google Maps business listings and public job postings, pulled ' + D.generated + '. Names of the first 100 withheld — the full list comes with the pilot.').replace('{generated}', D.generated);
+})();
+</script>
+</body>
+</html>

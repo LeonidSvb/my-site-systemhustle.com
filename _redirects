@@ -1,0 +1,6 @@
+# Short industry URLs on the logistics subdomain (the reply agent links logistics.systemhustle.com/<industry>).
+# 200 = rewrite: the address bar keeps the short URL, the page is the /for/<industry>/ landing.
+/packaging          /for/packaging/          200
+/trucking           /for/trucking/           200
+/freight-forwarding /for/freight-forwarding/ 200
+/warehousing-3pl    /for/warehousing-3pl/    200

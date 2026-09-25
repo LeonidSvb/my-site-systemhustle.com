@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Market Map — CRC Global Solutions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<style>
+  :root {
+    --bg: #f2f1ea;
+    --surface: #fbfaf5;
+    --ink: #1c1c1a;
+    --muted: #6b6b63;
+    --faint: #9a998f;
+    --accent: #a8762f;
+    --accent-soft: #d0a45c;
+    --dark: #23261f;
+    --line: #dcdace;
+    --radius-fill: rgba(35, 38, 31, 0.035);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); }
+  body { font-family: 'Source Sans 3', -apple-system, 'Segoe UI', Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+  .mono { font-family: 'IBM Plex Mono', 'Courier New', monospace; }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 44px 32px 56px; }
+
+  .eyebrow { display: flex; justify-content: space-between; gap: 16px; font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+  .eyebrow b { color: var(--accent); font-weight: 600; }
+  h1 { font-size: clamp(30px, 4.4vw, 46px); line-height: 1.05; letter-spacing: -0.02em; font-weight: 800; margin: 18px 0 12px; max-width: 16ch; }
+  .sub { font-size: 18px; line-height: 1.5; color: var(--muted); max-width: 62ch; margin: 0; }
+
+  .kpis { display: grid; grid-template-columns: repeat(4, 1fr); border: 1px solid var(--line); background: var(--surface); margin: 32px 0 28px; }
+  .kpi { padding: 18px 20px 20px; border-right: 1px solid var(--line); }
+  .kpi:last-child { border-right: none; }
+  .kpi .num { font-size: 34px; font-weight: 800; letter-spacing: -0.02em; color: var(--accent); font-variant-numeric: tabular-nums; line-height: 1.1; }
+  .kpi .num.dark { color: var(--dark); }
+  .kpi .lbl { font-size: 13.5px; line-height: 1.4; color: var(--muted); margin-top: 6px; }
+
+  .main { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 20px; align-items: stretch; }
+  .mapcard { position: relative; border: 1px solid var(--line); background: var(--surface); min-height: 640px; }
+  #map { position: absolute; inset: 0; background: #ebe9df; }
+  .leaflet-container { font-family: 'Source Sans 3', sans-serif; }
+  .leaflet-tile-pane { filter: grayscale(1) sepia(0.22) contrast(0.86) brightness(1.07); }
+  .toggle { position: absolute; z-index: 500; top: 14px; left: 14px; display: flex; background: var(--surface); border: 1px solid var(--line); box-shadow: 0 2px 10px rgba(28,28,26,0.08); }
+  .toggle button { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; border: 0; background: transparent; color: var(--muted); padding: 9px 13px; cursor: pointer; }
+  .toggle button + button { border-left: 1px solid var(--line); }
+  .toggle button.on { background: var(--dark); color: #f2f1ea; }
+  .mapnote { position: absolute; z-index: 500; bottom: 12px; left: 14px; font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.04em; color: var(--muted); background: rgba(251,250,245,0.92); border: 1px solid var(--line); padding: 5px 9px; }
+
+  .side { display: flex; flex-direction: column; gap: 20px; }
+  .panel { border: 1px solid var(--line); background: var(--surface); padding: 18px 18px 14px; }
+  .panel h3 { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); font-weight: 600; margin: 0 0 12px; display: flex; justify-content: space-between; align-items: baseline; }
+  .panel h3 span { color: var(--faint); letter-spacing: 0.04em; text-transform: none; font-weight: 400; }
+  .cat { display: grid; grid-template-columns: 12px 1fr auto; gap: 10px; align-items: center; padding: 7px 4px; cursor: pointer; border-radius: 2px; user-select: none; }
+  .cat:hover { background: rgba(168,118,47,0.07); }
+  .cat .sw { width: 12px; height: 12px; border-radius: 50%; box-shadow: 0 0 0 2px var(--surface), 0 0 0 3px currentColor; }
+  .cat .nm { font-size: 14.5px; line-height: 1.25; }
+  .cat .ct { font-weight: 700; font-variant-numeric: tabular-nums; font-size: 14.5px; }
+  .cat .bar { grid-column: 2 / 4; height: 3px; background: var(--line); margin-top: -2px; }
+  .cat .bar i { display: block; height: 100%; }
+  .cat.off .nm, .cat.off .ct { color: var(--faint); }
+  .cat.off .sw { opacity: 0.25; }
+  .cat.off .bar i { opacity: 0.25; }
+  .hint { font-size: 12.5px; color: var(--faint); margin: 8px 4px 0; }
+
+  .spot { display: grid; grid-template-columns: 30px 1fr; gap: 12px; padding: 12px 4px; border-top: 1px solid var(--line); cursor: pointer; }
+  .spot:first-of-type { border-top: none; padding-top: 2px; }
+  .spot:hover .sh { color: var(--accent); }
+  .spot .n { width: 28px; height: 28px; border-radius: 50%; background: var(--accent); color: #fff; font-weight: 800; font-size: 14px; display: flex; align-items: center; justify-content: center; }
+  .spot .ar { font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--faint); }
+  .spot .sh { font-weight: 700; font-size: 14.5px; line-height: 1.3; margin: 3px 0 5px; transition: color .15s; }
+  .spot .ev { font-size: 13.5px; line-height: 1.45; color: var(--muted); }
+  .spot .co { font-weight: 800; font-size: 15.5px; line-height: 1.25; margin: 3px 0 2px; }
+  .spot .co + .sh { font-weight: 500; color: var(--muted); font-size: 13.5px; margin-top: 0; }
+  .spot .ct2 { font-size: 13px; line-height: 1.5; margin-top: 8px; color: var(--muted); }
+  .spot .ct2 a, .pp-l a { color: var(--accent); text-decoration: none; border-bottom: 1px dotted var(--accent); font-weight: 600; }
+  .spot .ct2 a.tel, .pp-l a.tel { color: var(--ink); border-bottom-color: var(--faint); }
+  .pp-l { margin-top: 8px; font-size: 13px; color: var(--muted); }
+
+  .lower { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px; align-items: start; }
+  .comp p { font-size: 15px; line-height: 1.5; margin: 0 0 12px; }
+  .comp ul { list-style: none; margin: 0; padding: 0; }
+  .comp li { padding: 9px 0; border-top: 1px solid var(--line); font-size: 14.5px; line-height: 1.4; }
+  .comp li b { font-weight: 700; }
+  .comp li span { color: var(--muted); }
+  .next { background: var(--dark); color: #e8e7de; padding: 22px 24px; }
+  .next h3 { color: var(--accent-soft); }
+  .next p { font-size: 15.5px; line-height: 1.55; margin: 0 0 14px; }
+  .next .terms { display: flex; flex-wrap: wrap; gap: 8px; }
+  .next .terms span { font-family: 'IBM Plex Mono', monospace; font-size: 12px; border: 1px solid rgba(208,164,92,0.5); color: #f2f1ea; padding: 6px 10px; }
+
+  footer { margin-top: 28px; padding-top: 16px; border-top: 1px solid var(--line); display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; font-size: 13px; color: var(--muted); }
+  footer b { color: var(--ink); }
+
+  .leaflet-popup-content-wrapper { border-radius: 2px; box-shadow: 0 6px 24px rgba(28,28,26,0.16); background: var(--surface); }
+  .leaflet-popup-tip { background: var(--surface); }
+  .leaflet-popup-content { margin: 12px 14px; font-size: 13.5px; line-height: 1.45; color: var(--ink); }
+  .pp-k { font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--faint); }
+  .pp-t { font-weight: 700; font-size: 14.5px; margin: 2px 0 4px; }
+  .pp-n { color: var(--muted); font-size: 12.5px; }
+  .pp-e { color: var(--ink); margin-top: 4px; }
+
+  .spin { position: relative; width: 30px; height: 30px; }
+  .spin .core { position: absolute; inset: 0; border-radius: 50%; background: var(--accent); color: #fff; font: 800 14px 'Source Sans 3', sans-serif; display: flex; align-items: center; justify-content: center; border: 2px solid #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.25); }
+  .spin .ring { position: absolute; inset: -9px; border-radius: 50%; border: 2px solid var(--accent); opacity: 0; animation: pulse 2.4s ease-out infinite; }
+  @keyframes pulse { 0% { transform: scale(0.55); opacity: 0.8; } 100% { transform: scale(1.45); opacity: 0; } }
+  .shop { width: 16px; height: 16px; background: var(--dark); border: 2px solid #fff; box-shadow: 0 1px 6px rgba(0,0,0,0.3); transform: rotate(45deg); }
+  .shoplbl { font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; background: var(--dark); color: #f2f1ea; border: none; border-radius: 0; box-shadow: none; padding: 3px 7px; }
+  .shoplbl::before { display: none; }
+
+  .lmk { width: 12px; height: 12px; border-radius: 50%; background: #fff; border: 3px solid var(--dark); box-shadow: 0 1px 5px rgba(0,0,0,0.3); }
+  .lmklbl { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; background: var(--surface); color: var(--ink); border: 1px solid var(--line); border-radius: 0; box-shadow: none; padding: 2px 6px; }
+  .lmklbl::before { display: none; }
+  .arr { width: 14px; height: 14px; background: var(--accent); border: 2px solid #fff; transform: rotate(45deg); box-shadow: 0 0 0 3px rgba(168,118,47,0.25), 0 1px 6px rgba(0,0,0,0.3); }
+
+  .prop { margin-top: 20px; border: 1px solid var(--line); background: var(--surface); padding: 28px 28px 26px; }
+  .prop h2 { font-size: clamp(24px, 3vw, 32px); line-height: 1.1; letter-spacing: -0.015em; font-weight: 800; margin: 14px 0 8px; }
+  .prop .sub { font-size: 16.5px; }
+  .prop-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; margin-top: 24px; }
+  .prop-b h3, .prop-tl-h { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); font-weight: 600; margin: 0 0 10px; }
+  .prop-b ul { list-style: none; margin: 0; padding: 0; }
+  .prop-b li { position: relative; padding: 9px 0 9px 22px; border-top: 1px solid var(--line); font-size: 15px; line-height: 1.5; }
+  .prop-b li::before { content: '→'; position: absolute; left: 0; top: 9px; color: var(--accent); font-weight: 700; }
+  .prop-terms { display: grid; grid-template-columns: repeat(4, 1fr); margin-top: 26px; background: var(--dark); }
+  .pt { padding: 16px 18px 18px; border-right: 1px solid rgba(208,164,92,0.25); }
+  .pt:last-child { border-right: none; }
+  .pt-k { font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent-soft); }
+  .pt-v { color: #f2f1ea; font-size: 15px; line-height: 1.45; margin-top: 6px; }
+  .prop-tl { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; margin-top: 22px; border-top: 2px solid var(--dark); }
+  .tl { padding: 12px 14px 0 0; position: relative; }
+  .tl::before { content: ''; position: absolute; top: -7px; left: 0; width: 12px; height: 12px; border-radius: 50%; background: var(--accent); border: 2px solid var(--surface); }
+  .tl-d { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-top: 6px; }
+  .tl-t { font-size: 14px; line-height: 1.45; color: var(--muted); margin-top: 4px; }
+
+  @media (max-width: 960px) {
+    .prop-cols { grid-template-columns: 1fr; gap: 18px; }
+    .prop-terms, .prop-tl { grid-template-columns: 1fr 1fr; }
+    .pt:nth-child(2) { border-right: none; }
+    .pt:nth-child(-n+2) { border-bottom: 1px solid rgba(208,164,92,0.25); }
+    .tl { padding-bottom: 14px; }
+    .main { grid-template-columns: 1fr; }
+    .lower { grid-template-columns: 1fr; }
+    .mapcard { min-height: 520px; }
+  }
+  @media (max-width: 640px) {
+    .wrap { padding: 28px 16px 40px; }
+    .eyebrow > span:last-child { display: none; }
+    .sub { font-size: 16px; }
+    .kpis { grid-template-columns: 1fr 1fr; margin: 24px 0 20px; }
+    .kpi { padding: 14px 14px 16px; }
+    .kpi:nth-child(2) { border-right: none; }
+    .kpi:nth-child(-n+2) { border-bottom: 1px solid var(--line); }
+    .kpi .num { font-size: 27px; }
+    .kpi .lbl { font-size: 12.5px; }
+    .mapcard { min-height: 440px; }
+    .toggle button { padding: 8px 10px; font-size: 10.5px; }
+    .prop { padding: 20px 16px; }
+    .lmklbl { display: none; }
+    .prop-terms, .prop-tl { grid-template-columns: 1fr; }
+    .pt { border-right: none; border-bottom: 1px solid rgba(208,164,92,0.25); }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow"><span><b>Market map</b> &nbsp;&middot;&nbsp; <span id="e-client"></span></span><span>Confidential</span></div>
+  <h1 id="h-title"></h1>
+  <p class="sub" id="h-sub"></p>
+
+  <div class="kpis" id="kpis"></div>
+
+  <div class="main">
+    <div class="mapcard">
+      <div id="map" role="img" aria-label="Map of businesses in the service radius"></div>
+      <div class="toggle" id="toggle">
+        <button data-mode="targets" class="on" id="t-targets">First 100</button>
+        <button data-mode="density">Density</button>
+        <button data-mode="both">Both</button>
+      </div>
+      <div class="mapnote" id="mapnote"></div>
+    </div>
+    <div class="side">
+      <div class="panel">
+        <h3 id="p-cats">In your radius</h3>
+        <div id="cats"></div>
+      </div>
+      <div class="panel">
+        <h3 id="p-spots">Hiring right now</h3>
+        <div id="spots"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="lower">
+    <div class="panel comp" id="comp"></div>
+    <div class="next" id="next"></div>
+  </div>
+
+  <div id="proposal"></div>
+
+  <footer>
+    <div id="f-src"></div>
+    <div><b>Leonid Shvorob</b> &middot; leo@systemhustle.com</div>
+  </footer>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.heat/0.2.0/leaflet-heat.js"></script>
+<script id="market-data" type="application/json">{"client": {"company": "CRC Global Solutions", "person": "Cy Hill", "center": {"lat": 32.1346144, "lng": -81.1864432, "label": "Savannah"}, "radius_mi": 50, "shops": [{"label": "Savannah warehouse", "tag": "Your warehouse", "lat": 32.1346144, "lng": -81.1864432, "dir": "left"}]}, "landmarks": [{"label": "Port of Savannah", "lat": 32.1253, "lng": -81.1405, "dir": "right"}, {"label": "Hyundai Metaplant", "lat": 32.1628575, "lng": -81.4635292, "dir": "left"}], "generated": "September 26, 2026", "totals": {"targets": 342, "sampled": 342}, "buckets": [{"key": "food", "label": "Food & beverage", "count": 45, "color": "#5b8c3a"}, {"key": "chem", "label": "Chemicals & plastics", "count": 27, "color": "#2f5d8a"}, {"key": "agri", "label": "Agriculture & fertilizer", "count": 11, "color": "#b8902f"}, {"key": "mfg", "label": "Manufacturing & materials", "count": 188, "color": "#7a5a8c"}, {"key": "dist", "label": "Wholesale & distribution", "count": 71, "color": "#6f7f7a"}], "targets": [{"lat": 32.0967, "lng": -81.1243, "bucket": "chem", "kind": "Chemical manufacturer", "town": "Savannah"}, {"lat": 32.4813, "lng": -80.7405, "bucket": "mfg", "kind": "Manufacturer", "town": "Beaufort"}, {"lat": 32.251, "lng": -81.2064, "bucket": "mfg", "kind": "Manufacturer", "town": "Rincon"}, {"lat": 32.1249, "lng": -81.1747, "bucket": "dist", "kind": "Industrial equipment supplier", "town": "Garden City"}, {"lat": 32.0357, "lng": -81.09, "bucket": "dist", "kind": "Wholesaler", "town": "Savannah"}, {"lat": 32.1984, "lng": -80.7592, "bucket": "mfg", "kind": "Manufacturer", "town": "Hilton Head Island"}, {"lat": 32.2527, "lng": -80.8663, "bucket": "dist", "kind": "Wholesaler", "town": "Bluffton"}, {"lat": 32.4714, "lng": -80.9869, "bucket": "dist", "kind": "Aluminum supplier", "town": "Ridgeland"}, {"lat": 32.151, "lng": -81.2297, "bucket": "mfg", "kind": "Manufacturer", "town": "Savannah"}, {"lat": 32.1067, "lng": -81.2267, "bucket": "dist", "kind": "Distribution service", "town": "Pooler"}, {"lat": 32.3993, "lng": -81.6741, "bucket": "mfg", "kind": "Manufacturer", "town": "Brooklet"}, {"lat": 32.1897, "lng": -81.4678, "bucket": "mfg", "kind": "Manufacturer", "town": "Ellabell"}, {"lat": 32.8457, "lng": -81.0799, "bucket": "mfg", "kind": "Manufacturer", "town": "Varnville"}, {"lat": 32.7462, "lng": -80.9483, "bucket": "mfg", "kind": "Packaging company", "town": "Early Branch"}, {"lat": 32.3567, "lng": -81.6555, "bucket": "dist", "kind": "Saw mill", "town": "Brooklet"}, {"lat": 32.1144, "lng": -81.2251, "bucket": "dist", "kind": "Distribution service", "town": "Pooler"}, {"lat": 32.3819, "lng": -81.85, "bucket": "mfg", "kind": "Manufacturer", "town": "Statesboro"}, {"lat": 32.6797, "lng": -81.2442, "bucket": "chem", "kind": "Fertilizer supplier", "town": "Estill"}, {"lat": 32.2334, "lng": -81.2081, "bucket": "dist", "kind": "Distribution service", "town": "Rincon"}, {"lat": 32.1631, "lng": -80.7653, "bucket": "mfg", "kind": "Laser equipment supplier", "town": "Hilton Head Island"}, {"lat": 32.4429, "lng": -80.6942, "bucket": "mfg", "kind": "Manufacturer", "town": "Beaufort"}, {"lat": 32.3809, "lng": -81.838, "bucket": "mfg", "kind": "Manufacturer", "town": "Statesboro"}, {"lat": 32.4869, "lng": -81.7487, "bucket": "mfg", "kind": "Manufacturer", "town": "Statesboro"}, {"lat": 31.7975, "lng": -81.412, "bucket": "mfg", "kind": "Ceramic manufacturer", "town": "Midway"}, {"lat": 32.0824, "lng": -81.0941, "bucket": "mfg", "kind": "Manufacturer", "town": "Savannah"}, {"lat": 32.1523, "lng": -81.3525, "bucket": "mfg", "kind": "Paper mill", "town": "Bloomingdale"}, {"lat": 32.3275, "lng": -80.933, "bucket": "mfg", "kind": "Metal fabricator", "town": "Ridgeland"}, {"lat": 32.095, "lng": -81.1215, "bucket": "chem", "kind": "Distribution service", "town": "Savannah"}, {"lat": 32.7279, "lng": -81.6558, "bucket": "mfg", "kind": "Manufacturer", "town": "Sylvania"}, {"lat": 32.0027, "lng": -81.1043, "bucket": "food", "kind": "Beverage distributor", "town": "Savannah"}, {"lat": 32.1405, "lng": -81.2234, "bucket": "mfg", "kind": "Manufacturer", "town": "Savannah"}, {"lat": 32.0753, "lng": -81.0656, "bucket": "chem", "kind": "Chemical manufacturer", "town": "Savannah"}, {"lat": 31.9423, "lng": -81.3138, "bucket": "mfg", "kind": "Metal fabricator", "town": "Richmond Hill"}, {"lat": 32.1136, "lng": -81.2926, "bucket": "dist", "kind": "Distribution service", "town": "Bloomingdale"}, {"lat": 31.9823, "lng": -81.125, "bucket": "agri", "kind": "Fertilizer supplier", "town": "Savannah"}, {"lat": 32.0905, "lng": -81.1348, "bucket": "mfg", "kind": "Manufacturer", "town": "Savannah"}, {"lat": 32.4386, "lng": -81.3711, "bucket": "food", "kind": "Meat processor", "town": "Springfield"}, {"lat": 32.3321, "lng": -81.3937, "bucket": "mfg", "kind": "Metal supplier", "town": "Guyton"}, {"lat": 32.1037, "lng": -81.1284, "bucket": "mfg", "kind": "Manufacturer", "town": "Savannah"}, {"lat": 32.7541, "lng": -81.246, "bucket": "agri", "kind": "Grain elevator", "town": "Estill"}, {"lat": 32.1005, "lng": -81.2238, "bucket": "dist", "kind": "Propane supplier", "town": "Pooler"}, {"lat": 31.5352, "lng": -81.3621, "bucket": "food", "kind": "Seafood wholesaler", "town": "Shellman Bluff"}, {"lat": 32.1333, "lng": -81.2527, "bucket": "dist", "kind": "Distribution service", "town": "Pooler"}, {"lat": 32.054, "lng": -81.1268, "bucket": "dist", "kind": "Wholesaler", "town": "Savannah"}, {"lat": 32.4355, "lng": -80.6793, "bucket": "agri", "kind": "Agricultural product wholesaler", "town": "Beaufort"}, {"lat": 32.1378, "lng": -81.1931, "bucket": "mfg", "kind": "Manufacturer", "town": "Savannah"}, {"lat": 32.3026, "lng": -81.868, "bucket": "mfg", "kind": "Manufacturer", "town": "Register"}, {"lat": 31.7451, "lng": -81.4394, "bucket": "chem", "kind": "Chemical manufacturer", "town": "Riceboro"}, {"lat": 32.3962, "lng": -81.825, "bucket": "mfg", "kind": "Manufacturer", "town": "Statesboro"}, {"lat": 32.3817, "lng": -81.8463, "bucket": "mfg", "kind": "Manufacturer", "town": "Statesboro"}, {"lat": 31.9766, "lng": -81.0613, "bucket": "dist", "kind": "Forklift dealer", "town": "Savannah"}, {"lat": 32.1485, "lng": -81.6276, "bucket": "mfg", "kind": "Manufacturer", "town": "Pembroke"}, {"lat": 31.4787, "lng": -81.3428, "bucket": "food", "kind": "Seafood wholesaler", "town": "Townsend"}, {"lat": 32.1124, "lng": -81.2256, "bucket": "mfg", "kind": "Manufacturer", "town": "Savannah"}, {"lat": 32.1431, "lng": -81.186, "bucket": "mfg", "kind": "Manufacturer", "town": "Garden City"}, {"lat": 32.1435, "lng": -81.954, "bucket": "mfg", "kind": "Electrical equipment supplier", "town": "Claxton"}, {"lat": 32.0636, "lng": -81.1004, "bucket": "dist", "kind": "Music publisher", "town": "Savannah"}, {"lat": 32.0536, "lng": -81.1228, "bucket": "mfg", "kind": "Manufacturer", "town": "Savannah"}, {"lat": 32.4136, "lng": -81.6425, "bucket": "mfg", "kind": "Manufacturer", "town": "Brooklet"}, {"lat": 32.1775, "lng": -81.4511, "bucket": "mfg", "kind": "Manufacturer", "town": "Ellabell"}, {"lat": 32.0636, "lng": -81.0481, "bucket": "mfg", "kind": "Metal fabricator", "town": "Savannah"}, {"lat": 32.1964, "lng": -81.1758, "bucket": "dist", "kind": "Distribution service", "town": "Port Wentworth"}, {"lat": 32.0787, "lng": -81.1335, "bucket": "dist", "kind": "Auto accessories wholesaler", "town": "Savannah"}, {"lat": 32.2778, "lng": -80.9257, "bucket": "food", "kind": "Food manufacturer", "town": "Bluffton"}, {"lat": 32.0626, "lng": -81.0476, "bucket": "mfg", "kind": "Water jet cutting service", "town": "Savannah"}, {"lat": 32.0897, "lng": -81.1253, "bucket": "mfg", "kind": "Metal fabricator", "town": "Savannah"}, {"lat": 32.1226, "lng": -81.1747, "bucket": "mfg", "kind": "Manufacturer", "town": "Garden City"}, {"lat": 32.1014, "lng": -81.1243, "bucket": "mfg", "kind": "Paper mill", "town": "Savannah"}, {"lat": 32.0945, "lng": -81.1113, "bucket": "dist", "kind": "Distribution service", "town": "Savannah"}, {"lat": 32.3336, "lng": -80.9315, "bucket": "mfg", "kind": "Manufacturer", "town": "Ridgeland"}, {"lat": 32.0352, "lng": -81.0563, "bucket": "mfg", "kind": "Manufacturer", "town": "Savannah"}, {"lat": 31.7274, "lng": -81.7171, "bucket": "dist", "kind": "Wholesaler", "town": "Ludowici"}, {"lat": 32.2955, "lng": -80.9329, "bucket": "mfg", "kind": "Measuring instruments supplier", "town": "Bluffton"}, {"lat": 32.5305, "lng": -81.0152, "bucket": "mfg", "kind": "Metal fabricator", "town": "Ridgeland"}, {"lat": 32.3123, "lng": -81.236, "bucket": "mfg", "kind": "Metal fabricator", "town": "Rincon"}, {"lat": 32.1132, "lng": -81.1409, "bucket": "food", "kind": "Food manufacturing supply", "town": "Savannah"}, {"lat": 31.7765, "lng": -81.6344, "bucket": "chem", "kind": "Plastic fabrication company", "town": "Walthourville"}, {"lat": 32.2977, "lng": -81.0758, "bucket": "mfg", "kind": "Manufacturer", "town": "Hardeeville"}, {"lat": 32.1637, "lng": -81.2403, "bucket": "dist", "kind": "Water works equipment supplier", "town": "Savannah"}, {"lat": 32.0553, "lng": -81.1307, "bucket": "dist", "kind": "Distribution service", "town": "Savannah"}, {"lat": 32.0982, "lng": -81.1223, "bucket": "mfg", "kind": "Manufacturer", "town": "Savannah"}, {"lat": 32.2701, "lng": -80.8612, "bucket": "mfg", "kind": "Manufacturer", "town": "Bluffton"}, {"lat": 32.08, "lng": -81.1, "bucket": "mfg", "kind": "Manufacturer", "town": "Savannah"}, {"lat": 32.0844, "lng": -81.196, "bucket": "mfg", "kind": "Manufacturer", "town": "Savannah"}, {"lat": 32.1047, "lng": -81.2172, "bucket": "dist", "kind": "Wholesaler", "town": "Pooler"}, {"lat": 32.4798, "lng": -80.9822, "bucket": "mfg", "kind": "Manufacturer", "town": "Ridgeland"}, {"lat": 32.7001, "lng": -80.8625, "bucket": "chem", "kind": "Plastic fabrication company", "town": "Yemassee"}, {"lat": 31.9663, "lng": -81.3249, "bucket": "mfg", "kind": "Metal fabricator", "town": "Richmond Hill"}, {"lat": 32.03, "lng": -80.9656, "bucket": "dist", "kind": "Distribution service", "town": "Savannah"}, {"lat": 32.0592, "lng": -81.2045, "bucket": "food", "kind": "Food products supplier", "town": "Garden City"}, {"lat": 32.0817, "lng": -81.1255, "bucket": "mfg", "kind": "Manufacturer", "town": "Savannah"}, {"lat": 31.8425, "lng": -81.5826, "bucket": "food", "kind": "Food products supplier", "town": "Hinesville"}, {"lat": 32.0574, "lng": -81.089, "bucket": "food", "kind": "Food products supplier", "town": "Savannah"}, {"lat": 32.4868, "lng": -80.9835, "bucket": "mfg", "kind": "Manufacturer", "town": "Ridgeland"}, {"lat": 32.323, "lng": -81.2085, "bucket": "dist", "kind": "Distribution service", "town": "Rincon"}, {"lat": 32.103, "lng": -81.2144, "bucket": "mfg", "kind": "Manufacturer", "town": "Pooler"}, {"lat": 32.0585, "lng": -81.0974, "bucket": "mfg", "kind": "Manufacturer", "town": "Savannah"}, {"lat": 32.0886, "lng": -81.1172, "bucket": "mfg", "kind": "Aerospace company", "town": "Savannah"}, {"lat": 32.1096, "lng": -81.2214, "bucket": "mfg", "kind": "Manufacturer", "town": "Savannah"}, {"lat": 31.797, "lng": -81.4154, "bucket": "dist", "kind": "Distribution service", "town": "Midway"}, {"lat": 31.917, "lng": -81.3508, "bucket": "mfg", "kind": "Metal fabricator", "town": "Richmond Hill"}, {"lat": 32.7989, "lng": -81.504, "bucket": "agri", "kind": "Agricultural product wholesaler", "town": "Sylvania"}, {"lat": 32.5287, "lng": -81.0155, "bucket": "mfg", "kind": "Metal fabricator", "town": "Ridgeland"}, {"lat": 32.1025, "lng": -81.2058, "bucket": "chem", "kind": "Paper distributor", "town": "Pooler"}, {"lat": 32.3307, "lng": -81.2012, "bucket": "mfg", "kind": "Manufacturer", "town": "Rincon"}, {"lat": 32.2985, "lng": -81.0825, "bucket": "mfg", "kind": "Manufacturer", "town": "Hardeeville"}, {"lat": 32.4316, "lng": -80.6698, "bucket": "mfg", "kind": "Manufacturer", "town": "Beaufort"}, {"lat": 32.2984, "lng": -81.0841, "bucket": "mfg", "kind": "Paving materials supplier", "town": "Hardeeville"}, {"lat": 32.0357, "lng": -81.0675, "bucket": "food", "kind": "Food manufacturer", "town": "Savannah"}, {"lat": 32.1504, "lng": -81.152, "bucket": "dist", "kind": "Distribution service", "town": "Port Wentworth"}, {"lat": 31.9783, "lng": -81.1299, "bucket": "food", "kind": "Food products supplier", "town": "Savannah"}, {"lat": 32.1836, "lng": -81.1988, "bucket": "food", "kind": "Food products supplier", "town": "Port Wentworth"}, {"lat": 32.1027, "lng": -81.2168, "bucket": "mfg", "kind": "Manufacturer", "town": "Pooler"}, {"lat": 32.4265, "lng": -80.7397, "bucket": "food", "kind": "Beverage distributor", "town": "Beaufort"}, {"lat": 32.2971, "lng": -81.0783, "bucket": "food", "kind": "Meat processor", "town": "Hardeeville"}, {"lat": 32.1218, "lng": -81.1719, "bucket": "mfg", "kind": "Manufacturer", "town": "Savannah"}, {"lat": 32.1647, "lng": -81.2431, "bucket": "dist", "kind": "Distribution service", "town": "Pooler"}, {"lat": 32.2286, "lng": -80.6877, "bucket": "mfg", "kind": "Manufacturer", "town": "Hilton Head Island"}, {"lat": 32.4768, "lng": -81.7665, "bucket": "agri", "kind": "Grain elevator", "town": "Statesboro"}, {"lat": 32.2872, "lng": -81.0835, "bucket": "mfg", "kind": "Manufacturer", "town": "Hardeeville"}, {"lat": 32.0501, "lng": -81.1237, "bucket": "mfg", "kind": "Manufacturer", "town": "Savannah"}, {"lat": 32.1005, "lng": -81.227, "bucket": "chem", "kind": "Manufacturer", "town": "Pooler"}, {"lat": 32.2694, "lng": -80.8595, "bucket": "mfg", "kind": "Metal fabricator", "town": "Bluffton"}, {"lat": 32.1025, "lng": -81.2148, "bucket": "dist", "kind": "Distribution service", "town": "Pooler"}, {"lat": 32.2528, "lng": -80.866, "bucket": "mfg", "kind": "Manufacturer", "town": "Bluffton"}, {"lat": 32.2018, "lng": -81.1825, "bucket": "chem", "kind": "Chemical manufacturer", "town": "Port Wentworth"}, {"lat": 32.1133, "lng": -81.2166, "bucket": "mfg", "kind": "Manufacturer", "town": "Savannah"}, {"lat": 31.7734, "lng": -81.3556, "bucket": "dist", "kind": "Distribution service", "town": "Midway"}, {"lat": 31.9909, "lng": -81.2108, "bucket": "dist", "kind": "Fastener supplier", "town": "Savannah"}, {"lat": 32.0377, "lng": -81.0615, "bucket": "dist", "kind": "Distribution service", "town": "Savannah"}, {"lat": 32.252, "lng": -80.8152, "bucket": "food", "kind": "Food products supplier", "town": "Hilton Head Island"}, {"lat": 32.0844, "lng": -81.1086, "bucket": "mfg", "kind": "Manufacturer", "town": "Savannah"}, {"lat": 32.1641, "lng": -81.4607, "bucket": "mfg", "kind": "Manufacturer", "town": "Ellabell"}, {"lat": 32.4363, "lng": -80.7082, "bucket": "mfg", "kind": "Manufacturer", "town": "Beaufort"}, {"lat": 32.0954, "lng": -81.1384, "bucket": "dist", "kind": "Industrial equipment supplier", "town": "Savannah"}, {"lat": 32.4858, "lng": -81.7526, "bucket": "mfg", "kind": "Manufacturer", "town": "Statesboro"}, {"lat": 32.2418, "lng": -81.7757, "bucket": "food", "kind": "Meat processor", "town": "Nevils"}, {"lat": 32.1727, "lng": -81.1699, "bucket": "dist", "kind": "Distribution service", "town": "Savannah"}, {"lat": 32.1849, "lng": -81.46, "bucket": "mfg", "kind": "Manufacturer", "town": "Black Creek"}, {"lat": 32.1145, "lng": -81.2233, "bucket": "dist", "kind": "Distribution service", "town": "Savannah"}, {"lat": 32.0942, "lng": -81.1106, "bucket": "chem", "kind": "Oil & natural gas company", "town": "Savannah"}, {"lat": 32.0763, "lng": -81.0666, "bucket": "chem", "kind": "Chemical manufacturer", "town": "Savannah"}, {"lat": 32.0915, "lng": -81.1319, "bucket": "mfg", "kind": "Metal fabricator", "town": "Savannah"}, {"lat": 32.1201, "lng": -81.1918, "bucket": "mfg", "kind": "Manufacturer", "town": "Savannah"}, {"lat": 32.1726, "lng": -81.2647, "bucket": "dist", "kind": "Distribution service", "town": "Savannah"}, {"lat": 31.7688, "lng": -81.2866, "bucket": "mfg", "kind": "Manufacturer", "town": "Midway"}, {"lat": 31.9264, "lng": -81.9252, "bucket": "dist", "kind": "Distribution service", "town": "Glennville"}, {"lat": 32.1103, "lng": -81.2245, "bucket": "food", "kind": "Beverage distributor", "town": "Savannah"}, {"lat": 32.0026, "lng": -81.1055, "bucket": "mfg", "kind": "Manufacturer", "town": "Savannah"}, {"lat": 32.0985, "lng": -81.2307, "bucket": "mfg", "kind": "Railroad equipment supplier", "town": "Pooler"}, {"lat": 32.2126, "lng": -80.7001, "bucket": "mfg", "kind": "Metal fabricator", "town": "Hilton Head Island"}, {"lat": 32.1107, "lng": -81.2199, "bucket": "food", "kind": "Food processing company", "town": "Savannah"}, {"lat": 31.7437, "lng": -81.438, "bucket": "chem", "kind": "Manufacturer", "town": "Riceboro"}, {"lat": 31.7417, "lng": -81.4089, "bucket": "mfg", "kind": "Paper mill", "town": "Riceboro"}, {"lat": 32.1629, "lng": -80.7682, "bucket": "dist", "kind": "Wholesaler", "town": "Hilton Head Island"}, {"lat": 32.1582, "lng": -81.1564, "bucket": "mfg", "kind": "Manufacturer", "town": "PORT WENTWRTH"}, {"lat": 32.4104, "lng": -80.6451, "bucket": "mfg", "kind": "Manufacturer", "town": "Beaufort"}, {"lat": 32.3881, "lng": -81.8359, "bucket": "mfg", "kind": "Manufacturer", "town": "Statesboro"}, {"lat": 32.056, "lng": -81.0944, "bucket": "dist", "kind": "Distribution service", "town": "Savannah"}, {"lat": 32.2568, "lng": -80.8615, "bucket": "mfg", "kind": "Manufacturer", "town": "Bluffton"}, {"lat": 32.109, "lng": -81.2256, "bucket": "food", "kind": "Seafood wholesaler", "town": "Pooler"}, {"lat": 32.3372, "lng": -80.9298, "bucket": "mfg", "kind": "Building materials supplier", "town": "Ridgeland"}, {"lat": 32.8369, "lng": -81.0619, "bucket": "mfg", "kind": "Manufacturer", "town": "Varnville"}, {"lat": 32.3978, "lng": -80.578, "bucket": "food", "kind": "Manufacturer", "town": "St Helena Island"}, {"lat": 32.382, "lng": -81.8423, "bucket": "mfg", "kind": "Manufacturer", "town": "Statesboro"}, {"lat": 32.2964, "lng": -81.0784, "bucket": "dist", "kind": "Distribution service", "town": "Hardeeville"}, {"lat": 32.0896, "lng": -81.1601, "bucket": "mfg", "kind": "Manufacturer", "town": "Savannah"}, {"lat": 32.0815, "lng": -81.1374, "bucket": "chem", "kind": "Distribution service", "town": "Savannah"}, {"lat": 32.0525, "lng": -81.0991, "bucket": "food", "kind": "Food manufacturer", "town": "Savannah"}, {"lat": 32.0795, "lng": -81.2847, "bucket": "dist", "kind": "Distribution service", "town": "Pooler"}, {"lat": 31.781, "lng": -81.3547, "bucket": "mfg", "kind": "Manufacturer", "town": "Midway"}, {"lat": 32.1272, "lng": -81.3706, "bucket": "mfg", "kind": "Manufacturer", "town": "Bloomingdale"}, {"lat": 31.4725, "lng": -81.413, "bucket": "mfg", "kind": "Metal fabricator", "town": "Townsend"}, {"lat": 32.2105, "lng": -81.079, "bucket": "dist", "kind": "Distribution service", "town": "Hardeeville"}, {"lat": 32.4347, "lng": -80.7186, "bucket": "mfg", "kind": "Manufacturer", "town": "Beaufort"}, {"lat": 32.0763, "lng": -81.1535, "bucket": "mfg", "kind": "Manufacturer", "town": "Savannah"}, {"lat": 32.1675, "lng": -81.1991, "bucket": "dist", "kind": "Distribution service", "town": "Port Wentworth"}, {"lat": 32.1587, "lng": -81.162, "bucket": "mfg", "kind": "Paper mill", "town": "Savannah"}, {"lat": 32.6992, "lng": -80.8455, "bucket": "mfg", "kind": "Manufacturer", "town": "Yemassee"}, {"lat": 32.0772, "lng": -81.1307, "bucket": "food", "kind": "Beer distributor", "town": "Savannah"}, {"lat": 32.3785, "lng": -81.6631, "bucket": "mfg", "kind": "Manufacturer", "town": "Brooklet"}, {"lat": 32.047, "lng": -81.2903, "bucket": "food", "kind": "Meat processor", "town": "Savannah"}, {"lat": 32.1629, "lng": -81.4635, "bucket": "mfg", "kind": "Manufacturer", "town": "Black Creek"}, {"lat": 32.5293, "lng": -81.0158, "bucket": "dist", "kind": "Distribution service", "town": "Ridgeland"}, {"lat": 32.5275, "lng": -81.6778, "bucket": "mfg", "kind": "Manufacturer", "town": "Statesboro"}, {"lat": 32.087, "lng": -81.1644, "bucket": "food", "kind": "Beverage distributor", "town": "Savannah"}, {"lat": 32.0804, "lng": -81.0912, "bucket": "mfg", "kind": "Ammunition supplier", "town": "Savannah"}, {"lat": 32.4573, "lng": -81.7768, "bucket": "food", "kind": "Food manufacturer", "town": "Statesboro"}, {"lat": 32.1069, "lng": -81.1162, "bucket": "mfg", "kind": "Manufacturer", "town": "Savannah"}, {"lat": 31.9436, "lng": -81.3156, "bucket": "mfg", "kind": "Manufacturer", "town": "Richmond Hill"}, {"lat": 32.0593, "lng": -81.1641, "bucket": "dist", "kind": "Corporate office", "town": "Savannah"}, {"lat": 31.627, "lng": -81.3058, "bucket": "food", "kind": "Seafood wholesaler", "town": "Townsend"}, {"lat": 32.3478, "lng": -81.2835, "bucket": "dist", "kind": "Exporter", "town": "Springfield"}, {"lat": 32.2955, "lng": -80.9329, "bucket": "dist", "kind": "Wholesaler", "town": "Okatie"}, {"lat": 32.2274, "lng": -80.6974, "bucket": "mfg", "kind": "Metal fabricator", "town": "Hilton Head Island"}, {"lat": 32.0457, "lng": -81.147, "bucket": "mfg", "kind": "Manufacturer", "town": "Savannah"}, {"lat": 32.0558, "lng": -81.053, "bucket": "mfg", "kind": "Metal fabricator", "town": "Savannah"}, {"lat": 32.4512, "lng": -81.7903, "bucket": "agri", "kind": "Fertilizer supplier", "town": "Statesboro"}, {"lat": 32.0888, "lng": -81.1178, "bucket": "food", "kind": "Food products supplier", "town": "Savannah"}, {"lat": 32.2519, "lng": -81.2079, "bucket": "mfg", "kind": "Manufacturer", "town": "Rincon"}, {"lat": 32.2062, "lng": -81.0717, "bucket": "mfg", "kind": "Manufacturer", "town": "Hardeeville"}, {"lat": 32.0997, "lng": -81.1249, "bucket": "mfg", "kind": "Paper mill", "town": "Savannah"}, {"lat": 32.1213, "lng": -81.2352, "bucket": "mfg", "kind": "Manufacturer", "town": "Pooler"}, {"lat": 32.4075, "lng": -80.6371, "bucket": "mfg", "kind": "Packaging company", "town": "Beaufort"}, {"lat": 32.3282, "lng": -80.9338, "bucket": "dist", "kind": "Distribution service", "town": "Ridgeland"}, {"lat": 31.9397, "lng": -81.0519, "bucket": "agri", "kind": "Fertilizer supplier", "town": "Savannah"}, {"lat": 32.0833, "lng": -81.1296, "bucket": "mfg", "kind": "Manufacturer", "town": "Savannah"}, {"lat": 32.2227, "lng": -80.7047, "bucket": "dist", "kind": "Wholesaler", "town": "Hilton Head Island"}, {"lat": 32.1592, "lng": -81.441, "bucket": "mfg", "kind": "Manufacturer", "town": "Ellabell"}, {"lat": 32.1128, "lng": -81.2212, "bucket": "mfg", "kind": "Manufacturer", "town": "Savannah"}, {"lat": 32.0534, "lng": -81.1659, "bucket": "mfg", "kind": "Awning supplier", "town": "Savannah"}, {"lat": 32.3696, "lng": -81.2697, "bucket": "agri", "kind": "Fertilizer supplier", "town": "Springfield"}, {"lat": 32.0598, "lng": -81.1002, "bucket": "mfg", "kind": "Manufacturer", "town": "Savannah"}, {"lat": 32.4481, "lng": -81.3685, "bucket": "mfg", "kind": "Manufacturer", "town": "Springfield"}, {"lat": 32.4387, "lng": -80.7203, "bucket": "dist", "kind": "Wholesaler", "town": "Beaufort"}, {"lat": 32.2257, "lng": -80.702, "bucket": "mfg", "kind": "Manufacturer", "town": "Hilton Head Island"}, {"lat": 32.1816, "lng": -81.4516, "bucket": "mfg", "kind": "Manufacturer", "town": "Ellabell"}, {"lat": 32.0553, "lng": -81.128, "bucket": "dist", "kind": "Wholesaler", "town": "Savannah"}, {"lat": 32.7465, "lng": -81.2427, "bucket": "mfg", "kind": "Manufacturer", "town": "Estill"}, {"lat": 32.2223, "lng": -80.7017, "bucket": "dist", "kind": "Distribution service", "town": "Hilton Head Island"}, {"lat": 32.0841, "lng": -81.1602, "bucket": "mfg", "kind": "Recycling center", "town": "Garden City"}, {"lat": 32.318, "lng": -80.9385, "bucket": "dist", "kind": "Distribution service", "town": "Ridgeland"}, {"lat": 32.2643, "lng": -80.8606, "bucket": "dist", "kind": "Heating equipment supplier", "town": "Bluffton"}, {"lat": 32.2693, "lng": -80.8662, "bucket": "mfg", "kind": "Metal fabricator", "town": "Bluffton"}, {"lat": 32.335, "lng": -80.937, "bucket": "food", "kind": "Distribution service", "town": "Ridgeland"}, {"lat": 32.3912, "lng": -81.8167, "bucket": "food", "kind": "Beverage distributor", "town": "Statesboro"}, {"lat": 32.4521, "lng": -81.8031, "bucket": "mfg", "kind": "Iron works", "town": "Statesboro"}, {"lat": 32.2971, "lng": -81.077, "bucket": "food", "kind": "Food products supplier", "town": "Hardeeville"}, {"lat": 32.3821, "lng": -81.9378, "bucket": "mfg", "kind": "Manufacturer", "town": "Metter"}, {"lat": 32.059, "lng": -81.2103, "bucket": "mfg", "kind": "Metal supplier", "town": "Savannah"}, {"lat": 32.1043, "lng": -81.2217, "bucket": "food", "kind": "Food products supplier", "town": "Pooler"}, {"lat": 32.3018, "lng": -81.0808, "bucket": "mfg", "kind": "Packaging company", "town": "Hardeeville"}, {"lat": 32.5272, "lng": -81.0153, "bucket": "mfg", "kind": "Manufacturer", "town": "Ridgeland"}, {"lat": 31.9481, "lng": -81.9504, "bucket": "mfg", "kind": "Manufacturer", "town": "Glennville"}, {"lat": 32.3984, "lng": -81.8257, "bucket": "chem", "kind": "Corporate office", "town": "Statesboro"}, {"lat": 32.1648, "lng": -81.2117, "bucket": "mfg", "kind": "Trailer manufacturer", "town": "Savannah"}, {"lat": 32.0635, "lng": -81.1387, "bucket": "chem", "kind": "Fiberglass supplier", "town": "Savannah"}, {"lat": 32.1246, "lng": -81.1739, "bucket": "mfg", "kind": "Metal fabricator", "town": "Savannah"}, {"lat": 32.1615, "lng": -81.2749, "bucket": "mfg", "kind": "Manufacturer", "town": "Pooler"}, {"lat": 32.7566, "lng": -80.9383, "bucket": "chem", "kind": "Plastic fabrication company", "town": "Early Branch"}, {"lat": 32.0593, "lng": -81.1641, "bucket": "chem", "kind": "Distribution service", "town": "Savannah"}, {"lat": 32.3329, "lng": -81.2489, "bucket": "chem", "kind": "Chemical wholesaler", "town": "Rincon"}, {"lat": 32.1132, "lng": -80.8782, "bucket": "food", "kind": "Distillery", "town": "Daufuskie Island"}, {"lat": 32.3572, "lng": -80.898, "bucket": "food", "kind": "Food products supplier", "town": "Ridgeland"}, {"lat": 32.16, "lng": -81.206, "bucket": "dist", "kind": "Distribution service", "town": "Savannah"}, {"lat": 32.78, "lng": -81.239, "bucket": "chem", "kind": "Chemical plant", "town": "Estill"}, {"lat": 32.1806, "lng": -81.8896, "bucket": "mfg", "kind": "Manufacturer", "town": "Claxton"}, {"lat": 31.9815, "lng": -81.1517, "bucket": "food", "kind": "Food manufacturing supply", "town": "Savannah"}, {"lat": 32.1562, "lng": -81.4428, "bucket": "mfg", "kind": "Manufacturer", "town": "Ellabell"}, {"lat": 32.091, "lng": -81.1572, "bucket": "chem", "kind": "Industrial equipment supplier", "town": "Garden City"}, {"lat": 32.4583, "lng": -81.7863, "bucket": "dist", "kind": "Distribution service", "town": "Statesboro"}, {"lat": 32.3969, "lng": -81.6676, "bucket": "mfg", "kind": "Manufacturer", "town": "Brooklet"}, {"lat": 32.1637, "lng": -81.27, "bucket": "mfg", "kind": "Manufacturer", "town": "Pooler"}, {"lat": 32.1152, "lng": -81.1335, "bucket": "mfg", "kind": "Manufacturer", "town": "Savannah"}, {"lat": 32.3271, "lng": -80.9341, "bucket": "dist", "kind": "Distribution service", "town": "Ridgeland"}, {"lat": 32.0675, "lng": -81.1429, "bucket": "food", "kind": "Corporate office", "town": "Savannah"}, {"lat": 32.0861, "lng": -81.1399, "bucket": "food", "kind": "Food products supplier", "town": "Savannah"}, {"lat": 32.1745, "lng": -81.444, "bucket": "mfg", "kind": "Manufacturer", "town": "Ellabell"}, {"lat": 32.0741, "lng": -81.0989, "bucket": "dist", "kind": "Wholesaler", "town": "Savannah"}, {"lat": 32.1235, "lng": -81.2641, "bucket": "chem", "kind": "Wholesaler", "town": "Pooler"}, {"lat": 32.0899, "lng": -81.1598, "bucket": "mfg", "kind": "Manufacturer", "town": "Savannah"}, {"lat": 32.4307, "lng": -80.7704, "bucket": "mfg", "kind": "Manufacturer", "town": "Beaufort"}, {"lat": 32.7463, "lng": -81.2423, "bucket": "chem", "kind": "Plastic fabrication company", "town": "Estill"}, {"lat": 32.5349, "lng": -81.0156, "bucket": "mfg", "kind": "Manufacturer", "town": "Ridgeland"}, {"lat": 32.1305, "lng": -81.168, "bucket": "mfg", "kind": "Metal fabricator", "town": "Savannah"}, {"lat": 32.1433, "lng": -81.1855, "bucket": "mfg", "kind": "Manufacturer", "town": "Savannah"}, {"lat": 32.2389, "lng": -80.8556, "bucket": "mfg", "kind": "Manufacturer", "town": "Bluffton"}, {"lat": 32.1154, "lng": -81.2174, "bucket": "mfg", "kind": "Machinery parts manufacturer", "town": "Savannah"}, {"lat": 32.1133, "lng": -81.1645, "bucket": "mfg", "kind": "Manufacturer", "town": "Garden City"}, {"lat": 31.957, "lng": -81.0991, "bucket": "dist", "kind": "Distribution service", "town": "Savannah"}, {"lat": 32.0989, "lng": -81.1943, "bucket": "mfg", "kind": "Manufacturer", "town": "Garden City"}, {"lat": 32.0596, "lng": -81.1552, "bucket": "food", "kind": "Food products supplier", "town": "Savannah"}, {"lat": 31.7836, "lng": -81.3539, "bucket": "mfg", "kind": "Manufacturer", "town": "Midway"}, {"lat": 32.3962, "lng": -81.8335, "bucket": "mfg", "kind": "Trailer manufacturer", "town": "Statesboro"}, {"lat": 32.1009, "lng": -81.3568, "bucket": "mfg", "kind": "Manufacturer", "town": "Bloomingdale"}, {"lat": 32.1119, "lng": -81.1625, "bucket": "dist", "kind": "Steel distributor", "town": "Garden City"}, {"lat": 31.9487, "lng": -81.9521, "bucket": "mfg", "kind": "Manufacturer", "town": "Glennville"}, {"lat": 32.2341, "lng": -80.8701, "bucket": "food", "kind": "Manufacturer", "town": "Bluffton"}, {"lat": 32.1094, "lng": -81.2174, "bucket": "dist", "kind": "Distribution service", "town": "Savannah"}, {"lat": 32.0772, "lng": -81.1599, "bucket": "dist", "kind": "Supplier", "town": "Savannah"}, {"lat": 32.4425, "lng": -81.7846, "bucket": "food", "kind": "Food products supplier", "town": "Statesboro"}, {"lat": 32.3328, "lng": -81.2535, "bucket": "mfg", "kind": "Manufacturer", "town": "Rincon"}, {"lat": 31.9361, "lng": -81.928, "bucket": "mfg", "kind": "Manufacturer", "town": "Glennville"}, {"lat": 32.2112, "lng": -81.0708, "bucket": "food", "kind": "Distribution service", "town": "Hardeeville"}, {"lat": 31.9629, "lng": -81.3228, "bucket": "mfg", "kind": "Manufacturer", "town": "Richmond Hill"}, {"lat": 32.3217, "lng": -81.1096, "bucket": "mfg", "kind": "Manufacturer", "town": "Hardeeville"}, {"lat": 32.1158, "lng": -81.1309, "bucket": "mfg", "kind": "Manufacturer", "town": "Garden City"}, {"lat": 32.0746, "lng": -81.066, "bucket": "agri", "kind": "Fertilizer supplier", "town": "Savannah"}, {"lat": 32.1165, "lng": -81.2224, "bucket": "mfg", "kind": "Manufacturer", "town": "Savannah"}, {"lat": 32.093, "lng": -81.1831, "bucket": "mfg", "kind": "Manufacturer", "town": "Savannah"}, {"lat": 32.129, "lng": -81.1751, "bucket": "mfg", "kind": "Fastener supplier", "town": "Garden City"}, {"lat": 32.0976, "lng": -81.194, "bucket": "mfg", "kind": "Manufacturer", "town": "Garden City"}, {"lat": 32.0237, "lng": -80.961, "bucket": "chem", "kind": "Wholesaler", "town": "Savannah"}, {"lat": 31.9618, "lng": -81.3243, "bucket": "mfg", "kind": "Manufacturer", "town": "Richmond Hill"}, {"lat": 32.126, "lng": -81.1737, "bucket": "mfg", "kind": "Metal fabricator", "town": "Garden City"}, {"lat": 32.3937, "lng": -80.681, "bucket": "mfg", "kind": "Manufacturer", "town": "Port Royal"}, {"lat": 32.0988, "lng": -81.217, "bucket": "dist", "kind": "Building materials supplier", "town": "Pooler"}, {"lat": 32.3315, "lng": -81.3945, "bucket": "mfg", "kind": "Metal fabricator", "town": "Guyton"}, {"lat": 32.1821, "lng": -81.4528, "bucket": "mfg", "kind": "Manufacturer", "town": "Black Creek"}, {"lat": 32.2096, "lng": -81.0766, "bucket": "dist", "kind": "Distribution service", "town": "Hardeeville"}, {"lat": 32.1503, "lng": -81.9541, "bucket": "mfg", "kind": "Manufacturer", "town": "Claxton"}, {"lat": 32.0015, "lng": -81.1379, "bucket": "chem", "kind": "Pharmaceutical company", "town": "Savannah"}, {"lat": 32.1062, "lng": -81.2284, "bucket": "mfg", "kind": "Aerospace company", "town": "Pooler"}, {"lat": 32.8518, "lng": -81.1196, "bucket": "mfg", "kind": "Metal fabricator", "town": "Hampton"}, {"lat": 32.1093, "lng": -81.2217, "bucket": "mfg", "kind": "Manufacturer", "town": "Savannah"}, {"lat": 32.1229, "lng": -81.1769, "bucket": "dist", "kind": "Distribution service", "town": "Savannah"}, {"lat": 32.0886, "lng": -81.1493, "bucket": "chem", "kind": "Chemical plant", "town": "Savannah"}, {"lat": 32.079, "lng": -81.1344, "bucket": "mfg", "kind": "Industrial equipment supplier", "town": "Savannah"}, {"lat": 31.5394, "lng": -81.437, "bucket": "food", "kind": "Seafood wholesaler", "town": "Townsend"}, {"lat": 32.1559, "lng": -81.1633, "bucket": "mfg", "kind": "Paper mill", "town": "Savannah"}, {"lat": 32.4858, "lng": -80.6012, "bucket": "food", "kind": "Seafood wholesaler", "town": "Beaufort"}, {"lat": 32.1432, "lng": -81.1486, "bucket": "food", "kind": "Manufacturer", "town": "Port Wentworth"}, {"lat": 32.0836, "lng": -81.1462, "bucket": "mfg", "kind": "Manufacturer", "town": "Savannah"}, {"lat": 32.0369, "lng": -81.06, "bucket": "mfg", "kind": "Manufacturer", "town": "Savannah"}, {"lat": 31.9841, "lng": -81.1727, "bucket": "dist", "kind": "Wholesaler", "town": "Savannah"}, {"lat": 32.0899, "lng": -81.1598, "bucket": "mfg", "kind": "Manufacturer", "town": "Savannah"}, {"lat": 32.0767, "lng": -81.0529, "bucket": "mfg", "kind": "Manufacturer", "town": "Savannah"}, {"lat": 32.3383, "lng": -81.8144, "bucket": "agri", "kind": "Grain elevator", "town": "Statesboro"}, {"lat": 32.0731, "lng": -81.061, "bucket": "agri", "kind": "Manufacturer", "town": "Savannah"}, {"lat": 32.4283, "lng": -80.775, "bucket": "dist", "kind": "Wholesaler", "town": "Beaufort"}, {"lat": 32.4668, "lng": -80.7606, "bucket": "mfg", "kind": "Manufacturer", "town": "Beaufort"}, {"lat": 32.1637, "lng": -81.27, "bucket": "mfg", "kind": "Manufacturer", "town": "Pooler"}, {"lat": 32.2458, "lng": -81.2208, "bucket": "dist", "kind": "Wholesaler", "town": "Rincon"}, {"lat": 32.0556, "lng": -81.2126, "bucket": "dist", "kind": "E-commerce service", "town": "Savannah"}, {"lat": 31.8046, "lng": -81.4206, "bucket": "dist", "kind": "Wholesaler", "town": "Midway"}, {"lat": 32.2457, "lng": -81.2002, "bucket": "mfg", "kind": "Manufacturer", "town": "Rincon"}, {"lat": 31.9832, "lng": -81.0665, "bucket": "mfg", "kind": "Repair service", "town": "Savannah"}, {"lat": 32.1567, "lng": -80.755, "bucket": "dist", "kind": "Wholesaler", "town": "Hilton Head Island"}, {"lat": 32.0593, "lng": -81.1641, "bucket": "chem", "kind": "Oil & natural gas company", "town": "Savannah"}, {"lat": 32.149, "lng": -81.3564, "bucket": "mfg", "kind": "Paper mill", "town": "Bloomingdale"}, {"lat": 32.1235, "lng": -81.4857, "bucket": "mfg", "kind": "Manufacturer", "town": "Ellabell"}, {"lat": 32.0668, "lng": -81.0934, "bucket": "food", "kind": "Food processing company", "town": "Savannah"}, {"lat": 31.9282, "lng": -81.9551, "bucket": "mfg", "kind": "Manufacturer", "town": "Glennville"}, {"lat": 32.1587, "lng": -81.4458, "bucket": "mfg", "kind": "Manufacturer", "town": "Ellabell"}, {"lat": 32.2228, "lng": -80.7014, "bucket": "dist", "kind": "Wholesaler", "town": "Hilton Head Island"}, {"lat": 32.1298, "lng": -81.1702, "bucket": "mfg", "kind": "Manufacturer", "town": "Savannah"}, {"lat": 32.0782, "lng": -81.1599, "bucket": "dist", "kind": "Wholesaler", "town": "Savannah"}, {"lat": 31.6245, "lng": -81.304, "bucket": "food", "kind": "Seafood wholesaler", "town": "Townsend"}, {"lat": 32.0714, "lng": -81.0389, "bucket": "mfg", "kind": "Manufacturer", "town": "Savannah"}, {"lat": 32.1579, "lng": -81.4422, "bucket": "mfg", "kind": "Manufacturer", "town": "Ellabell"}, {"lat": 32.0823, "lng": -81.3716, "bucket": "mfg", "kind": "Steel fabricator", "town": "Bloomingdale"}, {"lat": 31.8715, "lng": -81.4408, "bucket": "mfg", "kind": "Building materials supplier", "town": "Fleming"}], "heat": [[32.0967, -81.1243], [32.4813, -80.7405], [32.251, -81.2064], [32.1249, -81.1747], [32.0357, -81.09], [32.1984, -80.7592], [32.2527, -80.8663], [32.4714, -80.9869], [32.151, -81.2297], [32.1067, -81.2267], [32.3993, -81.6741], [32.1897, -81.4678], [32.8457, -81.0799], [32.7462, -80.9483], [32.3567, -81.6555], [32.1144, -81.2251], [32.3819, -81.85], [32.6797, -81.2442], [32.2334, -81.2081], [32.1631, -80.7653], [32.4429, -80.6942], [32.3809, -81.838], [32.4869, -81.7487], [31.7975, -81.412], [32.0824, -81.0941], [32.1523, -81.3525], [32.3275, -80.933], [32.095, -81.1215], [32.7279, -81.6558], [32.0027, -81.1043], [32.1405, -81.2234], [32.0753, -81.0656], [31.9423, -81.3138], [32.1136, -81.2926], [31.9823, -81.125], [32.0905, -81.1348], [32.4386, -81.3711], [32.3321, -81.3937], [32.1037, -81.1284], [32.7541, -81.246], [32.1005, -81.2238], [31.5352, -81.3621], [32.1333, -81.2527], [32.054, -81.1268], [32.4355, -80.6793], [32.1378, -81.1931], [32.3026, -81.868], [31.7451, -81.4394], [32.3962, -81.825], [32.3817, -81.8463], [31.9766, -81.0613], [32.1485, -81.6276], [31.4787, -81.3428], [32.1124, -81.2256], [32.1431, -81.186], [32.1435, -81.954], [32.0636, -81.1004], [32.0536, -81.1228], [32.4136, -81.6425], [32.1775, -81.4511], [32.0636, -81.0481], [32.1964, -81.1758], [32.0787, -81.1335], [32.2778, -80.9257], [32.0626, -81.0476], [32.0897, -81.1253], [32.1226, -81.1747], [32.1014, -81.1243], [32.0945, -81.1113], [32.3336, -80.9315], [32.0352, -81.0563], [31.7274, -81.7171], [32.2955, -80.9329], [32.5305, -81.0152], [32.3123, -81.236], [32.1132, -81.1409], [31.7765, -81.6344], [32.2977, -81.0758], [32.1637, -81.2403], [32.0553, -81.1307], [32.0982, -81.1223], [32.2701, -80.8612], [32.08, -81.1], [32.0844, -81.196], [32.1047, -81.2172], [32.4798, -80.9822], [32.7001, -80.8625], [31.9663, -81.3249], [32.03, -80.9656], [32.0592, -81.2045], [32.0817, -81.1255], [31.8425, -81.5826], [32.0574, -81.089], [32.4868, -80.9835], [32.323, -81.2085], [32.103, -81.2144], [32.0585, -81.0974], [32.0886, -81.1172], [32.1096, -81.2214], [31.797, -81.4154], [31.917, -81.3508], [32.7989, -81.504], [32.5287, -81.0155], [32.1025, -81.2058], [32.3307, -81.2012], [32.2985, -81.0825], [32.4316, -80.6698], [32.2984, -81.0841], [32.0357, -81.0675], [32.1504, -81.152], [31.9783, -81.1299], [32.1836, -81.1988], [32.1027, -81.2168], [32.4265, -80.7397], [32.2971, -81.0783], [32.1218, -81.1719], [32.1647, -81.2431], [32.2286, -80.6877], [32.4768, -81.7665], [32.2872, -81.0835], [32.0501, -81.1237], [32.1005, -81.227], [32.2694, -80.8595], [32.1025, -81.2148], [32.2528, -80.866], [32.2018, -81.1825], [32.1133, -81.2166], [31.7734, -81.3556], [31.9909, -81.2108], [32.0377, -81.0615], [32.252, -80.8152], [32.0844, -81.1086], [32.1641, -81.4607], [32.4363, -80.7082], [32.0954, -81.1384], [32.4858, -81.7526], [32.2418, -81.7757], [32.1727, -81.1699], [32.1849, -81.46], [32.1145, -81.2233], [32.0942, -81.1106], [32.0763, -81.0666], [32.0915, -81.1319], [32.1201, -81.1918], [32.1726, -81.2647], [31.7688, -81.2866], [31.9264, -81.9252], [32.1103, -81.2245], [32.0026, -81.1055], [32.0985, -81.2307], [32.2126, -80.7001], [32.1107, -81.2199], [31.7437, -81.438], [31.7417, -81.4089], [32.1629, -80.7682], [32.1582, -81.1564], [32.4104, -80.6451], [32.3881, -81.8359], [32.056, -81.0944], [32.2568, -80.8615], [32.109, -81.2256], [32.3372, -80.9298], [32.8369, -81.0619], [32.3978, -80.578], [32.382, -81.8423], [32.2964, -81.0784], [32.0896, -81.1601], [32.0815, -81.1374], [32.0525, -81.0991], [32.0795, -81.2847], [31.781, -81.3547], [32.1272, -81.3706], [31.4725, -81.413], [32.2105, -81.079], [32.4347, -80.7186], [32.0763, -81.1535], [32.1675, -81.1991], [32.1587, -81.162], [32.6992, -80.8455], [32.0772, -81.1307], [32.3785, -81.6631], [32.047, -81.2903], [32.1629, -81.4635], [32.5293, -81.0158], [32.5275, -81.6778], [32.087, -81.1644], [32.0804, -81.0912], [32.4573, -81.7768], [32.1069, -81.1162], [31.9436, -81.3156], [32.0593, -81.1641], [31.627, -81.3058], [32.3478, -81.2835], [32.2955, -80.9329], [32.2274, -80.6974], [32.0457, -81.147], [32.0558, -81.053], [32.4512, -81.7903], [32.0888, -81.1178], [32.2519, -81.2079], [32.2062, -81.0717], [32.0997, -81.1249], [32.1213, -81.2352], [32.4075, -80.6371], [32.3282, -80.9338], [31.9397, -81.0519], [32.0833, -81.1296], [32.2227, -80.7047], [32.1592, -81.441], [32.1128, -81.2212], [32.0534, -81.1659], [32.3696, -81.2697], [32.0598, -81.1002], [32.4481, -81.3685], [32.4387, -80.7203], [32.2257, -80.702], [32.1816, -81.4516], [32.0553, -81.128], [32.7465, -81.2427], [32.2223, -80.7017], [32.0841, -81.1602], [32.318, -80.9385], [32.2643, -80.8606], [32.2693, -80.8662], [32.335, -80.937], [32.3912, -81.8167], [32.4521, -81.8031], [32.2971, -81.077], [32.3821, -81.9378], [32.059, -81.2103], [32.1043, -81.2217], [32.3018, -81.0808], [32.5272, -81.0153], [31.9481, -81.9504], [32.3984, -81.8257], [32.1648, -81.2117], [32.0635, -81.1387], [32.1246, -81.1739], [32.1615, -81.2749], [32.7566, -80.9383], [32.0593, -81.1641], [32.3329, -81.2489], [32.1132, -80.8782], [32.3572, -80.898], [32.16, -81.206], [32.78, -81.239], [32.1806, -81.8896], [31.9815, -81.1517], [32.1562, -81.4428], [32.091, -81.1572], [32.4583, -81.7863], [32.3969, -81.6676], [32.1637, -81.27], [32.1152, -81.1335], [32.3271, -80.9341], [32.0675, -81.1429], [32.0861, -81.1399], [32.1745, -81.444], [32.0741, -81.0989], [32.1235, -81.2641], [32.0899, -81.1598], [32.4307, -80.7704], [32.7463, -81.2423], [32.5349, -81.0156], [32.1305, -81.168], [32.1433, -81.1855], [32.2389, -80.8556], [32.1154, -81.2174], [32.1133, -81.1645], [31.957, -81.0991], [32.0989, -81.1943], [32.0596, -81.1552], [31.7836, -81.3539], [32.3962, -81.8335], [32.1009, -81.3568], [32.1119, -81.1625], [31.9487, -81.9521], [32.2341, -80.8701], [32.1094, -81.2174], [32.0772, -81.1599], [32.4425, -81.7846], [32.3328, -81.2535], [31.9361, -81.928], [32.2112, -81.0708], [31.9629, -81.3228], [32.3217, -81.1096], [32.1158, -81.1309], [32.0746, -81.066], [32.1165, -81.2224], [32.093, -81.1831], [32.129, -81.1751], [32.0976, -81.194], [32.0237, -80.961], [31.9618, -81.3243], [32.126, -81.1737], [32.3937, -80.681], [32.0988, -81.217], [32.3315, -81.3945], [32.1821, -81.4528], [32.2096, -81.0766], [32.1503, -81.9541], [32.0015, -81.1379], [32.1062, -81.2284], [32.8518, -81.1196], [32.1093, -81.2217], [32.1229, -81.1769], [32.0886, -81.1493], [32.079, -81.1344], [31.5394, -81.437], [32.1559, -81.1633], [32.4858, -80.6012], [32.1432, -81.1486], [32.0836, -81.1462], [32.0369, -81.06], [31.9841, -81.1727], [32.0899, -81.1598], [32.0767, -81.0529], [32.3383, -81.8144], [32.0731, -81.061], [32.4283, -80.775], [32.4668, -80.7606], [32.1637, -81.27], [32.2458, -81.2208], [32.0556, -81.2126], [31.8046, -81.4206], [32.2457, -81.2002], [31.9832, -81.0665], [32.1567, -80.755], [32.0593, -81.1641], [32.149, -81.3564], [32.1235, -81.4857], [32.0668, -81.0934], [31.9282, -81.9551], [32.1587, -81.4458], [32.2228, -80.7014], [32.1298, -81.1702], [32.0782, -81.1599], [31.6245, -81.304], [32.0714, -81.0389], [32.1579, -81.4422], [32.0823, -81.3716], [31.8715, -81.4408]], "spotlights": [{"lat": 32.2033813, "lng": -81.0648356, "bucket": "mfg", "area": "Hardeeville, SC", "name": "TS Conductor", "address": "216 Industrial Ct, Hardeeville, SC 29927", "phone": "+18664377728", "phone_label": "(866) 437-7728", "headline": "Opened a $134M plant 9 miles from your warehouse in May", "evidence": "Phase one fills 300,000+ sq ft; later phases could add up to 1 million sq ft, and they say they may expand into a nearby open factory. Output is planned to grow up to 20x their first plant.", "link": "https://www.wtoc.com/2026/05/13/ts-conductor-opens-134m-manufacturing-plant-hardeeville-plans-hire-hundreds/", "link_label": "WTOC, May 13, 2026 \u2192"}, {"lat": 32.3328369, "lng": -81.253513, "bucket": "mfg", "area": "Rincon, GA", "name": "Georgia Transformer", "address": "2789 GA-21, Rincon, GA 31326", "phone": "+19127545300", "phone_label": "(912) 754-5300", "headline": "Adding 400 jobs and ~70% more output, finishing around your February opening", "evidence": "Expansion started January 2026 and is set to complete \"in one year\", including new on-site material handling and supply chain systems.", "link": "https://www.prnewswire.com/news-releases/virginia-transformer-to-expand-georgia-transformer-plant-in-rincon-ga-to-further-bolster-1-position-in-the-industry-and-shortest-lead-times-302621868.html", "link_label": "Press release, Nov 20, 2025 \u2192"}, {"lat": 32.303418, "lng": -81.1911851, "bucket": "mfg", "area": "Rincon, GA", "name": "Sewon America", "address": "1000 Sewon EV Rd, Rincon, GA 31326", "phone": "+19128880112", "phone_label": "(912) 888-0112", "headline": "Hyundai Metaplant supplier, expanding twice this year", "evidence": "Finished a $50M, 100,000 sq ft expansion in May (100 jobs). In July told Rincon council the next expansion is \"intended to increase the company's assembly-area capacity.\"", "link": "https://www.wtoc.com/2026/05/01/new-50m-plant-expansion-brings-100-jobs-boosts-ev-industry-effingham-county/", "link_label": "WTOC, May 1, 2026 \u2192"}], "arrivals": [{"lat": 32.367768, "lng": -81.6549936, "kicker": "New facility \u00b7 Brooklet", "name": "American Aero", "evidence": "Broke ground March 24 on a new 45,000 sq ft facility; plans to grow to 300 employees.", "link": "https://www.griceconnect.com/local-news/american-aero-breaks-ground-on-new-45000-square-foot-facility-in-brooklet-plans-expansion-to-300-employees-12052423", "link_label": "Grice Connect, March 2026 \u2192"}], "competitors": [{"name": "Capital Development Partners", "detail": "leased 1.1 million sq ft near the port to a major U.S. manufacturer (May)"}, {"name": "SLM Global", "detail": "took a once-vacant port warehouse at 150 Portside Ct, CoStar's Savannah \"lease of the year\" (March)"}, {"name": "Commonwealth Wholesale", "detail": "importer, leased 56,000+ sq ft near the port for inbound distribution (April)"}, {"name": "Home Depot", "detail": "bought a Savannah distribution center (April)"}], "copy": {"title": "Your 300,000 sq ft, and who could fill it.", "sub": "Every manufacturer, processor and distributor within 50 miles of your Savannah warehouse, plus the plants opening and expanding around it right now.", "kpis": [["342", "manufacturers, processors and distributors within 50 miles", ""], ["4", "plants opening or expanding in your radius this year", "dark"], ["1.1M", "sq ft leased near the port in a single deal this May", ""], ["15,000", "pallet positions you open in February", "dark"]], "toggle_targets": "Market", "panel_cats": "Within 50 miles", "panel_spots": "Growing right now", "hint": "Every business in the category within 50 miles that ships product, not retail. Names withheld; the list comes with the pilot.", "withheld": "Name shared once the pilot starts.", "mapnote": {"targets": "342 businesses \u00b7 names withheld \u00b7 \u25c6 new or expanding plants", "density": "Where the market sits", "both": "Market over density"}, "comp_title": "Space near the port is moving", "comp_intro": "Tenants are signing around the port this year. The companies that fill space in February are deciding now.", "next_text": "I go after the plants that are growing now: their output rises before their storage does. The moment one is evaluating space, you get the name, the need and the timing, and take the call yourself.", "next_terms": ["$1,000 pilot", "3-4 qualified intros", "30-60 days", "10% on close"], "footer": "Sources: Google Maps business listings and public announcements, pulled {generated}. Names of the 342 withheld; the full list comes with the pilot."}, "proposal": {"eyebrow": "CRC Global Solutions x SystemHustle", "title": "Filling your Savannah space before February", "lead": "The plan we discussed, in one place.", "blocks": [{"title": "Where you are", "items": ["300,000 sq ft (~15,000 pallets) opens in your Savannah building in Q1 2027, when the current tenant leaves.", "You would rather split it across 3-4 companies at 4,000-5,000 pallets each than depend on one big tenant again.", "Today new tenants come from door-to-door, the Chamber and referrals: slow, and hard to time to a specific opening."]}, {"title": "What I do", "items": ["Watch the manufacturers and distributors on this map for real signals: new plants, expansions, relocations, output growth.", "Reach out first, and confirm need, volume, timing and who decides before anything reaches you.", "You only talk to companies that are evaluating warehouse space for your window."]}], "terms": [["Pilot", "$1,000 flat, one-time, 30-60 days"], ["Deliverable", "3-4 qualified introductions: companies evaluating space in Savannah"], ["On close", "10% of first-year contract value, paid once at signing"], ["Ongoing", "No retainer, nothing else unless it converts"]], "timeline": [["Week 1", "Pilot starts. First outreach to the growing plants on this map."], ["Weeks 2-3", "First qualified conversations reach you."], ["Oct - Dec", "3-4 companies in talks for your space."], ["February", "Space opens with tenants already lined up."]]}}</script>
+<script>
+(function () {
+  const D = JSON.parse(document.getElementById('market-data').textContent);
+  const fmt = n => (n == null ? '' : n.toLocaleString('en-US'));
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const bucketBy = Object.fromEntries(D.buckets.map(b => [b.key, b]));
+  const miles = D.client.radius_mi;
+
+  const CP = D.copy || {};
+  const pick = (k, dflt) => (CP[k] !== undefined ? CP[k] : dflt);
+  document.title = 'Market Map — ' + D.client.company;
+  document.getElementById('e-client').textContent = 'Prepared for ' + D.client.person;
+  document.getElementById('h-title').textContent = pick('title', 'Your ' + miles + '-mile radius, mapped.');
+  document.getElementById('h-sub').textContent = pick('sub', 'Every business around ' + D.client.center.label + ' that runs trucks or heavy equipment — and the first 100 I’d go after for ' + D.client.company.replace(/ of .*/, '') + '.');
+  if (CP.toggle_targets) document.getElementById('t-targets').textContent = CP.toggle_targets;
+  if (CP.panel_cats) document.getElementById('p-cats').textContent = CP.panel_cats;
+  if (CP.panel_spots) document.getElementById('p-spots').textContent = CP.panel_spots;
+
+  const k = D.totals;
+  document.getElementById('kpis').innerHTML = pick('kpis', [
+    [fmt(k.core), 'businesses running trucks or heavy equipment in your radius', ''],
+    ['+' + fmt(k.extra), 'more in towing, propane, septic and equipment rental', 'dark'],
+    [fmt(k.hiring), 'local fleets posting for a diesel or fleet mechanic right now', ''],
+    [fmt(k.targets), 'first-wave targets on the map, picked by fleet signals', 'dark']
+  ]).map(([n, l, c]) => '<div class="kpi"><div class="num ' + c + '">' + n + '</div><div class="lbl">' + l + '</div></div>').join('');
+
+  const map = L.map('map', { zoomControl: false, scrollWheelZoom: false, attributionControl: true, zoomSnap: 0.1, zoomDelta: 0.5 });
+  L.control.zoom({ position: 'topright' }).addTo(map);
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 18,
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+  }).addTo(map);
+  map.on('click', () => map.scrollWheelZoom.enable());
+
+  const c = D.client.center;
+  const radiusM = miles * 1609.34;
+  const radiusBounds = L.latLng(c.lat, c.lng).toBounds(radiusM * 2);
+  map.fitBounds(radiusBounds, { padding: [6, 6] });
+  new ResizeObserver(() => { map.invalidateSize(); map.fitBounds(radiusBounds, { padding: [6, 6] }); }).observe(document.querySelector('.mapcard'));
+  L.circle([c.lat, c.lng], { radius: radiusM, color: '#23261f', weight: 1.5, dashArray: '6 7', fillColor: '#23261f', fillOpacity: 0.035, interactive: false }).addTo(map);
+
+  const heat = L.heatLayer(D.heat, {
+    radius: 16, blur: 20, maxZoom: 12, minOpacity: 0.25,
+    gradient: { 0.15: '#efe3c6', 0.4: '#e0bd7c', 0.65: '#c48d3c', 0.85: '#9a5f22', 1: '#5e3410' }
+  });
+
+  const targetLayer = L.layerGroup().addTo(map);
+  const markers = D.targets.map(t => {
+    const b = bucketBy[t.bucket];
+    const m = L.circleMarker([t.lat, t.lng], { radius: 6.5, weight: 1.6, color: '#ffffff', fillColor: b.color, fillOpacity: 0.95 });
+    m.bindPopup('<div class="pp-k">' + esc(b.label) + '</div><div class="pp-t">' + esc(t.kind) + (t.town ? ' · ' + esc(t.town) : '') + '</div><div class="pp-n">' + esc(pick('withheld', 'Name shared once the pilot starts.')) + '</div>', { closeButton: false, maxWidth: 240 });
+    m._bucket = t.bucket;
+    return m;
+  });
+  const active = new Set(D.buckets.map(b => b.key));
+  function drawTargets() {
+    targetLayer.clearLayers();
+    markers.forEach(m => { if (active.has(m._bucket)) targetLayer.addLayer(m); });
+  }
+  drawTargets();
+
+  (D.client.shops || []).forEach(s => {
+    L.marker([s.lat, s.lng], { icon: L.divIcon({ className: '', html: '<div class="shop"></div>', iconSize: [16, 16], iconAnchor: [8, 8] }), zIndexOffset: 900, keyboard: false })
+      .bindTooltip(s.tag ? s.tag : (window.innerWidth < 640 ? 'Your shop' : 'Your shop \u00b7 ' + s.label.replace(/ shop$/i, '').replace('North ', 'N. ')), { permanent: true, direction: s.dir || (s.lng > c.lng ? 'right' : 'left'), offset: [(s.dir || (s.lng > c.lng ? 'right' : 'left')) === 'right' ? 10 : -10, 0], className: 'shoplbl' })
+      .addTo(map);
+  });
+
+  (D.landmarks || []).forEach(s => {
+    L.marker([s.lat, s.lng], { icon: L.divIcon({ className: '', html: '<div class="lmk"></div>', iconSize: [12, 12], iconAnchor: [6, 6] }), zIndexOffset: 800, keyboard: false })
+      .bindTooltip(s.label, { permanent: true, direction: s.dir || 'right', offset: [s.dir === 'left' ? -8 : 8, 0], className: 'lmklbl' })
+      .addTo(map);
+  });
+
+  (D.arrivals || []).forEach(a => {
+    L.marker([a.lat, a.lng], { icon: L.divIcon({ className: '', html: '<div class="arr"></div>', iconSize: [14, 14], iconAnchor: [7, 7] }), zIndexOffset: 950 })
+      .bindPopup('<div class="pp-k">' + esc(a.kicker) + '</div><div class="pp-t">' + esc(a.name) + '</div><div class="pp-e">' + esc(a.evidence) + '</div>' + (a.link ? '<div class="pp-l"><a href="' + esc(a.link) + '" target="_blank" rel="noopener">' + esc(a.link_label || 'Read the announcement →') + '</a></div>' : ''), { maxWidth: 290 })
+      .addTo(map);
+  });
+
+  function contactHtml(s, cls) {
+    const parts = [];
+    if (s.phone) parts.push('<a class="tel" href="tel:' + esc(s.phone) + '">' + esc(s.phone_label || s.phone) + '</a>');
+    if (s.link) parts.push('<a href="' + esc(s.link) + '" target="_blank" rel="noopener">' + esc(s.link_label || 'View the job posting →') + '</a>');
+    const addr = s.address ? esc(s.address) + '<br>' : '';
+    return parts.length || addr ? '<div class="' + cls + '">' + addr + parts.join(' &nbsp;·&nbsp; ') + '</div>' : '';
+  }
+
+  const spotMarkers = D.spotlights.map((s, i) => {
+    const b = bucketBy[s.bucket];
+    const icon = L.divIcon({ className: '', html: '<div class="spin"><div class="ring"></div><div class="core">' + (i + 1) + '</div></div>', iconSize: [30, 30], iconAnchor: [15, 15] });
+    return L.marker([s.lat, s.lng], { icon, zIndexOffset: 1000 })
+      .bindPopup('<div class="pp-k">' + esc(b.label) + ' · ' + esc(s.area) + '</div><div class="pp-t">' + esc(s.name || s.headline) + '</div>' + (s.name ? '<div class="pp-n">' + esc(s.headline) + '</div>' : '') + '<div class="pp-e">' + esc(s.evidence) + '</div>' + contactHtml(s, 'pp-l'), { maxWidth: 290 })
+      .addTo(map);
+  });
+
+  const maxCount = Math.max(...D.buckets.map(b => b.count));
+  const catsEl = document.getElementById('cats');
+  catsEl.innerHTML = D.buckets.map(b =>
+    '<div class="cat" data-k="' + b.key + '" style="color:' + b.color + '"><span class="sw" style="background:' + b.color + '"></span>' +
+    '<span class="nm" style="color:var(--ink)">' + esc(b.label) + '</span><span class="ct" style="color:var(--ink)">' + fmt(b.count) + '</span>' +
+    '<span class="bar"><i style="width:' + (b.count / maxCount * 100).toFixed(1) + '%;background:' + b.color + '"></i></span></div>'
+  ).join('') + '<p class="hint">' + esc(pick('hint', 'Counts are every business in the category within ' + miles + ' miles. Dots are the first 100 to contact.')) + '</p>';
+  catsEl.querySelectorAll('.cat').forEach(el => el.addEventListener('click', () => {
+    const key = el.dataset.k;
+    if (active.size === D.buckets.length) { active.clear(); active.add(key); }
+    else if (active.has(key) && active.size === 1) { D.buckets.forEach(b => active.add(b.key)); }
+    else if (active.has(key)) active.delete(key);
+    else active.add(key);
+    catsEl.querySelectorAll('.cat').forEach(x => x.classList.toggle('off', !active.has(x.dataset.k)));
+    drawTargets();
+  }));
+
+  const spotsEl = document.getElementById('spots');
+  spotsEl.innerHTML = D.spotlights.map((s, i) =>
+    '<div class="spot" data-i="' + i + '"><div class="n">' + (i + 1) + '</div><div><div class="ar">' + esc(bucketBy[s.bucket].label) + ' · ' + esc(s.area) + '</div>' +
+    (s.name ? '<div class="co">' + esc(s.name) + '</div>' : '') + '<div class="sh">' + esc(s.headline) + '</div><div class="ev">' + esc(s.evidence) + '</div>' + contactHtml(s, 'ct2') + '</div></div>'
+  ).join('');
+  spotsEl.querySelectorAll('.spot').forEach(el => el.addEventListener('click', (ev) => {
+    if (ev.target.closest('a')) return;
+    const m = spotMarkers[+el.dataset.i];
+    map.flyTo(m.getLatLng(), 11, { duration: 0.8 });
+    setTimeout(() => m.openPopup(), 850);
+    if (window.innerWidth < 960) document.getElementById('map').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }));
+
+  const note = document.getElementById('mapnote');
+  function setMode(mode) {
+    document.querySelectorAll('#toggle button').forEach(b => b.classList.toggle('on', b.dataset.mode === mode));
+    if (mode === 'targets' || mode === 'both') { if (!map.hasLayer(targetLayer)) targetLayer.addTo(map); } else map.removeLayer(targetLayer);
+    if (mode === 'density' || mode === 'both') { if (!map.hasLayer(heat)) heat.addTo(map); } else map.removeLayer(heat);
+    const MN = pick('mapnote', {});
+    note.textContent = mode === 'targets' ? (MN.targets || D.totals.targets + ' first-wave targets · names withheld')
+      : mode === 'density' ? (MN.density || 'Density of ' + fmt(D.totals.sampled) + ' mapped listings')
+      : (MN.both || 'First 100 over market density');
+  }
+  document.querySelectorAll('#toggle button').forEach(b => b.addEventListener('click', () => setMode(b.dataset.mode)));
+  setMode('targets');
+
+  document.getElementById('comp').innerHTML = '<h3>' + esc(pick('comp_title', 'The market is moving')) + '</h3>' +
+    '<p>' + esc(pick('comp_intro', 'Mobile fleet maintenance outfits are staffing up in ' + c.label + ' this month — the demand is there, and they know it.')) + '</p>' +
+    '<ul>' + D.competitors.map(x => '<li><b>' + esc(x.name) + '</b> <span>— ' + esc(x.detail) + '</span></li>').join('') + '</ul>';
+
+  document.getElementById('next').innerHTML = '<h3 class="mono" style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;margin:0 0 12px;font-weight:600">What happens next</h3>' +
+    '<p>' + esc(pick('next_text', 'These 100 are wave one. Each gets looked at and a personal message — the moment one says yes, you get their name and number and call them yourself.')) + '</p>' +
+    '<div class="terms">' + pick('next_terms', ['$1,500 pilot', '5 qualified intros', '1–2 months', 'money-back']).map(t => '<span>' + esc(t) + '</span>').join('') + '</div>';
+
+  const PR = D.proposal;
+  if (PR) {
+    document.getElementById('proposal').innerHTML = '<section class="prop">' +
+      '<div class="prop-h"><div class="eyebrow"><span><b>Proposal</b></span><span>' + esc(PR.eyebrow || '') + '</span></div><h2>' + esc(PR.title) + '</h2>' + (PR.lead ? '<p class="sub">' + esc(PR.lead) + '</p>' : '') + '</div>' +
+      '<div class="prop-cols">' + PR.blocks.map(b => '<div class="prop-b"><h3>' + esc(b.title) + '</h3><ul>' + b.items.map(x => '<li>' + esc(x) + '</li>').join('') + '</ul></div>').join('') + '</div>' +
+      '<div class="prop-terms">' + PR.terms.map(([t, v]) => '<div class="pt"><div class="pt-k">' + esc(t) + '</div><div class="pt-v">' + esc(v) + '</div></div>').join('') + '</div>' +
+      (PR.timeline ? '<div class="prop-tl">' + PR.timeline.map(([d, t]) => '<div class="tl"><div class="tl-d">' + esc(d) + '</div><div class="tl-t">' + esc(t) + '</div></div>').join('') + '</div>' : '') +
+      '</section>';
+  }
+
+  document.getElementById('f-src').textContent = pick('footer', 'Sources: Google Maps business listings and public job postings, pulled ' + D.generated + '. Names of the first 100 withheld — the full list comes with the pilot.').replace('{generated}', D.generated);
+})();
+</script>
+</body>
+</html>

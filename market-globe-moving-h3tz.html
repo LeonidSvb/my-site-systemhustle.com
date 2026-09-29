@@ -411,7 +411,7 @@
 </script>
 <script>
 /* View tracking (skill market-map): open, visible time, scroll depth, clicks -> Command Center; Clarity for recordings.
-   Open once with ?me=1 to mark your own browser as internal (recorded, never reported to the CRM agent). */
+   Our own views are recognised by the server (sh_me cookie from the Command Center, team IPs, our servers); ?me=1 is the manual fallback. */
 (function () {
   var slug = location.pathname.split('/').pop().replace(/\.html$/, '');
   if (!/^market-/.test(slug)) return;
@@ -419,7 +419,7 @@
   function rid() { return window.crypto && crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 12); }
   function store(k, v) { try { if (v !== undefined) localStorage.setItem(k, v); return localStorage.getItem(k); } catch (e) { var m = document.cookie.match(new RegExp(k + '=([^;]+)')); if (v !== undefined) document.cookie = k + '=' + v + ';max-age=31536000;path=/;SameSite=Lax'; return v !== undefined ? v : m && m[1]; } }
   if (/[?&]me=1/.test(location.search)) store('sh_internal', '1');
-  var visitor = store('sh_vid') || store('sh_vid', rid()), internal = store('sh_internal') === '1';
+  var visitor = store('sh_vid') || store('sh_vid', rid()), internal = store('sh_internal') === '1' || /(?:^|;\s*)sh_me=1/.test(document.cookie);
   var view, shownAt, visibleMs, maxScroll, scrolled, hiddenAt = 0, t0 = Date.now();
   function send(type, extra) {
     var ms = visibleMs + (shownAt ? Date.now() - shownAt : 0), b = { view_id: view, visitor_id: visitor, slug: slug, type: type, visible_ms: ms, max_scroll_pct: maxScroll, user_scrolled: scrolled, internal: internal, referrer: document.referrer, screen_w: screen.width };

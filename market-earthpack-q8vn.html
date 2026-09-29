@@ -409,5 +409,48 @@
   document.getElementById('f-src').textContent = pick('footer', 'Sources: Google Maps business listings and public job postings, pulled ' + D.generated + '. Names of the first 100 withheld — the full list comes with the pilot.').replace('{generated}', D.generated);
 })();
 </script>
+<script>
+/* View tracking (skill market-map): open, visible time, scroll depth, clicks -> Command Center; Clarity for recordings.
+   Open once with ?me=1 to mark your own browser as internal (recorded, never reported to the CRM agent). */
+(function () {
+  var slug = location.pathname.split('/').pop().replace(/\.html$/, '');
+  if (!/^market-/.test(slug)) return;
+  var API = 'https://app.systemhustle.com/api/market-map/beacon';
+  function rid() { return window.crypto && crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 12); }
+  function store(k, v) { try { if (v !== undefined) localStorage.setItem(k, v); return localStorage.getItem(k); } catch (e) { var m = document.cookie.match(new RegExp(k + '=([^;]+)')); if (v !== undefined) document.cookie = k + '=' + v + ';max-age=31536000;path=/;SameSite=Lax'; return v !== undefined ? v : m && m[1]; } }
+  if (/[?&]me=1/.test(location.search)) store('sh_internal', '1');
+  var visitor = store('sh_vid') || store('sh_vid', rid()), internal = store('sh_internal') === '1';
+  var view, shownAt, visibleMs, maxScroll, scrolled, hiddenAt = 0, t0 = Date.now();
+  function send(type, extra) {
+    var ms = visibleMs + (shownAt ? Date.now() - shownAt : 0), b = { view_id: view, visitor_id: visitor, slug: slug, type: type, visible_ms: ms, max_scroll_pct: maxScroll, user_scrolled: scrolled, internal: internal, referrer: document.referrer, screen_w: screen.width };
+    for (var k in extra) b[k] = extra[k];
+    var body = JSON.stringify(b);
+    if (!(navigator.sendBeacon && navigator.sendBeacon(API, body))) fetch(API, { method: 'POST', body: body, keepalive: true, mode: 'no-cors' });
+  }
+  function start() { view = rid(); visibleMs = 0; maxScroll = 0; scrolled = false; shownAt = document.visibilityState === 'visible' ? Date.now() : 0; onScroll(); send('open'); }
+  function onScroll() {
+    var h = document.documentElement, pct = Math.min(100, Math.round((scrollY + innerHeight) / h.scrollHeight * 100));
+    if (pct > maxScroll) maxScroll = pct;
+    if (scrollY > 80) scrolled = true;
+  }
+  addEventListener('scroll', onScroll, { passive: true });
+  document.addEventListener('visibilitychange', function () {
+    if (document.visibilityState === 'hidden') { if (shownAt) { visibleMs += Date.now() - shownAt; shownAt = 0; } hiddenAt = Date.now(); send('hide'); }
+    else if (hiddenAt && Date.now() - hiddenAt > 30 * 60000) start();
+    else shownAt = Date.now();
+  });
+  addEventListener('pagehide', function () { if (shownAt) send('hide'); });
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('a, button');
+    if (a) send('click', { clicks: [{ href: a.getAttribute('href'), text: (a.innerText || a.getAttribute('aria-label') || '').trim().slice(0, 80), at_ms: Date.now() - t0 }] });
+  }, true);
+  setInterval(function () { if (shownAt && Date.now() - t0 < 60 * 60000) send('ping'); }, 15000);
+  start();
+  (function (c, l, a, r, i, t, y) { c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) }; t = l.createElement(r); t.async = 1; t.src = 'https://www.clarity.ms/tag/' + i; y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y); })(window, document, 'clarity', 'script', 'yptg226vi1');
+  clarity('set', 'map', slug);
+  clarity('identify', visitor);
+  if (internal) clarity('set', 'internal', '1');
+})();
+</script>
 </body>
 </html>

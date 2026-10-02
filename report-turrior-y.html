@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Turrior: пилот, 2 недели</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f7f7f5;--card:#ffffff;--text:#1a1a1a;--muted:#6b6b6b;--line:#e6e4df;--accent:#2f5bea;--accent-soft:#eaf0ff;--good:#1f8a4c;--good-soft:#e7f5ec;--warn:#a86a00;--warn-soft:#fff4dd;--bad:#b3261e;--bad-soft:#fdecea}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#121212;--card:#1c1c1c;--text:#ececec;--muted:#9a9a9a;--line:#2c2c2c;--accent:#7f9cff;--accent-soft:#1e2640;--good:#5cc98a;--good-soft:#16281e;--warn:#e0a640;--warn-soft:#2b2312;--bad:#ef7b72;--bad-soft:#2e1a18}}
+:root[data-theme="dark"]{--bg:#121212;--card:#1c1c1c;--text:#ececec;--muted:#9a9a9a;--line:#2c2c2c;--accent:#7f9cff;--accent-soft:#1e2640;--good:#5cc98a;--good-soft:#16281e;--warn:#e0a640;--warn-soft:#2b2312;--bad:#ef7b72;--bad-soft:#2e1a18}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,sans-serif;font-size:16px;line-height:1.55}
+.wrap{max-width:820px;margin:0 auto;padding:32px 16px 64px}
+header{margin-bottom:28px}
+.eyebrow{font-size:13px;color:var(--muted);letter-spacing:.04em;text-transform:uppercase}
+h1{font-size:30px;line-height:1.2;margin:6px 0 10px;font-weight:700}
+h2{font-size:21px;margin:0 0 14px;font-weight:650}
+h3{font-size:16px;margin:0 0 6px;font-weight:600}
+p{margin:0 0 10px}
+.muted{color:var(--muted)}
+section{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px 20px;margin-bottom:18px}
+.lead-box{background:var(--accent-soft);border-color:transparent}
+.lead-box ol{margin:0;padding-left:20px}
+.lead-box li{margin-bottom:6px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:14px}
+.tile{border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.tile .n{font-size:26px;font-weight:700;line-height:1.1}
+.tile .l{font-size:13px;color:var(--muted)}
+.tbl{width:100%;border-collapse:collapse;font-size:14.5px}
+.tbl th{text-align:left;font-weight:600;color:var(--muted);font-size:11.5px;text-transform:uppercase;letter-spacing:.02em;padding:8px 6px;border-bottom:1px solid var(--line)}
+.tbl td{padding:9px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+.tbl tr:last-child td{border-bottom:none}
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.num{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+.pill{display:inline-block;font-size:12.5px;font-weight:600;padding:2px 9px;border-radius:999px}
+.p-good{background:var(--good-soft);color:var(--good)}
+.p-warn{background:var(--warn-soft);color:var(--warn)}
+.p-bad{background:var(--bad-soft);color:var(--bad)}
+.p-new{background:var(--accent-soft);color:var(--accent)}
+.seg{border-left:3px solid var(--line);padding:4px 0 4px 14px;margin-bottom:16px}
+.seg.good{border-color:var(--good)}.seg.warn{border-color:var(--warn)}.seg.new{border-color:var(--accent)}
+.obj{display:grid;grid-template-columns:1fr;gap:12px}
+.obj .q{font-style:italic}
+.obj .item{border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.obj .lbl{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.03em;margin-top:6px}
+.timeline{list-style:none;margin:0;padding:0}
+.timeline li{display:grid;grid-template-columns:110px 1fr;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}
+.timeline li:last-child{border-bottom:none}
+.timeline .d{font-weight:600;font-size:14px}
+.asks{margin:0;padding-left:20px}
+.asks li{margin-bottom:10px}
+.bar{display:flex;align-items:center;gap:8px}.bar i{display:block;height:8px;border-radius:4px;background:var(--accent);min-width:3px}.bar span{font-variant-numeric:tabular-nums;white-space:nowrap;font-size:13.5px}
+.cta{display:block;text-align:center;background:var(--accent);color:#fff;text-decoration:none;font-weight:600;padding:14px 18px;border-radius:12px;margin-top:6px}
+:root[data-theme="dark"] .cta{color:#0b0b0b}@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .cta{color:#0b0b0b}}
+footer{color:var(--muted);font-size:13px;text-align:center;margin-top:24px}
+@media (max-width:520px){h1{font-size:25px}.timeline li{grid-template-columns:1fr;gap:2px}section{padding:18px 16px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="eyebrow">Turrior × System Hustle · пилот 17 Sep - 2 Oct</div>
+  <h1>Что сделали за две недели, что поняли и что дальше</h1>
+  <p class="muted">Email и LinkedIn. Цифры на 2 октября.</p>
+</header>
+
+<section class="lead-box">
+  <h2>Главное</h2>
+  <ol>
+    <li>Запустили email по двум сегментам (BPO и staffing) и LinkedIn с двух аккаунтов. Отправлено 4,181 письмо, 5 заинтересованных ответов.</li>
+    <li>Подходящие агентства мы выбрали из глобальной базы почти целиком, и все они уже в работе. Для масштаба нужен сегмент шире.</li>
+    <li>Основной объём дальше - компании, которые сами массово нанимают удалённо. Тестируем 12 таких сегментов по 1,000 человек, лучшие масштабируем. 40,000 писем закрываем примерно за месяц-полтора.</li>
+  </ol>
+</section>
+
+<section>
+  <h2>Цифры</h2>
+  <div class="tiles">
+    <div class="tile"><div class="n">4,181</div><div class="l">писем отправлено</div></div>
+    <div class="tile"><div class="n">2,350</div><div class="l">компаний в кампаниях</div></div>
+    <div class="tile"><div class="n">5</div><div class="l">заинтересованных по email</div></div>
+    <div class="tile"><div class="n">17 / 225</div><div class="l">ответов в LinkedIn (7.6%)</div></div>
+  </div>
+  <div class="scroll">
+  <table class="tbl">
+    <tr><th>Кампания</th><th class="num">Лидов</th><th class="num">Писем</th><th class="num">Интерес</th></tr>
+    <tr><td>BPO · дополнительный канал под вакансии</td><td class="num">671</td><td class="num">1,658</td><td class="num">3</td></tr>
+    <tr><td>BPO · источник кандидатов, а не скрининг</td><td class="num">705</td><td class="num">1,856</td><td class="num">1</td></tr>
+    <tr><td>Staffing · дополнительный канал (с 1 Oct)</td><td class="num">1,217</td><td class="num">370</td><td class="num">1</td></tr>
+    <tr><td>Staffing · «знаю ребят», рекомендация (с 1 Oct)</td><td class="num">1,218</td><td class="num">294</td><td class="num">0</td></tr>
+  </table>
+  </div>
+  <p class="muted" style="margin-top:12px">Staffing-кампании стартовали вчера, по ним итоги через неделю. В LinkedIn тёплые сообщения по контактам Марины и вашим дали 17 ответов на 225. Холодные коннекты и InMail стартовали 1 октября.</p>
+</section>
+
+<section>
+  <h2>Сегменты: что поняли</h2>
+
+  <div class="seg good">
+    <h3>BPO и колл-центры <span class="pill p-warn">рабочий, не прорыв</span></h3>
+    <p>1,376 руководителей, отсюда 4 из 5 заинтересованных. Сегмент живой и в тест его брать стоило, но масштабировать только его смысла нет: объём ограничен, а отклик средний.</p>
+  </div>
+
+  <div class="seg warn">
+    <h3>Staffing и рекрутинговые агентства <span class="pill p-warn">выбрали почти всё</span></h3>
+    <p>Прошли по глобальной базе на ~480 млн контактов и проверили каждое агентство: ставит ли оно людей удалённо или только на месте, ищет ли офисные роли или только топ-менеджеров. Подошли около 2,000 агентств, и все они уже в кампаниях. Ещё можно доскрести по сусекам, но это хвосты, а не новый объём: дальше основной рост в сегменте ниже.</p>
+  </div>
+
+  <div class="seg new">
+    <h3>Компании, которые сами массово нанимают удалённо <span class="pill p-new">основной объём</span></h3>
+    <p>Здесь рынок большой. Только в выбранных нишах, только в компаниях на 11-200 человек и только руководители с проверенным email - уже около 61,000 контактов в США и Канаде. Шире есть другие ниши, размеры компаний и роли. Начинаем с отраслей, где удалённый бэк-офис уже норма:</p>
+    <div class="scroll">
+    <table class="tbl">
+      <tr><th>Сегмент и кого нанимают удалённо</th><th style="width:38%">ЛПР в базе</th></tr>
+      <tr><td><b style="font-weight:600">Инвесторы в недвижимость</b><br><span class="muted" style="font-size:13.5px">обзвонщики, ассистенты по сделкам</span></td><td><div class="bar"><i style="width:7%"></i><span>1,442</span></div></td></tr>
+      <tr><td><b style="font-weight:600">Управление недвижимостью</b><br><span class="muted" style="font-size:13.5px">leasing, поддержка жильцов, координаторы ремонта</span></td><td><div class="bar"><i style="width:7%"></i><span>1,357</span></div></td></tr>
+      <tr><td><b style="font-weight:600">Страховые агентства</b><br><span class="muted" style="font-size:13.5px">сервис полисов, продажи</span></td><td><div class="bar"><i style="width:10%"></i><span>~2,000</span></div></td></tr>
+      <tr><td><b style="font-weight:600">Бухгалтерия, CPA</b><br><span class="muted" style="font-size:13.5px">налоговики, бухгалтеры к сезону</span></td><td><div class="bar"><i style="width:10%"></i><span>~1,900</span></div></td></tr>
+      <tr><td><b style="font-weight:600">Software</b><br><span class="muted" style="font-size:13.5px">разработчики, QA, поддержка</span></td><td><div class="bar"><i style="width:100%"></i><span>19,508</span></div></td></tr>
+      <tr><td><b style="font-weight:600">Маркетинговые агентства</b><br><span class="muted" style="font-size:13.5px">SEO, PPC, контент, дизайн</span></td><td><div class="bar"><i style="width:93%"></i><span>18,052</span></div></td></tr>
+      <tr><td><b style="font-weight:600">Ипотека</b><br><span class="muted" style="font-size:13.5px">процессоры</span></td><td><div class="bar"><i style="width:2%"></i><span>451</span></div></td></tr>
+      <tr><td><b style="font-weight:600">Брокерские команды</b><br><span class="muted" style="font-size:13.5px">координаторы сделок, ISA (не агенты)</span></td><td><div class="bar"><i style="width:4%"></i><span>787</span></div></td></tr>
+      <tr><td><b style="font-weight:600">Life / final expense</b><br><span class="muted" style="font-size:13.5px">сеттеры, обзвон</span></td><td><div class="bar"><i style="width:3%"></i><span>581</span></div></td></tr>
+      <tr><td><b style="font-weight:600">Claims / TPA</b><br><span class="muted" style="font-size:13.5px">обработка заявок</span></td><td><div class="bar"><i style="width:2%"></i><span>459</span></div></td></tr>
+      <tr><td><b style="font-weight:600">Компании с открытыми вакансиями</b><br><span class="muted" style="font-size:13.5px">по сигналу найма</span></td><td><div class="bar"><i style="width:10%"></i><span>2,041</span></div></td></tr>
+    </table>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>Что говорят люди и что мы из этого взяли</h2>
+  <div class="obj">
+    <div class="item">
+      <div class="q">«У нас сильный HR, сами справляемся»</div>
+      <div class="lbl">отвечаем</div>
+      <p>Лучше всего это работает как раз с сильным HR: первый скрининг снят, команда тратит время только на тех, кого стоит звать на интервью. Попробуйте на одной вакансии, первые 20 бесплатно.</p>
+      <div class="lbl">вывод</div>
+      <p>В письмах не противопоставляем себя HR, продаём время команды.</p>
+    </div>
+    <div class="item">
+      <div class="q">«У вас свои сотрудники? Какой акцент, какое образование?»</div>
+      <div class="lbl">вывод</div>
+      <p>Часть людей думает, что мы агентство, которое сдаёт людей в аренду. В новых текстах прямо пишем: вы нанимаете сами, мы находим и отсеиваем кандидатов.</p>
+    </div>
+    <div class="item">
+      <div class="q">«Найм - это не ко мне»</div>
+      <div class="lbl">вывод</div>
+      <p>Пишем только основателям, CEO и COO. Рекрутёров и HR-исполнителей не берём: решение о подписке принимает не рекрутёр.</p>
+    </div>
+    <div class="item">
+      <div class="q">«Можем созвониться?» (компания нанимала людей на месте в Техасе)</div>
+      <div class="lbl">вывод</div>
+      <p>После вашего фидбэка добавили проверку «нанимает ли компания удалённо» до отправки, а при просьбе о звонке сначала спрашиваем, какие роли и удалённо ли. Только после этого зовём на демо.</p>
+    </div>
+    <div class="item">
+      <div class="q">«Как это работает?»</div>
+      <div class="lbl">вывод</div>
+      <p>Короткое объяснение в два предложения и сразу ссылка на регистрацию. Демо предлагаем, только если остались вопросы.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>Тексты: что тестировали и что дальше</h2>
+  <div class="scroll">
+  <table class="tbl">
+    <tr><th>Заход</th><th>Итог</th></tr>
+    <tr><td>Дополнительный канал под вакансии<br><span class="muted" style="font-size:13.5px">BPO, staffing</span></td><td><span class="pill p-good">4 из 5 заинтересованных</span></td></tr>
+    <tr><td>Источник кандидатов, а не скрининг<br><span class="muted" style="font-size:13.5px">BPO</span></td><td><span class="pill p-warn">1 заинтересованный</span></td></tr>
+    <tr><td>«Знаю ребят» - рекомендация без продажи в первом письме<br><span class="muted" style="font-size:13.5px">staffing, дальше in-house</span></td><td><span class="pill p-new">идёт с 1 Oct</span></td></tr>
+    <tr><td>Прямой оффер: первые 20 бесплатно, дальше $1<br><span class="muted" style="font-size:13.5px">все новые сегменты</span></td><td><span class="pill p-new">следующий</span></td></tr>
+    <tr><td>Любопытство: короткий вопрос «нанимаете удалённо?», дальше разговор ведём мы<br><span class="muted" style="font-size:13.5px">все новые сегменты</span></td><td><span class="pill p-new">следующий</span></td></tr>
+  </table>
+  </div>
+  <p style="margin-top:12px"><b>По цепочке.</b> Третье письмо не дало ни одного заинтересованного (0 из 882 отправок), второе дало 2 из 5. Третье убираем, второе оставляем. На тесте сегментов шлём только первое письмо: так каждый сегмент читается за 5 дней, а не за 3 недели, и за пилот мы успеваем проверить в 2-3 раза больше. Второе письмо получают те, кто не ответил в сегментах-победителях.</p>
+</section>
+
+<section>
+  <h2>Ответы на письма</h2>
+  <p>Ответы ведёт наша система: отвечает в течение минут, днём и ночью, отрабатывает возражения и ведёт к регистрации. Первые две недели она работала на базовых настройках: задача была собрать реальные переписки по вашему рынку, и в части диалогов она отвечала не идеально.</p>
+  <p>Со следующей недели доводим её до ума на всех собранных разговорах: каждого заинтересованного дожимать до регистрации или демо, точно отвечать на возражения вашего рынка, не терять тех, кто замолчал. Цель - работать лучше живого SDR.</p>
+</section>
+
+<section>
+  <h2>План и сроки</h2>
+  <ul class="timeline">
+    <li><span class="d">3-10 Oct</span><span>Запуск 12 сегментов по 1,000 человек, первое письмо, два захода в каждом. Обновлённая система ответов.</span></li>
+    <li><span class="d">10-17 Oct</span><span>Первые итоги по каждому сегменту. Пустые закрываем, в живых переписываем тексты.</span></li>
+    <li><span class="d">17 Oct - начало Nov</span><span>Весь объём в 2-3 лучших сегмента, второе письмо тем, кто не ответил. Лучшие лиды с открытым профилем - в LinkedIn InMail.</span></li>
+    <li><span class="d">к середине Nov</span><span>40,000 писем отправлены. Под вас выделяем около 1,000 писем в день, ещё ящики прогреваются, так что можем закончить и раньше.</span></li>
+  </ul>
+  <p class="muted" style="margin-top:12px">Правило решения по сегменту на 1,000 человек: 5+ заинтересованных - масштабируем, 2-4 - переписываем тексты и даём ещё тысячу, 0-1 - закрываем.</p>
+</section>
+
+<section>
+  <h2>Что нужно от вас</h2>
+  <ol class="asks">
+    <li><b>Промокод или регистрация без карты</b> для наших лидов. Это главный аргумент в заходе «знаю ребят».</li>
+    <li><b>Сигнал о регистрации в тот же день.</b> Мы дожимаем каждого заинтересованного несколькими касаниями, и важно не писать тем, кто уже зарегистрировался. Проще всего - одна строчка у вашего разработчика: при регистрации отправлять нам email нового пользователя. Если это долго, на первое время отметки вручную в нашей системе (пункт 4).</li>
+    <li><b>Ещё 3 LinkedIn-аккаунта</b> (по договору до 5). У поставщика около $50 в месяц за аккаунт против ~$130 через Aimfox. Новым аккаунтам нужен прогрев около двух недель, поэтому лучше подключать сейчас.</li>
+    <li><b>Отметки по лидам.</b> Даём вам доступ в нашу систему: там видны все кампании, ответы и переписка с каждым лидом. Добавляем страницу, где по каждому заинтересованному можно отметить: был на демо, зарегистрировался, оплатил, не целевой, и оставить комментарий. По этим отметкам останавливаем дожим и поправляем таргетинг.</li>
+    <li><b>Созвон на 20 минут</b>, чтобы пройтись по сегментам и ответить на ваши вопросы.</li>
+  </ol>
+  <a class="cta" href="https://cal.com/systemhustle/call">Выбрать время для созвона</a>
+</section>
+
+<footer>System Hustle · 2 Oct 2026</footer>
+</div>
+</body>
+</html>

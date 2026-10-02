@@ -55,6 +55,8 @@ section{background:var(--card);border:1px solid var(--line);border-radius:14px;p
 .bar{display:flex;align-items:center;gap:8px}.bar i{display:block;height:8px;border-radius:4px;background:var(--accent);min-width:3px}.bar span{font-variant-numeric:tabular-nums;white-space:nowrap;font-size:13.5px}
 .cta{display:block;text-align:center;background:var(--accent);color:#fff;text-decoration:none;font-weight:600;padding:14px 18px;border-radius:12px;margin-top:6px}
 :root[data-theme="dark"] .cta{color:#0b0b0b}@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .cta{color:#0b0b0b}}
+.toc{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 18px}.toc a{font-size:14px;font-weight:500;color:var(--text);text-decoration:none;border:1px solid var(--line);background:var(--card);border-radius:999px;padding:6px 12px}
+html{scroll-behavior:smooth}section{scroll-margin-top:12px}
 footer{color:var(--muted);font-size:13px;text-align:center;margin-top:24px}
 @media (max-width:520px){h1{font-size:25px}.timeline li{grid-template-columns:1fr;gap:2px}section{padding:18px 16px}}
 </style>
@@ -67,8 +69,10 @@ footer{color:var(--muted);font-size:13px;text-align:center;margin-top:24px}
   <h1>Что сделали за две недели, что поняли и что дальше</h1>
   <p class="muted">Email и LinkedIn. Цифры на 2 октября.</p>
 </header>
+<nav class="toc"><a href="#numbers">Цифры</a><a href="#segments">Сегменты</a><a href="#objections">Возражения</a><a href="#copy">Тексты</a><a href="#target">Цель</a><a href="#plan">План</a><a href="#asks">Что нужно от вас</a></nav>
 
-<section class="lead-box">
+
+<section id="main" class="lead-box">
   <h2>Главное</h2>
   <ol>
     <li>Запустили email по двум сегментам (BPO и staffing) и LinkedIn с двух аккаунтов. Отправлено 4,181 письмо, 5 заинтересованных ответов.</li>
@@ -77,7 +81,7 @@ footer{color:var(--muted);font-size:13px;text-align:center;margin-top:24px}
   </ol>
 </section>
 
-<section>
+<section id="numbers">
   <h2>Цифры</h2>
   <div class="tiles">
     <div class="tile"><div class="n">4,181</div><div class="l">писем отправлено</div></div>
@@ -97,7 +101,7 @@ footer{color:var(--muted);font-size:13px;text-align:center;margin-top:24px}
   <p class="muted" style="margin-top:12px">Staffing-кампании стартовали вчера, по ним итоги через неделю. В LinkedIn тёплые сообщения по контактам Марины и вашим дали 17 ответов на 225. Холодные коннекты и InMail стартовали 1 октября.</p>
 </section>
 
-<section>
+<section id="segments">
   <h2>Сегменты: что поняли</h2>
 
   <div class="seg good">
@@ -132,7 +136,7 @@ footer{color:var(--muted);font-size:13px;text-align:center;margin-top:24px}
   </div>
 </section>
 
-<section>
+<section id="objections">
   <h2>Что говорят люди и что мы из этого взяли</h2>
   <div class="obj">
     <div class="item">
@@ -165,7 +169,7 @@ footer{color:var(--muted);font-size:13px;text-align:center;margin-top:24px}
   </div>
 </section>
 
-<section>
+<section id="copy">
   <h2>Тексты: что тестировали и что дальше</h2>
   <div class="scroll">
   <table class="tbl">
@@ -180,23 +184,23 @@ footer{color:var(--muted);font-size:13px;text-align:center;margin-top:24px}
   <p style="margin-top:12px"><b>По цепочке.</b> Третье письмо не дало ни одного заинтересованного (0 из 882 отправок), второе дало 2 из 5. Третье убираем, второе оставляем. На тесте сегментов шлём только первое письмо: так каждый сегмент читается за 5 дней, а не за 3 недели, и за пилот мы успеваем проверить в 2-3 раза больше. Второе письмо получают те, кто не ответил в сегментах-победителях.</p>
 </section>
 
-<section>
+<section id="replies">
   <h2>Ответы на письма</h2>
   <p>Ответы ведёт наша система: отвечает в течение минут, днём и ночью, отрабатывает возражения и ведёт к регистрации. Первые две недели она работала на базовых настройках: задача была собрать реальные переписки по вашему рынку, и в части диалогов она отвечала не идеально.</p>
   <p>Со следующей недели доводим её до ума на всех собранных разговорах: каждого заинтересованного дожимать до регистрации или демо, точно отвечать на возражения вашего рынка, не терять тех, кто замолчал. Цель - работать лучше живого SDR.</p>
 </section>
 
-<section>
-  <h2>Доставляемость и куда целимся</h2>
-  <p>Первые две недели все письма Turrior шли через Microsoft-ящики. На наших собственных SMTP-ящиках в других кампаниях за тот же период на первое письмо отвечают в 2 раза чаще, а заинтересованных в разы больше (15.5 против 7.7 живых ответов на 1,000 писем). Ниши там другие, поэтому сравнение не точное, но разница слишком большая, чтобы её не использовать: переводим часть объёма Turrior на SMTP, ещё ящики прогреваются.</p>
+<section id="target">
+  <h2>Инфраструктура и куда целимся</h2>
+  <p>Чтобы стартовать быстро, первые две недели мы слали с Microsoft-ящиков, которые были под рукой. Сейчас под Turrior отдельно поднимаем свежие SMTP-ящики и прогреваем Google-ящики: на них результат обычно стабильнее. Так что цифры выше - это отклик на стартовой инфраструктуре, дальше он должен расти.</p>
   <div class="tiles" style="margin-top:14px">
     <div class="tile"><div class="n">~50</div><div class="l">заинтересованных к концу пилота, если ничего не менять</div></div>
-    <div class="tile"><div class="n">100+</div><div class="l">наша цель: новые сегменты, лучшие тексты, SMTP-ящики</div></div>
+    <div class="tile"><div class="n">100+</div><div class="l">наша цель: новые сегменты, лучшие тексты, свежие ящики</div></div>
   </div>
   <p class="muted">Заинтересованный - человек, который ответил «да, интересно» или попросил подробности. Сколько из них зарегистрируется, увидим, когда появится сигнал о регистрациях.</p>
 </section>
 
-<section>
+<section id="plan">
   <h2>План и сроки</h2>
   <ul class="timeline">
     <li><span class="d">3-10 Oct</span><span>Запуск 12 сегментов по 1,000 человек, первое письмо, два захода в каждом. Обновлённая система ответов.</span></li>
@@ -207,7 +211,7 @@ footer{color:var(--muted);font-size:13px;text-align:center;margin-top:24px}
   <p class="muted" style="margin-top:12px">Правило решения по сегменту на 1,000 человек: 5+ заинтересованных - масштабируем, 2-4 - переписываем тексты и даём ещё тысячу, 0-1 - закрываем.</p>
 </section>
 
-<section>
+<section id="asks">
   <h2>Что нужно от вас</h2>
   <ol class="asks">
     <li><b>Промокод или регистрация без карты</b> для наших лидов. Это главный аргумент в заходе «знаю ребят».</li>
